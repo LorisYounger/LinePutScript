@@ -10,7 +10,7 @@ LinePutScript是一种定义行读取结构和描述其内容的标准语言
 本类库可以更轻松的创建,修改,保存LinePutScript
 
 
-如何使用参见LinePutScript\bin\Release\LinePutScript.xml
+如何使用参见LinePutScript\bin\Debug\LinePutScript.xml
 
 引用类库dll见LinePutScript\bin\Release\LinePutScript.dll
 
