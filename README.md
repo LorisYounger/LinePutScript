@@ -1,0 +1,2 @@
+# LinePutScript
+LinePutScript是一种定义行读取结构和描述其内容的标准语言
