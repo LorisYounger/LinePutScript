@@ -15,9 +15,22 @@ namespace LinePutScript
      /// </summary>
         public List<Line> Assemblage = new List<Line>();
 
+        /// <summary>
+        /// 创建一个 LpsDocument
+        /// </summary>
+        public LpsDocument() { }
+        /// <summary>
+        /// 从指定的字符串创建 LpsDocument
+        /// </summary>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
+        public LpsDocument(string lps)
+        {
+            Load(lps);
+        }
+
         #region List操作
         /// <summary>
-        /// 将指定的Line添加到Assemblage列表的末尾。
+        /// 将指定的Line添加到Assemblage列表的末尾
         /// </summary>
         /// <param name="newLine">要添加的Line</param>
         public void AddLine(Line newLine)
@@ -25,7 +38,7 @@ namespace LinePutScript
             Assemblage.Add(newLine);
         }
         /// <summary>
-        /// 将指定Line的元素添加到Assemblage的末尾。
+        /// 将指定Line的元素添加到Assemblage的末尾
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(params Line[] newLines)
@@ -79,7 +92,7 @@ namespace LinePutScript
         }
 
         /// <summary>
-        /// 从Assemblage中移除移除与条件相匹配的所有Line。
+        /// 从Assemblage中移除移除与条件相匹配的所有Line
         /// </summary>
         /// <param name="line">要从Assemblage中删除的Line</param>
         public void RemoveAll(Line line)
@@ -87,7 +100,7 @@ namespace LinePutScript
             while (Assemblage.Remove(line)) ;
         }
         /// <summary>
-        /// 从Assemblage中移除移除与名称相匹配的所有Line。
+        /// 从Assemblage中移除移除与名称相匹配的所有Line
         /// </summary>
         /// <param name="lineName">要从Assemblage中删除的Line的名称</param>
         public void RemoveAll(string lineName)
@@ -101,7 +114,7 @@ namespace LinePutScript
             }
         }
         /// <summary>
-        /// 移除Assemblage的指定索引处的Line。
+        /// 移除Assemblage的指定索引处的Line
         /// </summary>
         /// <param name="index">要移除的Line的从零开始的索引</param>
         public void RemoveAt(int index)
@@ -110,19 +123,19 @@ namespace LinePutScript
         }
 
         /// <summary>
-        /// 确定某Line是否在Assemblage中。
+        /// 确定某Line是否在Assemblage中
         /// </summary>
-        /// <param name="line">要在Assemblage中定位的Line。</param>
-        /// <returns>如果在Assemblage中找到line，则为True；否则为false。 </returns>
+        /// <param name="line">要在Assemblage中定位的Line</param>
+        /// <returns>如果在Assemblage中找到line，则为True；否则为false </returns>
         public bool Contains(Line line)
         {
             return Assemblage.Contains(line);
         }
         /// <summary>
-        /// 确定某元素是否在Assemblage中。
+        /// 确定某元素是否在Assemblage中
         /// </summary>
-        /// <param name="sub">要在Assemblage中定位的sub。</param>
-        /// <returns>如果在Assemblage中找到line，则为True；否则为false。</returns>
+        /// <param name="sub">要在Assemblage中定位的sub</param>
+        /// <returns>如果在Assemblage中找到line，则为True；否则为false</returns>
         public bool Contains(Sub sub)
         {
             foreach (Line li in Assemblage)
@@ -134,7 +147,7 @@ namespace LinePutScript
         /// 确定某Line(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="lineName">Line的名字</param>
-        /// <returns>如果在Assemblage中找到符合的名字，则为True；否则为false。</returns>
+        /// <returns>如果在Assemblage中找到符合的名字，则为True；否则为false</returns>
         public bool ContainsLine(string lineName)
         {
             return (Assemblage.FirstOrDefault(x => x.Name == lineName) != null);
@@ -143,7 +156,7 @@ namespace LinePutScript
         /// 确定某sub(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="subName">sub的名字</param>
-        /// <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false。</returns>
+        /// <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false</returns>
         public bool ContainsSub(string subName)
         {
             if (Assemblage.FirstOrDefault(x => x.Name == subName) != null)
@@ -155,7 +168,7 @@ namespace LinePutScript
             //return false;
         }
         /// <summary>
-        /// 匹配拥有相同名称的Line的所有元素。
+        /// 匹配拥有相同名称的Line的所有元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
@@ -168,16 +181,16 @@ namespace LinePutScript
             return lines.ToArray();
         }
         /// <summary>
-        /// 搜索与指定名称，并返回整个Assemblage中的第一个匹配元素。
+        /// 搜索与指定名称，并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Line，则为该Line；否则为null。</returns>
+        /// <returns>如果找到相同名称的第一个Line，则为该Line；否则为null</returns>
         public Line FindLine(string lineName)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
         }
         /// <summary>
-        /// 匹配拥有相同名称的Sub的所有元素。
+        /// 匹配拥有相同名称的Sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
@@ -193,10 +206,10 @@ namespace LinePutScript
             return lines.ToArray();
         }
         /// <summary>
-        /// 搜索与指定名称，并返回整个Assemblage中的第一个匹配元素。
+        /// 搜索与指定名称，并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null。</returns>
+        /// <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null</returns>
         public Sub FindSub(string subName)
         {
             foreach (Line li in Assemblage)
@@ -209,7 +222,7 @@ namespace LinePutScript
             return null;
         }
         /// <summary>
-        /// 搜索相同名称的Line，并返回整个Assemblage中第一个匹配的Line从零开始的索引。
+        /// 搜索相同名称的Line，并返回整个Assemblage中第一个匹配的Line从零开始的索引
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
@@ -223,7 +236,7 @@ namespace LinePutScript
             return -1;
         }
         /// <summary>
-        /// 搜索相同名称的Line，并返回整个Assemblage中全部匹配的Line从零开始的索引。
+        /// 搜索相同名称的Line，并返回整个Assemblage中全部匹配的Line从零开始的索引
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
@@ -285,7 +298,7 @@ namespace LinePutScript
             InsertLine(LineNode + 1, newline);
         }
 
-       
+
 
         /// <summary>
         /// 将读取进度设置为0
@@ -315,10 +328,12 @@ namespace LinePutScript
 
 
 
+
+
         /// <summary>
         /// 从指定的字符串加载LPS文档
         /// </summary>
-        /// <param name="lps">包含要加载的LPS文档的字符串。</param>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
         /// <returns></returns>
         public bool Load(string lps)
         {

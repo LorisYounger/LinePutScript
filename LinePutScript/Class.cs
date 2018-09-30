@@ -177,7 +177,7 @@ namespace LinePutScript
 
         #region List操作
         /// <summary>
-        /// 将指定的Sub添加到Subs列表的末尾。
+        /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
         public void AddSub(Sub newSub)
@@ -185,7 +185,7 @@ namespace LinePutScript
             Subs.Add(newSub);
         }
         /// <summary>
-        /// 将指定Sub的元素添加到Subs的末尾。
+        /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
         public void AddRange(params Sub[] newSubs)
@@ -238,10 +238,10 @@ namespace LinePutScript
             return false;
         }
         /// <summary>
-        /// 确定某Sub是否在Line集合中。
+        /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="sub">要在Line集合中定位的Sub</param>
-        /// <returns>如果在Line集合中找到sub，则为True；否则为false。</returns>
+        /// <returns>如果在Line集合中找到sub，则为True；否则为false</returns>
         public bool Contains(Sub sub)
         {
             if (this == sub)
@@ -252,7 +252,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="subName">要在Line集合中定位的Sub的名字</param>
-        /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false。</returns>
+        /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
         public bool Contains(string subName)
         {
             if (Name == subName)
@@ -260,7 +260,7 @@ namespace LinePutScript
             return (Subs.FirstOrDefault(x => x.Name == subName) != null);
         }
         /// <summary>
-        /// 匹配拥有相同名称的sub的所有元素。
+        /// 匹配拥有相同名称的sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
@@ -273,17 +273,17 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
-        /// 搜索与指定名称，并返回整个Subs中的第一个匹配元素。
+        /// 搜索与指定名称，并返回整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null。</returns>
+        /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
         public Sub Find(string subName)
         {
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
 
         /// <summary>
-        /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引。
+        /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
@@ -297,7 +297,7 @@ namespace LinePutScript
             return -1;
         }
         /// <summary>
-        /// 搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引。
+        /// 搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>

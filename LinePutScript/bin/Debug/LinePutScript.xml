@@ -108,13 +108,13 @@
         </member>
         <member name="M:LinePutScript.Line.AddSub(LinePutScript.Sub)">
             <summary>
-            将指定的Sub添加到Subs列表的末尾。
+            将指定的Sub添加到Subs列表的末尾
             </summary>
             <param name="newSub">要添加的Sub</param>
         </member>
         <member name="M:LinePutScript.Line.AddRange(LinePutScript.Sub[])">
             <summary>
-            将指定Sub的元素添加到Subs的末尾。
+            将指定Sub的元素添加到Subs的末尾
             </summary>
             <param name="newSubs">要添加的多个Sub</param>
         </member>
@@ -148,42 +148,42 @@
         </member>
         <member name="M:LinePutScript.Line.Contains(LinePutScript.Sub)">
             <summary>
-            确定某Sub是否在Line集合中。
+            确定某Sub是否在Line集合中
             </summary>
             <param name="sub">要在Line集合中定位的Sub</param>
-            <returns>如果在Line集合中找到sub，则为True；否则为false。</returns>
+            <returns>如果在Line集合中找到sub，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.Line.Contains(System.String)">
             <summary>
             确定某Sub是否在Line集合中
             </summary>
             <param name="subName">要在Line集合中定位的Sub的名字</param>
-            <returns>如果在Line集合中找到符合的名字，则为True；否则为false。</returns>
+            <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.Line.FindAll(System.String)">
             <summary>
-            匹配拥有相同名称的sub的所有元素。
+            匹配拥有相同名称的sub的所有元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
         </member>
         <member name="M:LinePutScript.Line.Find(System.String)">
             <summary>
-            搜索与指定名称，并返回整个Subs中的第一个匹配元素。
+            搜索与指定名称，并返回整个Subs中的第一个匹配元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
-            <returns>如果找到相同名称的第一个sub，则为该sub；否则为null。</returns>
+            <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
         </member>
         <member name="M:LinePutScript.Line.IndexOf(System.String)">
             <summary>
-            搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引。
+            搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的sub的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
         </member>
         <member name="M:LinePutScript.Line.IndexsOf(System.String)">
             <summary>
-            搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引。
+            搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的sub的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
@@ -204,15 +204,26 @@
             集合 全部文件的数据
             </summary>
         </member>
+        <member name="M:LinePutScript.LpsDocument.#ctor">
+            <summary>
+            创建一个 LpsDocument
+            </summary>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.#ctor(System.String)">
+            <summary>
+            从指定的字符串创建 LpsDocument
+            </summary>
+            <param name="lps">包含要加载的LPS文档的字符串</param>
+        </member>
         <member name="M:LinePutScript.LpsDocument.AddLine(LinePutScript.Line)">
             <summary>
-            将指定的Line添加到Assemblage列表的末尾。
+            将指定的Line添加到Assemblage列表的末尾
             </summary>
             <param name="newLine">要添加的Line</param>
         </member>
         <member name="M:LinePutScript.LpsDocument.AddRange(LinePutScript.Line[])">
             <summary>
-            将指定Line的元素添加到Assemblage的末尾。
+            将指定Line的元素添加到Assemblage的末尾
             </summary>
             <param name="newLines">要添加的多个Line</param>
         </member>
@@ -246,88 +257,88 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.RemoveAll(LinePutScript.Line)">
             <summary>
-            从Assemblage中移除移除与条件相匹配的所有Line。
+            从Assemblage中移除移除与条件相匹配的所有Line
             </summary>
             <param name="line">要从Assemblage中删除的Line</param>
         </member>
         <member name="M:LinePutScript.LpsDocument.RemoveAll(System.String)">
             <summary>
-            从Assemblage中移除移除与名称相匹配的所有Line。
+            从Assemblage中移除移除与名称相匹配的所有Line
             </summary>
             <param name="lineName">要从Assemblage中删除的Line的名称</param>
         </member>
         <member name="M:LinePutScript.LpsDocument.RemoveAt(System.Int32)">
             <summary>
-            移除Assemblage的指定索引处的Line。
+            移除Assemblage的指定索引处的Line
             </summary>
             <param name="index">要移除的Line的从零开始的索引</param>
         </member>
         <member name="M:LinePutScript.LpsDocument.Contains(LinePutScript.Line)">
             <summary>
-            确定某Line是否在Assemblage中。
+            确定某Line是否在Assemblage中
             </summary>
-            <param name="line">要在Assemblage中定位的Line。</param>
-            <returns>如果在Assemblage中找到line，则为True；否则为false。 </returns>
+            <param name="line">要在Assemblage中定位的Line</param>
+            <returns>如果在Assemblage中找到line，则为True；否则为false </returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.Contains(LinePutScript.Sub)">
             <summary>
-            确定某元素是否在Assemblage中。
+            确定某元素是否在Assemblage中
             </summary>
-            <param name="sub">要在Assemblage中定位的sub。</param>
-            <returns>如果在Assemblage中找到line，则为True；否则为false。</returns>
+            <param name="sub">要在Assemblage中定位的sub</param>
+            <returns>如果在Assemblage中找到line，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsLine(System.String)">
             <summary>
             确定某Line(名字定位)是否在Assemblage中
             </summary>
             <param name="lineName">Line的名字</param>
-            <returns>如果在Assemblage中找到符合的名字，则为True；否则为false。</returns>
+            <returns>如果在Assemblage中找到符合的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsSub(System.String)">
             <summary>
             确定某sub(名字定位)是否在Assemblage中
             </summary>
             <param name="subName">sub的名字</param>
-            <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false。</returns>
+            <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.FindAllLine(System.String)">
             <summary>
-            匹配拥有相同名称的Line的所有元素。
+            匹配拥有相同名称的Line的所有元素
             </summary>
             <param name="lineName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的Line，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.FindLine(System.String)">
             <summary>
-            搜索与指定名称，并返回整个Assemblage中的第一个匹配元素。
+            搜索与指定名称，并返回整个Assemblage中的第一个匹配元素
             </summary>
             <param name="lineName">用于定义匹配的名称</param>
-            <returns>如果找到相同名称的第一个Line，则为该Line；否则为null。</returns>
+            <returns>如果找到相同名称的第一个Line，则为该Line；否则为null</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.FindAllSub(System.String)">
             <summary>
-            匹配拥有相同名称的Sub的所有元素。
+            匹配拥有相同名称的Sub的所有元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的Sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.FindSub(System.String)">
             <summary>
-            搜索与指定名称，并返回整个Assemblage中的第一个匹配元素。
+            搜索与指定名称，并返回整个Assemblage中的第一个匹配元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
-            <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null。</returns>
+            <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.IndexOf(System.String)">
             <summary>
-            搜索相同名称的Line，并返回整个Assemblage中第一个匹配的Line从零开始的索引。
+            搜索相同名称的Line，并返回整个Assemblage中第一个匹配的Line从零开始的索引
             </summary>
             <param name="lineName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的Line的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.IndexsOf(System.String)">
             <summary>
-            搜索相同名称的Line，并返回整个Assemblage中全部匹配的Line从零开始的索引。
+            搜索相同名称的Line，并返回整个Assemblage中全部匹配的Line从零开始的索引
             </summary>
             <param name="lineName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的Line的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
@@ -375,7 +386,7 @@
             <summary>
             从指定的字符串加载LPS文档
             </summary>
-            <param name="lps">包含要加载的LPS文档的字符串。</param>
+            <param name="lps">包含要加载的LPS文档的字符串</param>
             <returns></returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ToString">
