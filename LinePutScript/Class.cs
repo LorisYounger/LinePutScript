@@ -32,7 +32,7 @@ namespace LinePutScript
         public void Set(Sub sub)
         {
             Name = sub.Name;
-            Info = sub.Info;            
+            Info = sub.Info;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace LinePutScript
 
             Text = sts.Last();//最后一个
 
-            for(int i = 1; i < sts.Length - 1; i++)
+            for (int i = 1; i < sts.Length - 1; i++)
             {
                 Subs.Add(new Sub(sts[i]));
             }
@@ -267,6 +267,8 @@ namespace LinePutScript
         public Sub[] FindAll(string subName)
         {
             List<Sub> subs = new List<Sub>();
+            if (Name == subName)
+                subs.Add(this);
             foreach (Sub su in Subs)
                 if (su.Name == subName)
                     subs.Add(su);
@@ -279,6 +281,8 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
         public Sub Find(string subName)
         {
+            if (this.Name == subName)
+                return this;
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
 
