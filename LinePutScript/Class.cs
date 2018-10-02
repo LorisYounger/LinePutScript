@@ -128,7 +128,7 @@ namespace LinePutScript
         /// <param name="lpsLine">lpsSub文本</param>
         public Line(string lpsLine)
         {
-            string[] sts = Regex.Split(Info, ":|", RegexOptions.IgnoreCase);
+            string[] sts = Regex.Split(lpsLine, @"\:\|", RegexOptions.IgnoreCase);
 
             string[] st = sts[0].Split('#');//第一个
             Name = st[0];
