@@ -273,19 +273,23 @@ namespace LinePutScript
             }
         }
         /// <summary>
-        /// 读取当前Line 并且自动切换到下一Line
+        /// 读取读取进度当前Line 并且自动切换到下一Line
         /// </summary>
-        /// <returns>当前Line</returns>
+        /// <returns>如何有则返回当前Line，如果没有则返回null</returns>
         public Line ReadNext()
         {
+            if (LineNode == Assemblage.Count)
+                return null;
             return Assemblage[LineNode++];
         }
         /// <summary>
-        /// 获取当前Line
+        /// 获取读取进度当前Line
         /// </summary>
-        /// <returns>当前Line</returns>
+        /// <returns>如何有则返回当前Line，如果没有则返回null</returns>
         public Line Read()
         {
+            if (LineNode == Assemblage.Count)
+                return null;
             return Assemblage[LineNode];
         }
 
@@ -297,7 +301,34 @@ namespace LinePutScript
         {
             InsertLine(LineNode + 1, newline);
         }
-
+        /// <summary>
+        /// 新建的Line添加到当前读取进度之后
+        /// </summary>
+        /// <param name="newlineName">要添加的行名称</param>
+        /// <param name="info">行信息</param>
+        /// <param name="text">行文本</param>
+        /// <param name="subs">行子类</param>
+        public void Append(string newlineName, string info = "", string text = "", params Sub[] subs)
+        {
+            InsertLine(LineNode + 1, new Line(newlineName, info, text, subs));
+        }
+        /// <summary>
+        /// 将指定的Sub添加到当前读取进度Line中
+        /// </summary>
+        /// <param name="newSub">要添加的子类</param>
+        public void AppendSub(params Sub[] newSub)
+        {
+            Read().AddRange(newSub);
+        }
+        /// <summary>
+        /// 将指定的Sub添加到当前读取进度Line中
+        /// </summary>
+        /// <param name="newSubName">要添加的行名称</param>
+        /// <param name="info">要添加的行信息</param>
+        public void AppendSub(string newSubName, string info = "")
+        {
+            Read().AddSub(new Sub(newSubName, info));
+        }
 
 
         /// <summary>
@@ -308,11 +339,19 @@ namespace LinePutScript
             LineNode = 0;
         }
         /// <summary>
-        /// 将读取进度设置为上限
+        /// 将读取进度设置为上限 即最后一行
         /// </summary>
         public void ReadEnd()
         {
             LineNode = Assemblage.Count;
+        }
+        /// <summary>
+        /// 判断是否能够继续读取数据
+        /// </summary>
+        /// <returns>如果还有下一行，返回True，否则False</returns>
+        public bool ReadCanNext()
+        {
+            return LineNode != Assemblage.Count;
         }
 
         /// <summary>

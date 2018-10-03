@@ -20,6 +20,13 @@
             </summary>
             <param name="lpsSub">lpsSub文本</param>
         </member>
+        <member name="M:LinePutScript.Sub.#ctor(System.String,System.String)">
+            <summary>
+            通过名字和信息创建新的Sub
+            </summary>
+            <param name="name">名称</param>
+            <param name="info">信息</param>
+        </member>
         <member name="M:LinePutScript.Sub.Set(LinePutScript.Sub)">
             <summary>
             将其他Sub内容拷贝到本Sub
@@ -83,6 +90,15 @@
             通过lpsLine文本创建一行
             </summary>
             <param name="lpsLine">lpsSub文本</param>
+        </member>
+        <member name="M:LinePutScript.Line.#ctor(System.String,System.String,System.String,LinePutScript.Sub[])">
+            <summary>
+            通过名字和信息创建新的Line
+            </summary>
+            <param name="name">名称</param>
+            <param name="info">信息</param>
+            <param name="text">文本 在末尾没有结束行号的文本</param>
+            <param name="subs">文本 在末尾没有结束行号的文本</param>
         </member>
         <member name="M:LinePutScript.Line.Set(LinePutScript.Line)">
             <summary>
@@ -350,21 +366,43 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.ReadNext">
             <summary>
-            读取当前Line 并且自动切换到下一Line
+            读取读取进度当前Line 并且自动切换到下一Line
             </summary>
-            <returns>当前Line</returns>
+            <returns>如何有则返回当前Line，如果没有则返回null</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.Read">
             <summary>
-            获取当前Line
+            获取读取进度当前Line
             </summary>
-            <returns>当前Line</returns>
+            <returns>如何有则返回当前Line，如果没有则返回null</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.Append(LinePutScript.Line)">
             <summary>
             将指定的Line添加到当前读取进度之后
             </summary>
             <param name="newline">要添加的Line</param>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.Append(System.String,System.String,System.String,LinePutScript.Sub[])">
+            <summary>
+            新建的Line添加到当前读取进度之后
+            </summary>
+            <param name="newlineName">要添加的行名称</param>
+            <param name="info">行信息</param>
+            <param name="text">行文本</param>
+            <param name="subs">行子类</param>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.AppendSub(LinePutScript.Sub[])">
+            <summary>
+            将指定的Sub添加到当前读取进度Line中
+            </summary>
+            <param name="newSub">要添加的子类</param>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.AppendSub(System.String,System.String)">
+            <summary>
+            将指定的Sub添加到当前读取进度Line中
+            </summary>
+            <param name="newSubName">要添加的行名称</param>
+            <param name="info">要添加的行信息</param>
         </member>
         <member name="M:LinePutScript.LpsDocument.ReadReset">
             <summary>
@@ -373,8 +411,14 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.ReadEnd">
             <summary>
-            将读取进度设置为上限
+            将读取进度设置为上限 即最后一行
             </summary>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.ReadCanNext">
+            <summary>
+            判断是否能够继续读取数据
+            </summary>
+            <returns>如果还有下一行，返回True，否则False</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.LastLine">
             <summary>

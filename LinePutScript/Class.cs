@@ -26,6 +26,16 @@ namespace LinePutScript
                 Info = st[1];
         }
         /// <summary>
+        /// 通过名字和信息创建新的Sub
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息</param>
+        public Sub(string name,string info="")
+        {
+            Name = name;
+            Info = info;
+        }
+        /// <summary>
         /// 将其他Sub内容拷贝到本Sub
         /// </summary>
         /// <param name="sub">其他Sub</param>
@@ -108,6 +118,8 @@ namespace LinePutScript
         /// <returns>Sub的文本格式</returns>
         public new string ToString()//不能继承
         {
+            if (Info=="")
+                return TextDeReplace(Name) + ":|";
             return TextDeReplace(Name) + '#' + TextDeReplace(Info) + ":|";
         }
 
@@ -141,6 +153,20 @@ namespace LinePutScript
             {
                 Subs.Add(new Sub(sts[i]));
             }
+        }
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本</param>
+        /// <param name="subs">文本 在末尾没有结束行号的文本</param>
+        public Line(string name, string info="",string text = "",params Sub[] subs)
+        {
+            Name = name;
+            Info = info;
+            Text = text;
+            Subs.AddRange(subs);
         }
         /// <summary>
         /// 将其他Line内容拷贝到本Line
