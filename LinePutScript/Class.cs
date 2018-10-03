@@ -30,7 +30,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="info">信息</param>
-        public Sub(string name,string info="")
+        public Sub(string name,string info)
         {
             Name = name;
             Info = info;
@@ -161,7 +161,7 @@ namespace LinePutScript
         /// <param name="info">信息</param>
         /// <param name="text">文本 在末尾没有结束行号的文本</param>
         /// <param name="subs">文本 在末尾没有结束行号的文本</param>
-        public Line(string name, string info="",string text = "",params Sub[] subs)
+        public Line(string name, string info,string text = "",params Sub[] subs)
         {
             Name = name;
             Info = info;
