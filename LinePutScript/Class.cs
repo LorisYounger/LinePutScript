@@ -23,14 +23,14 @@ namespace LinePutScript
             string[] st = lpsSub.Split('#');
             Name = st[0];
             if (st.Length > 1)
-                Info = st[1];
+                info = st[1];
         }
         /// <summary>
         /// 通过名字和信息创建新的Sub
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="info">信息</param>
-        public Sub(string name,string info)
+        /// <param name="info">信息 (正常版本)</param>
+        public Sub(string name, string info)
         {
             Name = name;
             Info = info;
@@ -42,17 +42,30 @@ namespace LinePutScript
         public void Set(Sub sub)
         {
             Name = sub.Name;
-            Info = sub.Info;
+            info = sub.info;
         }
 
         /// <summary>
         /// 名称 没有唯一性
         /// </summary>
-        public string Name;
+        public string Name = "lps";
         /// <summary>
-        /// 信息
+        /// 信息 (去除关键字的文本)
         /// </summary>
-        public string Info = "";
+        public string info = "";
+        /// <summary>
+        /// 信息 (正常)
+        /// </summary>
+        public string Info
+        {
+            get => TextDeReplace(info);
+            set
+            {
+                info = TextReplace(value);
+            }
+        }
+        
+
         ////暂时应该不需要判断类型
         ///// <summary>
         ///// 获取当前标签的类型
@@ -63,64 +76,65 @@ namespace LinePutScript
         //    return "sub";
         //}
         /// <summary>
-        /// 退回Info的转义文本
+        /// 退回Info的反转义文本 (正常显示)
         /// </summary>
-        /// <returns>info的转义文本</returns>
+        /// <returns>info的反转义文本 (正常显示)</returns>
         public string GetInfo()
         {
-            return TextReplace(Info);
+            return Info;
         }
         /// <summary>
-        /// 退回Info集合的转义文本
+        /// 退回Info集合的转义文本集合 (正常显示)
         /// </summary>
-        /// <returns>info的转义文本</returns>
+        /// <returns>info的转义文本集合 (正常显示)</returns>
         public string[] GetInfos()
         {
-            string[] sts = Info.Split(',');
+            string[] sts = info.Split(',');
             for (int i = 0; i < sts.Length; i++)
-                sts[i] = TextReplace(sts[i]);
+                sts[i] = TextDeReplace(sts[i]);
             return sts;
         }
 
         /// <summary>
-        /// 将文本进行转义处理
-        /// </summary>
-        /// <param name="Reptex">要转义的文本</param>
-        /// <returns>转义后的文本</returns>
-        public static string TextReplace(string Reptex)
-        {
-            Reptex = Reptex.Replace("/|", ":|");
-            Reptex = Reptex.Replace("/tab", "\t");
-            Reptex = Reptex.Replace("/n", "\n");
-            Reptex = Reptex.Replace("/id", "#");
-            Reptex = Reptex.Replace("/?", "//");
-            Reptex = Reptex.Replace("/!", "/");
-            return Reptex;
-        }
-        /// <summary>
-        /// 将文本进行反转义处理
+        /// 将文本进行反转义处理(正常显示的文本)
         /// </summary>
         /// <param name="Reptex">要反转义的文本</param>
-        /// <returns>反转义后的文本</returns>
+        /// <returns>反转义后的文本 正常显示的文本</returns>
         public static string TextDeReplace(string Reptex)
         {
-            Reptex = Reptex.Replace(":|", "/|");
-            Reptex = Reptex.Replace("\t", "/tab");
-            Reptex = Reptex.Replace("\n", "/n");
-            Reptex = Reptex.Replace("#", "/id");
-            Reptex = Reptex.Replace("//", "/?");
-            Reptex = Reptex.Replace("/", "/!");
+            Reptex = Reptex.Replace("/stop", ":|");
+            Reptex = Reptex.Replace("/tab", "\t");
+            Reptex = Reptex.Replace("/n", "\n");
+            Reptex = Reptex.Replace("/r", "\r");
+            Reptex = Reptex.Replace("/id", "#");
+            Reptex = Reptex.Replace("/!", "/");
+            Reptex = Reptex.Replace("/com", ",");
             return Reptex;
         }
         /// <summary>
-        /// 将当前Sub转换成文本格式
+        /// 将文本进行转义处理(去除关键字的文本)
         /// </summary>
-        /// <returns>Sub的文本格式</returns>
+        /// <param name="Reptex">要转义的文本</param>
+        /// <returns>转义后的文本 (去除关键字的文本)</returns>
+        public static string TextReplace(string Reptex)
+        {
+            Reptex = Reptex.Replace(":|", "/stop");
+            Reptex = Reptex.Replace("\t", "/tab");
+            Reptex = Reptex.Replace("\n", "/n");
+            Reptex = Reptex.Replace("\r", "/r");
+            Reptex = Reptex.Replace("#", "/id");
+            Reptex = Reptex.Replace(",", "/com");
+            return Reptex;
+        }
+        /// <summary>
+        /// 将当前Sub转换成文本格式 (info已经被转义/去除关键字)
+        /// </summary>
+        /// <returns>Sub的文本格式 (info已经被转义/去除关键字)</returns>
         public new string ToString()//不能继承
         {
-            if (Info=="")
-                return TextDeReplace(Name) + ":|";
-            return TextDeReplace(Name) + '#' + TextDeReplace(Info) + ":|";
+            if (info == "")
+                return TextReplace(Name) + ":|";
+            return TextReplace(Name) + '#' + info + ":|";
         }
 
 
@@ -145,9 +159,9 @@ namespace LinePutScript
             string[] st = sts[0].Split('#');//第一个
             Name = st[0];
             if (st.Length > 1)
-                Info = st[1];
+                info = st[1];//lpstext都是转义后(无关键字)
 
-            Text = sts.Last();//最后一个
+            text = sts.Last();//最后一个
 
             for (int i = 1; i < sts.Length - 1; i++)
             {
@@ -158,10 +172,10 @@ namespace LinePutScript
         /// 通过名字和信息创建新的Line
         /// </summary>
         /// <param name="name">名称</param>
-        /// <param name="info">信息</param>
-        /// <param name="text">文本 在末尾没有结束行号的文本</param>
-        /// <param name="subs">文本 在末尾没有结束行号的文本</param>
-        public Line(string name, string info,string text = "",params Sub[] subs)
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line(string name, string info, string text = "", params Sub[] subs)
         {
             Name = name;
             Info = info;
@@ -175,24 +189,35 @@ namespace LinePutScript
         public void Set(Line line)
         {
             Name = line.Name;
-            Info = line.Info;
+            info = line.info;
 
-            Text = line.Text;
+            text = line.text;
             Subs = line.Subs.ToList();
         }
 
 
         /// <summary>
-        /// 文本 在末尾没有结束行号的文本
+        /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
         /// </summary>
-        public string Text = "";
+        public string text = "";
         /// <summary>
-        /// 退回Text的转义文本
+        /// 文本 在末尾没有结束行号的文本 (正常)
         /// </summary>
-        /// <returns>Text的转义文本</returns>
+        public string Text
+        {
+            get => TextDeReplace(text);
+            set
+            {
+                text = TextReplace(value);
+            }
+        }
+        /// <summary>
+        /// 退回Text的反转义文本 (正常显示)
+        /// </summary>
+        /// <returns>Text的反转义文本 (正常显示)</returns>
         public string GetText()
         {
-            return TextReplace(Text);
+            return Text;
         }
         /// <summary>
         /// 子项目
@@ -344,15 +369,18 @@ namespace LinePutScript
         #endregion
 
         /// <summary>
-        /// 将当前Line转换成文本格式
+        /// 将当前Line转换成文本格式 (info已经被转义/去除关键字)
         /// </summary>
-        /// <returns>Line的文本格式</returns>
+        /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
         public new string ToString()//不能继承
         {
-            StringBuilder str = new StringBuilder(TextDeReplace(Name) + '#' + TextDeReplace(Info) + ":|");
+            StringBuilder str = new StringBuilder(TextReplace(Name));
+            if (info == "")
+                str.Append('#' + info);
+            str.Append(":|");
             foreach (Sub su in Subs)
                 str.Append(su.ToString());
-            str.Append(TextDeReplace(Text));
+            str.Append(text);
             return str.ToString();
         }
 

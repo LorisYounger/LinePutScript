@@ -25,7 +25,7 @@
             通过名字和信息创建新的Sub
             </summary>
             <param name="name">名称</param>
-            <param name="info">信息</param>
+            <param name="info">信息 (正常版本)</param>
         </member>
         <member name="M:LinePutScript.Sub.Set(LinePutScript.Sub)">
             <summary>
@@ -38,42 +38,47 @@
             名称 没有唯一性
             </summary>
         </member>
-        <member name="F:LinePutScript.Sub.Info">
+        <member name="F:LinePutScript.Sub.info">
             <summary>
-            信息
+            信息 (去除关键字的文本)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Sub.Info">
+            <summary>
+            信息 (正常)
             </summary>
         </member>
         <member name="M:LinePutScript.Sub.GetInfo">
             <summary>
-            退回Info的转义文本
+            退回Info的反转义文本 (正常显示)
             </summary>
-            <returns>info的转义文本</returns>
+            <returns>info的反转义文本 (正常显示)</returns>
         </member>
         <member name="M:LinePutScript.Sub.GetInfos">
             <summary>
-            退回Info集合的转义文本
+            退回Info集合的转义文本集合 (正常显示)
             </summary>
-            <returns>info的转义文本</returns>
-        </member>
-        <member name="M:LinePutScript.Sub.TextReplace(System.String)">
-            <summary>
-            将文本进行转义处理
-            </summary>
-            <param name="Reptex">要转义的文本</param>
-            <returns>转义后的文本</returns>
+            <returns>info的转义文本集合 (正常显示)</returns>
         </member>
         <member name="M:LinePutScript.Sub.TextDeReplace(System.String)">
             <summary>
-            将文本进行反转义处理
+            将文本进行反转义处理(正常显示的文本)
             </summary>
             <param name="Reptex">要反转义的文本</param>
-            <returns>反转义后的文本</returns>
+            <returns>反转义后的文本 正常显示的文本</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.TextReplace(System.String)">
+            <summary>
+            将文本进行转义处理(去除关键字的文本)
+            </summary>
+            <param name="Reptex">要转义的文本</param>
+            <returns>转义后的文本 (去除关键字的文本)</returns>
         </member>
         <member name="M:LinePutScript.Sub.ToString">
             <summary>
-            将当前Sub转换成文本格式
+            将当前Sub转换成文本格式 (info已经被转义/去除关键字)
             </summary>
-            <returns>Sub的文本格式</returns>
+            <returns>Sub的文本格式 (info已经被转义/去除关键字)</returns>
         </member>
         <member name="T:LinePutScript.Line">
             <summary>
@@ -96,9 +101,9 @@
             通过名字和信息创建新的Line
             </summary>
             <param name="name">名称</param>
-            <param name="info">信息</param>
-            <param name="text">文本 在末尾没有结束行号的文本</param>
-            <param name="subs">文本 在末尾没有结束行号的文本</param>
+            <param name="info">信息 (正常)</param>
+            <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+            <param name="subs">子类集合</param>
         </member>
         <member name="M:LinePutScript.Line.Set(LinePutScript.Line)">
             <summary>
@@ -106,16 +111,21 @@
             </summary>
             <param name="line">其他line</param>
         </member>
-        <member name="F:LinePutScript.Line.Text">
+        <member name="F:LinePutScript.Line.text">
             <summary>
-            文本 在末尾没有结束行号的文本
+            文本 在末尾没有结束行号的文本 (去除关键字的文本)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Line.Text">
+            <summary>
+            文本 在末尾没有结束行号的文本 (正常)
             </summary>
         </member>
         <member name="M:LinePutScript.Line.GetText">
             <summary>
-            退回Text的转义文本
+            退回Text的反转义文本 (正常显示)
             </summary>
-            <returns>Text的转义文本</returns>
+            <returns>Text的反转义文本 (正常显示)</returns>
         </member>
         <member name="F:LinePutScript.Line.Subs">
             <summary>
@@ -206,9 +216,9 @@
         </member>
         <member name="M:LinePutScript.Line.ToString">
             <summary>
-            将当前Line转换成文本格式
+            将当前Line转换成文本格式 (info已经被转义/去除关键字)
             </summary>
-            <returns>Line的文本格式</returns>
+            <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
         </member>
         <member name="T:LinePutScript.LpsDocument">
             <summary>
