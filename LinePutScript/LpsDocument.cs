@@ -393,15 +393,15 @@ namespace LinePutScript
         }
 
         /// <summary>
-        /// 将当前Line转换成文本格式
+        /// 将当前Documents转换成文本格式
         /// </summary>
-        /// <returns>Line的文本格式</returns>
+        /// <returns>LinePutScript的文本格式</returns>
         public new string ToString()
         {
             StringBuilder sb = new StringBuilder();
             foreach (Line li in Assemblage)
-                sb.Append(li.ToString());
-            return sb.ToString();
+                sb.Append(li.ToString()+"\n");            
+            return sb.ToString().Trim('\n');
         }
     }
 

@@ -445,9 +445,9 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.ToString">
             <summary>
-            将当前Line转换成文本格式
+            将当前Documents转换成文本格式
             </summary>
-            <returns>Line的文本格式</returns>
+            <returns>LinePutScript的文本格式</returns>
         </member>
     </members>
 </doc>
