@@ -375,7 +375,7 @@ namespace LinePutScript
         public new string ToString()//不能继承
         {
             StringBuilder str = new StringBuilder(TextReplace(Name));
-            if (info == "")
+            if (info != "")
                 str.Append('#' + info);
             str.Append(":|");
             foreach (Sub su in Subs)
