@@ -379,10 +379,11 @@ namespace LinePutScript
             Assemblage.Clear();//清空当前文档
             try
             {
-                string[] file = lps.Replace("\r", "").Split('\n');
+                string[] file = lps.Replace("\r", "").Trim('\n').Split('\n');
                 foreach (string str in file)
                 {
-                    Assemblage.Add(new Line(str));
+                    if (str != "")
+                        Assemblage.Add(new Line(str));
                 }
                 return true;
             }
@@ -400,7 +401,7 @@ namespace LinePutScript
         {
             StringBuilder sb = new StringBuilder();
             foreach (Line li in Assemblage)
-                sb.Append(li.ToString()+"\n");            
+                sb.Append(li.ToString() + "\n");
             return sb.ToString().Trim('\n');
         }
     }
