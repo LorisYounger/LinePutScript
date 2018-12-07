@@ -48,6 +48,24 @@
             信息 (正常)
             </summary>
         </member>
+        <member name="M:LinePutScript.Sub.GetEnumerator">
+            <summary>
+            返回循环访问 Info集合 的枚举数。
+            </summary>
+            <returns>用于 Info集合 的枚举数</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.First">
+            <summary>
+            返回一个 Info集合 的第一个string。
+            </summary>
+            <returns>要返回的第一个string</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.Last">
+            <summary>
+            返回一个 Info集合 的最后一个string。
+            </summary>
+            <returns>要返回的最后一个string</returns>
+        </member>
         <member name="M:LinePutScript.Sub.GetInfo">
             <summary>
             退回Info的反转义文本 (正常显示)
@@ -188,14 +206,14 @@
         </member>
         <member name="M:LinePutScript.Line.FindAll(System.String)">
             <summary>
-            匹配拥有相同名称的sub的所有元素
+            匹配拥有相同名称的Line或sub的所有元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
         </member>
         <member name="M:LinePutScript.Line.Find(System.String)">
             <summary>
-            搜索与指定名称，并返回整个Subs中的第一个匹配元素
+            搜索与指定名称，并返回Line或整个Subs中的第一个匹配元素
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
@@ -219,6 +237,24 @@
             将当前Line转换成文本格式 (info已经被转义/去除关键字)
             </summary>
             <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
+        </member>
+        <member name="M:LinePutScript.Line.GetEnumerator">
+            <summary>
+            返回循环访问 Subs 的枚举数。
+            </summary>
+            <returns>用于 Subs 的枚举数</returns>
+        </member>
+        <member name="M:LinePutScript.Line.First">
+            <summary>
+            返回一个 Subs 的第一个元素。
+            </summary>
+            <returns>要返回的第一个元素</returns>
+        </member>
+        <member name="M:LinePutScript.Line.Last">
+            <summary>
+            返回一个 Subs 的最后一个元素。
+            </summary>
+            <returns>要返回的最后一个元素</returns>
         </member>
         <member name="T:LinePutScript.LpsDocument">
             <summary>
@@ -442,6 +478,24 @@
             </summary>
             <param name="lps">包含要加载的LPS文档的字符串</param>
             <returns></returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.First">
+            <summary>
+            返回一个Assemblage的第一个元素。
+            </summary>
+            <returns>要返回的第一个元素</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.Last">
+            <summary>
+            返回一个Assemblage的最后一个元素。
+            </summary>
+            <returns>要返回的最后一个元素</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.GetEnumerator">
+            <summary>
+            返回循环访问 Assemblage 的枚举数。
+            </summary>
+            <returns>用于 Assemblage 的枚举数</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ToString">
             <summary>

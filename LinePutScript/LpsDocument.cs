@@ -392,6 +392,34 @@ namespace LinePutScript
                 return false;
             }
         }
+        /// <summary>
+        /// 返回一个Assemblage的第一个元素。
+        /// </summary>
+        /// <returns>要返回的第一个元素</returns>
+        public Line First()
+        {
+            if (Assemblage.Count == 0)
+                return null;
+            return Assemblage[0];
+        }
+        /// <summary>
+        /// 返回一个Assemblage的最后一个元素。
+        /// </summary>
+        /// <returns>要返回的最后一个元素</returns>
+        public Line Last()
+        {
+            if (Assemblage.Count == 0)
+                return null;
+            return Assemblage[Assemblage.Count - 1];         
+        }
+        /// <summary>
+        /// 返回循环访问 Assemblage 的枚举数。
+        /// </summary>
+        /// <returns>用于 Assemblage 的枚举数</returns>
+        public IEnumerator<Line> GetEnumerator()
+        {
+            return Assemblage.GetEnumerator();
+        }
 
         /// <summary>
         /// 将当前Documents转换成文本格式

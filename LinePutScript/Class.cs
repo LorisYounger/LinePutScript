@@ -64,8 +64,36 @@ namespace LinePutScript
                 info = TextReplace(value);
             }
         }
-        
-
+        /// <summary>
+        /// 返回循环访问 Info集合 的枚举数。
+        /// </summary>
+        /// <returns>用于 Info集合 的枚举数</returns>
+        public System.Collections.IEnumerator GetEnumerator()
+        {
+            return GetInfos().GetEnumerator();
+        }
+        /// <summary>
+        /// 返回一个 Info集合 的第一个string。
+        /// </summary>
+        /// <returns>要返回的第一个string</returns>
+        public string First()
+        {
+            string[] Subs = GetInfos();
+            if (Subs.Length == 0)
+                return null;
+            return Subs[0];
+        }
+        /// <summary>
+        /// 返回一个 Info集合 的最后一个string。
+        /// </summary>
+        /// <returns>要返回的最后一个string</returns>
+        public string Last()
+        {
+            string[] Subs = GetInfos();
+            if (Subs.Length == 0)
+                return null;
+            return Subs[Subs.Length - 1];
+        }
         ////暂时应该不需要判断类型
         ///// <summary>
         ///// 获取当前标签的类型
@@ -311,7 +339,7 @@ namespace LinePutScript
             return (Subs.FirstOrDefault(x => x.Name == subName) != null);
         }
         /// <summary>
-        /// 匹配拥有相同名称的sub的所有元素
+        /// 匹配拥有相同名称的Line或sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
@@ -326,7 +354,7 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
-        /// 搜索与指定名称，并返回整个Subs中的第一个匹配元素
+        /// 搜索与指定名称，并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
@@ -384,7 +412,34 @@ namespace LinePutScript
             return str.ToString();
         }
 
-
+        /// <summary>
+        /// 返回循环访问 Subs 的枚举数。
+        /// </summary>
+        /// <returns>用于 Subs 的枚举数</returns>
+        public new IEnumerator<Sub> GetEnumerator()
+        {
+            return Subs.GetEnumerator();
+        }
+        /// <summary>
+        /// 返回一个 Subs 的第一个元素。
+        /// </summary>
+        /// <returns>要返回的第一个元素</returns>
+        public new Sub First()
+        {
+            if (Subs.Count == 0)
+                return null;
+            return Subs[0];
+        }
+        /// <summary>
+        /// 返回一个 Subs 的最后一个元素。
+        /// </summary>
+        /// <returns>要返回的最后一个元素</returns>
+        public new Sub Last()
+        {
+            if (Subs.Count == 0)
+                return null;
+            return Subs[Subs.Count - 1];
+        }
         ////暂时应该不需要判断类型
         ///// <summary>
         ///// 获取当前标签的类型
