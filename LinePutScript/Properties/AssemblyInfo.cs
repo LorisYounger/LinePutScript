@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("深圳市L版公司")]
 [assembly: AssemblyProduct("LinePutScript")]
-[assembly: AssemblyCopyright("LB Copyright ©  2018")]
+[assembly: AssemblyCopyright("LB Copyright © 2018")]
 [assembly: AssemblyTrademark("www.exlb.org")]
 [assembly: AssemblyCulture("")]
 

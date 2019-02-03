@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,6 +36,16 @@ namespace LinePutScript
             Name = name;
             Info = info;
         }
+
+        /// <summary>
+        /// 通过Sub创建新的Sub
+        /// </summary>
+        /// <param name="sub">其他Sub</param>
+        public Sub(Sub sub)
+        {
+            Name = sub.Name;
+            info = sub.info;
+        }
         /// <summary>
         /// 将其他Sub内容拷贝到本Sub
         /// </summary>
@@ -62,6 +73,39 @@ namespace LinePutScript
             set
             {
                 info = TextReplace(value);
+            }
+        }
+        /// <summary>
+        /// 信息 (int)
+        /// </summary>
+        public int InfoToInt
+        {
+            get => Convert.ToInt32(info);
+            set
+            {
+                info = value.ToString();
+            }
+        }
+        /// <summary>
+        /// 信息 (int64)
+        /// </summary>
+        public long InfoToInt64
+        {
+            get => Convert.ToInt64(info);
+            set
+            {
+                info = value.ToString();
+            }
+        }
+        /// <summary>
+        /// 信息 (double)
+        /// </summary>
+        public double InfoToDouble
+        {
+            get => Convert.ToDouble(info);
+            set
+            {
+                info = value.ToString();
             }
         }
         /// <summary>
@@ -211,6 +255,18 @@ namespace LinePutScript
             Subs.AddRange(subs);
         }
         /// <summary>
+        /// 通过其他Line创建新的Line
+        /// </summary>
+        /// <param name="line">其他line</param>
+        public Line(Line line)
+        {
+            Name = line.Name;
+            info = line.info;
+
+            text = line.text;
+            Subs = line.Subs.ToList();
+        }
+        /// <summary>
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
@@ -237,6 +293,39 @@ namespace LinePutScript
             set
             {
                 text = TextReplace(value);
+            }
+        }
+        /// <summary>
+        /// 文本 (int)
+        /// </summary>
+        public int TextToInt
+        {
+            get => Convert.ToInt32(info);
+            set
+            {
+                info = value.ToString();
+            }
+        }
+        /// <summary>
+        /// 文本 (int64)
+        /// </summary>
+        public long TextToInt64
+        {
+            get => Convert.ToInt64(info);
+            set
+            {
+                info = value.ToString();
+            }
+        }
+        /// <summary>
+        /// 文本 (double)
+        /// </summary>
+        public double TextToDouble
+        {
+            get => Convert.ToDouble(info);
+            set
+            {
+                info = value.ToString();
             }
         }
         /// <summary>

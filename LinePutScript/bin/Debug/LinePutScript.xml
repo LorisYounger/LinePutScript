@@ -27,6 +27,12 @@
             <param name="name">名称</param>
             <param name="info">信息 (正常版本)</param>
         </member>
+        <member name="M:LinePutScript.Sub.#ctor(LinePutScript.Sub)">
+            <summary>
+            通过Sub创建新的Sub
+            </summary>
+            <param name="sub">其他Sub</param>
+        </member>
         <member name="M:LinePutScript.Sub.Set(LinePutScript.Sub)">
             <summary>
             将其他Sub内容拷贝到本Sub
@@ -46,6 +52,21 @@
         <member name="P:LinePutScript.Sub.Info">
             <summary>
             信息 (正常)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Sub.InfoToInt">
+            <summary>
+            信息 (int)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Sub.InfoToInt64">
+            <summary>
+            信息 (int64)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Sub.InfoToDouble">
+            <summary>
+            信息 (double)
             </summary>
         </member>
         <member name="M:LinePutScript.Sub.GetEnumerator">
@@ -123,6 +144,12 @@
             <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
             <param name="subs">子类集合</param>
         </member>
+        <member name="M:LinePutScript.Line.#ctor(LinePutScript.Line)">
+            <summary>
+            通过其他Line创建新的Line
+            </summary>
+            <param name="line">其他line</param>
+        </member>
         <member name="M:LinePutScript.Line.Set(LinePutScript.Line)">
             <summary>
             将其他Line内容拷贝到本Line
@@ -137,6 +164,21 @@
         <member name="P:LinePutScript.Line.Text">
             <summary>
             文本 在末尾没有结束行号的文本 (正常)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Line.TextToInt">
+            <summary>
+            文本 (int)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Line.TextToInt64">
+            <summary>
+            文本 (int64)
+            </summary>
+        </member>
+        <member name="P:LinePutScript.Line.TextToDouble">
+            <summary>
+            文本 (double)
             </summary>
         </member>
         <member name="M:LinePutScript.Line.GetText">
