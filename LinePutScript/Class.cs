@@ -21,7 +21,7 @@ namespace LinePutScript
         /// <param name="lpsSub">lpsSub文本</param>
         public Sub(string lpsSub)
         {
-            string[] st = lpsSub.Split('#');
+            string[] st = lpsSub.Split(new char[1] { '#' }, 2);
             Name = st[0];
             if (st.Length > 1)
                 info = st[1];
@@ -209,6 +209,14 @@ namespace LinePutScript
             return TextReplace(Name) + '#' + info + ":|";
         }
 
+        //public static string[] Split(string input, string pattern)
+        //{
+        //    int splwhere = input.IndexOf(pattern);
+        //    if (splwhere == -1)
+        //        return new string[1] { input };
+        //    return new string[2] { input.}
+        //}
+
 
     }
     /// <summary>
@@ -228,7 +236,7 @@ namespace LinePutScript
         {
             string[] sts = Regex.Split(lpsLine, @"\:\|", RegexOptions.IgnoreCase);
 
-            string[] st = sts[0].Split('#');//第一个
+            string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             if (st.Length > 1)
                 info = st[1];//lpstext都是转义后(无关键字)
