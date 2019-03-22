@@ -308,7 +308,7 @@ namespace LinePutScript
         /// </summary>
         public int TextToInt
         {
-            get => Convert.ToInt32(info);
+            get => Convert.ToInt32(text);
             set
             {
                 info = value.ToString();
@@ -319,7 +319,7 @@ namespace LinePutScript
         /// </summary>
         public long TextToInt64
         {
-            get => Convert.ToInt64(info);
+            get => Convert.ToInt64(text);
             set
             {
                 info = value.ToString();
@@ -330,7 +330,7 @@ namespace LinePutScript
         /// </summary>
         public double TextToDouble
         {
-            get => Convert.ToDouble(info);
+            get => Convert.ToDouble(text);
             set
             {
                 info = value.ToString();
