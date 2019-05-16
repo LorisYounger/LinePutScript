@@ -142,28 +142,44 @@ namespace LinePutScript
             return false;
         }
         /// <summary>
+        /// 确定字段是否在Assemblage的Line中
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果在Assemblage的line中找到与value相似的名字，则为True；否则为false</returns>
+        public bool ContainsLine(string value)
+        {
+            return (Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null);
+        }
+        /// <summary>
+        /// 确定某sub(名字定位)是否在Assemblage中
+        /// </summary>
+        /// <param name="value">sub的名字</param>
+        /// <returns>如果在Assemblage的line和line里面的sub中找到相似的名字，则为True；否则为false</returns>
+        public bool ContainsSub(string value)
+        {
+            if (Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null)
+                return true;
+            return Assemblage.FirstOrDefault(x => x.Contains(value)) != null;
+        }
+        /// <summary>
         /// 确定某Line(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="lineName">Line的名字</param>
-        /// <returns>如果在Assemblage中找到符合的名字，则为True；否则为false</returns>
-        public bool ContainsLine(string lineName)
+        /// <returns>如果在Assemblage中找到相同的名字，则为True；否则为false</returns>
+        public bool HaveLine(string lineName)
         {
-            return (Assemblage.FirstOrDefault(x => x.Name == lineName) != null);
+            return (Assemblage.FirstOrDefault(x => x.Name.Contains(lineName)) != null);
         }
         /// <summary>
         /// 确定某sub(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="subName">sub的名字</param>
-        /// <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false</returns>
-        public bool ContainsSub(string subName)
+        /// <returns>如果在Assemblage的sub中找到相同的名字，则为True；否则为false</returns>
+        public bool HaveSub(string subName)
         {
-            if (Assemblage.FirstOrDefault(x => x.Name == subName) != null)
+            if (Assemblage.FirstOrDefault(x => x.Name.Contains(subName)) != null)
                 return true;
             return Assemblage.FirstOrDefault(x => x.Contains(subName)) != null;
-            //foreach (Line li in Assemblage)
-            //    if (li.Contains(subName))
-            //        return true;
-            //return false;
         }
         /// <summary>
         /// 匹配拥有相同名称的Line的所有元素

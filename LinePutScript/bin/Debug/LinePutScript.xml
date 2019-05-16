@@ -393,17 +393,31 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsLine(System.String)">
             <summary>
-            确定某Line(名字定位)是否在Assemblage中
+            确定字段是否在Assemblage的Line中
             </summary>
-            <param name="lineName">Line的名字</param>
-            <returns>如果在Assemblage中找到符合的名字，则为True；否则为false</returns>
+            <param name="value">字段</param>
+            <returns>如果在Assemblage的line中找到与value相似的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsSub(System.String)">
             <summary>
             确定某sub(名字定位)是否在Assemblage中
             </summary>
+            <param name="value">sub的名字</param>
+            <returns>如果在Assemblage的line和line里面的sub中找到相似的名字，则为True；否则为false</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.HaveLine(System.String)">
+            <summary>
+            确定某Line(名字定位)是否在Assemblage中
+            </summary>
+            <param name="lineName">Line的名字</param>
+            <returns>如果在Assemblage中找到相同的名字，则为True；否则为false</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.HaveSub(System.String)">
+            <summary>
+            确定某sub(名字定位)是否在Assemblage中
+            </summary>
             <param name="subName">sub的名字</param>
-            <returns>如果在Assemblage的sub中找到符合的名字，则为True；否则为false</returns>
+            <returns>如果在Assemblage的sub中找到相同的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.FindAllLine(System.String)">
             <summary>
