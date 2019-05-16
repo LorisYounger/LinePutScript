@@ -130,9 +130,9 @@ namespace LinePutScript
             return Assemblage.Contains(line);
         }
         /// <summary>
-        /// 确定某元素是否在Assemblage中
+        /// 确定某Sub是否在Assemblage中
         /// </summary>
-        /// <param name="sub">要在Assemblage中定位的sub</param>
+        /// <param name="sub">要在Assemblage中定位的Sub</param>
         /// <returns>如果在Assemblage中找到line，则为True；否则为false</returns>
         public bool Contains(Sub sub)
         {
@@ -142,18 +142,18 @@ namespace LinePutScript
             return false;
         }
         /// <summary>
-        /// 确定字段是否在Assemblage的Line中
+        /// 返回一个值，该值指示指定的字段是否出现在Assemblage的line的名字。
         /// </summary>
         /// <param name="value">字段</param>
         /// <returns>如果在Assemblage的line中找到与value相似的名字，则为True；否则为false</returns>
         public bool ContainsLine(string value)
         {
-            return (Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null);
+            return Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null;
         }
         /// <summary>
-        /// 确定某sub(名字定位)是否在Assemblage中
+        /// 返回一个值，该值指示指定的字段是否出现在Assemblage的Line或里面的Sub的名字
         /// </summary>
-        /// <param name="value">sub的名字</param>
+        /// <param name="value">字段</param>
         /// <returns>如果在Assemblage的line和line里面的sub中找到相似的名字，则为True；否则为false</returns>
         public bool ContainsSub(string value)
         {
@@ -177,10 +177,12 @@ namespace LinePutScript
         /// <returns>如果在Assemblage的sub中找到相同的名字，则为True；否则为false</returns>
         public bool HaveSub(string subName)
         {
-            if (Assemblage.FirstOrDefault(x => x.Name.Contains(subName)) != null)
+            if (Assemblage.FirstOrDefault(x => x.Name == subName) != null)
                 return true;
-            return Assemblage.FirstOrDefault(x => x.Contains(subName)) != null;
+            return Assemblage.FirstOrDefault(x => x.Have(subName)) != null;
         }
+
+
         /// <summary>
         /// 匹配拥有相同名称的Line的所有元素
         /// </summary>
@@ -213,8 +215,6 @@ namespace LinePutScript
             List<Sub> lines = new List<Sub>();
             foreach (Line li in Assemblage)
             {
-                if (li.Name == subName)
-                    lines.Add(li);
                 lines.AddRange(li.FindAll(subName));
             }
             return lines.ToArray();
@@ -225,16 +225,70 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null</returns>
         public Sub FindSub(string subName)
-        {
+        {//ToDO:给全部find单个的sub进行优化(不使用have)
             foreach (Line li in Assemblage)
             {
                 if (li.Name == subName)
                     return li;
-                if (li.Contains(subName))
+                if (li.Have(subName))
                     return li.Find(subName);
             }
             return null;
         }
+
+        /// <summary>
+        /// 搜索全部相似名称的Line的所有元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相似名称的Line,则为数组；否则为一个空的Array</returns>
+        public Line[] SearchAllLine(string value)
+        {
+            List<Line> lines = new List<Line>();
+            foreach (Line li in Assemblage)
+                if (li.Name.Contains(value))
+                    lines.Add(li);
+            return lines.ToArray();
+        }
+        /// <summary>
+        /// 搜索字段是否出现在Line名称，并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相似名称的第一个Line，则为该Line；否则为null</returns>
+        public Line SearchLine(string value)
+        {
+            return Assemblage.FirstOrDefault(x => x.Name.Contains(value));
+        }
+        /// <summary>
+        /// 搜索全部相似名称的Sub的所有元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相似名称的Line,则为该数组；否则为一个空的Array</returns>
+        public Sub[] SearchAllSub(string value)
+        {
+            List<Sub> lines = new List<Sub>();
+            foreach (Line li in Assemblage)
+            {                
+                lines.AddRange(li.SeachALL(value));
+            }
+            return lines.ToArray();
+        }
+        /// <summary>
+        /// 搜索字段是否出现在Sub名称，并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相同名称的第一个Sub，则为该Sub；否则为null</returns>
+        public Sub SearchSub(string value)
+        {//ToDO:给全部find单个的sub进行优化(不使用Contains)
+            foreach (Line li in Assemblage)
+            {
+                if (li.Name.Contains(value))
+                    return li;
+                if (li.Contains(value))
+                    return li.Seach(value);
+            }
+            return null;
+        }
+
         /// <summary>
         /// 搜索相同名称的Line，并返回整个Assemblage中第一个匹配的Line从零开始的索引
         /// </summary>
@@ -424,7 +478,7 @@ namespace LinePutScript
         {
             if (Assemblage.Count == 0)
                 return null;
-            return Assemblage[Assemblage.Count - 1];         
+            return Assemblage[Assemblage.Count - 1];
         }
         /// <summary>
         /// 返回循环访问 Assemblage 的枚举数。

@@ -425,16 +425,29 @@ namespace LinePutScript
             return Subs.Contains(sub);
         }
         /// <summary>
+        /// 返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+        public bool Contains(string value)
+        {
+            if (Name.Contains(value))
+                return true;
+            return (Subs.FirstOrDefault(x => x.Name.Contains(value)) != null);
+        }
+        /// <summary>
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="subName">要在Line集合中定位的Sub的名字</param>
         /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
-        public bool Contains(string subName)
+        public bool Have(string subName)
         {
             if (Name == subName)
                 return true;
             return (Subs.FirstOrDefault(x => x.Name == subName) != null);
         }
+
+
         /// <summary>
         /// 匹配拥有相同名称的Line或sub的所有元素
         /// </summary>
@@ -461,6 +474,38 @@ namespace LinePutScript
                 return this;
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
+
+
+
+
+        /// <summary>
+        /// 搜索全部相似名称的Sub的所有元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相似名称的Sub,则为数组；否则为一个空的Array</returns>
+        public Sub[] SeachALL(string value)
+        {
+            List<Sub> subs = new List<Sub>();
+            if (Name.Contains(value))
+                subs.Add(this);
+            foreach (Sub su in Subs)
+                if (su.Name.Contains(value))
+                    subs.Add(su);
+            return subs.ToArray();
+        }
+        /// <summary>
+        /// 搜索字段是否出现在Line名称，并返回整个Subs中的第一个匹配元素
+        /// </summary>
+        /// <param name="value">字段</param>
+        /// <returns>如果找到相似名称的第一个Sub，则为该Sub；否则为null</returns>
+        public Sub Seach(string value)
+        {
+            if (this.Name.Contains(value))
+                return this;
+            return Subs.FirstOrDefault(x => x.Name.Contains(value));
+        }
+
+
 
         /// <summary>
         /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引

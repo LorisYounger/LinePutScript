@@ -241,6 +241,13 @@
         </member>
         <member name="M:LinePutScript.Line.Contains(System.String)">
             <summary>
+            返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+        </member>
+        <member name="M:LinePutScript.Line.Have(System.String)">
+            <summary>
             确定某Sub是否在Line集合中
             </summary>
             <param name="subName">要在Line集合中定位的Sub的名字</param>
@@ -259,6 +266,20 @@
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
+        </member>
+        <member name="M:LinePutScript.Line.SeachALL(System.String)">
+            <summary>
+            搜索全部相似名称的Sub的所有元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相似名称的Sub,则为数组；否则为一个空的Array</returns>
+        </member>
+        <member name="M:LinePutScript.Line.Seach(System.String)">
+            <summary>
+            搜索字段是否出现在Line名称，并返回整个Subs中的第一个匹配元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相似名称的第一个Sub，则为该Sub；否则为null</returns>
         </member>
         <member name="M:LinePutScript.Line.IndexOf(System.String)">
             <summary>
@@ -386,23 +407,23 @@
         </member>
         <member name="M:LinePutScript.LpsDocument.Contains(LinePutScript.Sub)">
             <summary>
-            确定某元素是否在Assemblage中
+            确定某Sub是否在Assemblage中
             </summary>
-            <param name="sub">要在Assemblage中定位的sub</param>
+            <param name="sub">要在Assemblage中定位的Sub</param>
             <returns>如果在Assemblage中找到line，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsLine(System.String)">
             <summary>
-            确定字段是否在Assemblage的Line中
+            返回一个值，该值指示指定的字段是否出现在Assemblage的line的名字。
             </summary>
             <param name="value">字段</param>
             <returns>如果在Assemblage的line中找到与value相似的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.ContainsSub(System.String)">
             <summary>
-            确定某sub(名字定位)是否在Assemblage中
+            返回一个值，该值指示指定的字段是否出现在Assemblage的Line或里面的Sub的名字
             </summary>
-            <param name="value">sub的名字</param>
+            <param name="value">字段</param>
             <returns>如果在Assemblage的line和line里面的sub中找到相似的名字，则为True；否则为false</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.HaveLine(System.String)">
@@ -446,6 +467,34 @@
             </summary>
             <param name="subName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的第一个Sub，则为该Line；否则为null</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.SearchAllLine(System.String)">
+            <summary>
+            搜索全部相似名称的Line的所有元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相似名称的Line,则为数组；否则为一个空的Array</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.SearchLine(System.String)">
+            <summary>
+            搜索字段是否出现在Line名称，并返回整个Assemblage中的第一个匹配元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相似名称的第一个Line，则为该Line；否则为null</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.SearchAllSub(System.String)">
+            <summary>
+            搜索全部相似名称的Sub的所有元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相似名称的Line,则为该数组；否则为一个空的Array</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.SearchSub(System.String)">
+            <summary>
+            搜索字段是否出现在Sub名称，并返回整个Assemblage中的第一个匹配元素
+            </summary>
+            <param name="value">字段</param>
+            <returns>如果找到相同名称的第一个Sub，则为该Sub；否则为null</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.IndexOf(System.String)">
             <summary>
