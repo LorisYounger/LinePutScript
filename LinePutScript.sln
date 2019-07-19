@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29021.104
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinePutScript", "LinePutScript\LinePutScript.csproj", "{5DDF4B71-1925-4A49-909D-B5F2F4139A4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinePutScriptDataBase", "LinePutScriptDataBase\LinePutScriptDataBase.csproj", "{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5DDF4B71-1925-4A49-909D-B5F2F4139A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DDF4B71-1925-4A49-909D-B5F2F4139A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DDF4B71-1925-4A49-909D-B5F2F4139A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
