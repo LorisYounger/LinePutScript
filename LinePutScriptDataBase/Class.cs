@@ -1,12 +1,9 @@
-﻿using LinePutScript;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.IO.MemoryMappedFiles;
+using System.Threading;
 
-namespace LinePutScriptDataBase
+namespace LinePutScript.DataBase
 {
     /// <summary>
     /// 数据库
@@ -25,7 +22,6 @@ namespace LinePutScriptDataBase
         {
             Name = name;
             LPS = new LpsDocument($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|");
-            DBL = new DataBaseLocker(this);
         }
         public DataBase(string name, string lps)
         {
@@ -33,7 +29,6 @@ namespace LinePutScriptDataBase
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
                 LPS.AddLine(new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
-            DBL = new DataBaseLocker(this);
         }
         public DataBase(string name, FileInfo lpsdb)
         {
@@ -46,13 +41,13 @@ namespace LinePutScriptDataBase
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
                 LPS.AddLine(new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
-            DBL = new DataBaseLocker(this);
+
         }
 
-        /// <summary>
-        /// 映射到内存的数据库
-        /// </summary>
-        public DataBaseLocker DBL;
+        ///// <summary>
+        ///// 映射到内存的数据库
+        ///// </summary>
+        //public DataBaseLocker DBL;
 
 
         //设置内容
@@ -83,6 +78,15 @@ namespace LinePutScriptDataBase
                     sb.info = value.ToString();
             }
         }
+
+        /// <summary>
+        /// 获取文件大小
+        /// </summary>
+        public int Length
+        {
+            get => LPS.Length * 4;//保险起见用*4进行计算
+        }
+
         /// <summary>
         /// 是否自动部署
         /// </summary>
@@ -154,7 +158,7 @@ namespace LinePutScriptDataBase
                 Sub sb = LPS.First().Find("password");
                 if (sb == null)
                 {
-                    LPS.First().AddSub(new Sub("capacity",value));
+                    LPS.First().AddSub(new Sub("capacity", value));
                 }
                 else
                     sb.Info = value;
@@ -163,10 +167,15 @@ namespace LinePutScriptDataBase
         //映射内容
 
         private bool mapping = false;
+        /// <summary>
+        /// 指示是否映射成功
+        /// </summary>
         public bool Mapping
         {
             get => mapping;
         }
+
+
         /// <summary>
         /// 映射数据库到内存中
         /// </summary>
@@ -174,9 +183,36 @@ namespace LinePutScriptDataBase
         {
             if (mapping)
                 return;
-            MemoryMappedFile mmf = MemoryMappedFile.CreateNew("lpsdb" + Name, Capacity, MemoryMappedFileAccess.ReadWrite);
-            var viewAccessor = mmf.CreateViewAccessor();
-            viewAccessor.Write(0,ref DBL);
+            if (Length > Capacity)//如果空间不足,不进行映射
+                return;
+
+
+            //mmf不需要回收
+            string tmp; MemoryMappedFile mmf; MemoryMappedViewAccessor mmva;
+            Line index = new Line("lpsdb" + Name);
+            //index: ilpsdbdbname#{递增id}:|line名字#id{被用在mmf}:|.... 其中这个sub顺序决定最终储存的位置
+            foreach (Line li in LPS)
+            {                
+                tmp = li.ToString();
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString(), Capacity, MemoryMappedFileAccess.ReadWrite);
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, tmp.Length);
+                mmva.WriteArray(4, tmp.ToCharArray(), 0, tmp.Length);
+                index.AddSub(new Sub(li.Name, index.Subs.Count.ToString()));
+                mmva.Dispose();
+            }
+
+            index.info = index.Subs.Count.ToString();
+
+            mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name, Capacity, MemoryMappedFileAccess.ReadWrite);
+            mmva = mmf.CreateViewAccessor();
+            tmp = index.ToString();
+            mmva.Write(0, tmp.Length);
+            mmva.WriteArray(4, tmp.ToCharArray(), 0, tmp.Length);
+            mmva.Dispose();
+
+            
+
             mapping = true;
         }
         /// <summary>
@@ -186,12 +222,36 @@ namespace LinePutScriptDataBase
         {
             if (!mapping)
                 return;
-            MemoryMappedFile.OpenExisting("lpsdb" + Name).Dispose();
+            MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name);
+            MemoryMappedViewAccessor mmva = mmf.CreateViewAccessor();
+            int len = mmva.ReadInt32(0);
+            char[] buff = new char[len];
+            mmva.ReadArray<char>(4, buff, 0, len);
+            mmva.Dispose();
+            
+            mmf.Dispose();//关掉mmf进行回收
+            Line index = new Line(new string(buff));
+
+            LPS.Assemblage.Clear();//清除内部数据准备填装
+            for (int i = 0; i < index.Subs.Count; i++)
+            {
+                mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name + index.Subs[i].info);
+                mmva = mmf.CreateViewAccessor();
+                len = mmva.ReadInt32(0);
+                buff = new char[len];
+                mmva.ReadArray<char>(4, buff, 0, len);
+                mmva.Dispose();
+                mmf.Dispose();//关掉mmf进行回收
+                LPS.Assemblage.Add(new Line(new string(buff)));
+            }
             mapping = false;
         }
-        
 
     }
+
+    
+
+
 
     /// <summary>
     /// 映射在内存的数据库

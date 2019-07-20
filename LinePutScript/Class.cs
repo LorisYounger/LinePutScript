@@ -80,7 +80,11 @@ namespace LinePutScript
         /// </summary>
         public int InfoToInt
         {
-            get => Convert.ToInt32(info);
+            get
+            {
+                int.TryParse(info, out int i);
+                return i;
+            }
             set
             {
                 info = value.ToString();
@@ -91,7 +95,11 @@ namespace LinePutScript
         /// </summary>
         public long InfoToInt64
         {
-            get => Convert.ToInt64(info);
+            get
+            {
+                long.TryParse(info, out long i);
+                return i;
+            }
             set
             {
                 info = value.ToString();
@@ -102,7 +110,11 @@ namespace LinePutScript
         /// </summary>
         public double InfoToDouble
         {
-            get => Convert.ToDouble(info);
+            get
+            {
+                double.TryParse(info, out double i);
+                return i;
+            }
             set
             {
                 info = value.ToString();
@@ -308,7 +320,11 @@ namespace LinePutScript
         /// </summary>
         public int TextToInt
         {
-            get => Convert.ToInt32(text);
+            get
+            {
+                int.TryParse(text, out int i);
+                return i;
+            }
             set
             {
                 info = value.ToString();
@@ -319,7 +335,11 @@ namespace LinePutScript
         /// </summary>
         public long TextToInt64
         {
-            get => Convert.ToInt64(text);
+            get
+            {
+                long.TryParse(text, out long i);
+                return i;
+            }
             set
             {
                 info = value.ToString();
@@ -330,7 +350,11 @@ namespace LinePutScript
         /// </summary>
         public double TextToDouble
         {
-            get => Convert.ToDouble(text);
+            get
+            {
+                double.TryParse(text, out double i);
+                return i;
+            }
             set
             {
                 info = value.ToString();

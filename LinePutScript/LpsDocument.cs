@@ -267,7 +267,7 @@ namespace LinePutScript
         {
             List<Sub> lines = new List<Sub>();
             foreach (Line li in Assemblage)
-            {                
+            {
                 lines.AddRange(li.SeachALL(value));
             }
             return lines.ToArray();
@@ -499,6 +499,27 @@ namespace LinePutScript
             foreach (Line li in Assemblage)
                 sb.Append(li.ToString() + "\n");
             return sb.ToString().Trim('\n');
+        }
+
+        /// <summary>
+        /// 获得当前文档大小 单位:字节
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                int l = 3;
+                foreach (Line li in Assemblage)
+                {
+                    l += li.Name.Length + li.info.Length + li.Text.Length + 6;
+                    foreach (Sub sb in li)
+                    {
+                        l += sb.Name.Length + sb.info.Length + 3;
+                    }
+                }
+
+                return l;
+            }
         }
     }
 

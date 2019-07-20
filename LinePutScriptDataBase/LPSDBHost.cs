@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace LinePutScriptDataBase
+namespace LinePutScript.DataBase
 {
     /// <summary>
     /// 主机
@@ -24,7 +24,7 @@ namespace LinePutScriptDataBase
         /// <summary>
         /// 配置
         /// </summary>
-        public static Config CONFIG;
+        public Config CONFIG;
 
         /// <summary>
         /// 备份和储存共用的timer
@@ -44,7 +44,7 @@ namespace LinePutScriptDataBase
             DirectoryInfo di = new DirectoryInfo(path);
             foreach (FileInfo fi in di.EnumerateFiles().Where(x => x.Extension.ToLower() == ".lpsdb"))
             {
-                DataBases.Add(new DataBase(fi.Name.Split(new char[] { ' ' }, 2)[0].ToUpper()));
+                DataBases.Add(new DataBase(fi.Name.Substring(0,fi.Name.Length-6).ToUpper(),fi));
             }
             //获取配置文件
             DataBase tmp = DataBases.Find(x => x.Name == "CONFIG");
@@ -163,7 +163,7 @@ namespace LinePutScriptDataBase
         /// </summary>
         /// <param name="db">数据库</param>
         /// <param name="NewName">新名称:仅大写+下划线</param>
-        public void ReName(DataBase db,string NewName)
+        public void ReName(DataBase db, string NewName)
         {
             NewName = NewName.ToUpper();
             if (db.Mapping)
@@ -198,6 +198,8 @@ namespace LinePutScriptDataBase
         public Config()
         {
             DB = new DataBase("CONFIG");
+            DB.Capacity = 16384;//默认容量 16k(如果不映射 0k也是可以的)
+            DB.AutoBackup = false;//不自动备份配置文件
             DB.AutoMapping = false;//不自动映射配置文件
         }
         /// <summary>
@@ -208,7 +210,7 @@ namespace LinePutScriptDataBase
             DB = db;
         }
         /// <summary>
-        /// 是否自动部署
+        /// 是否启动后自动部署
         /// </summary>
         public bool AutoMapping
         {
@@ -235,7 +237,7 @@ namespace LinePutScriptDataBase
         }
 
         /// <summary>
-        /// 自动储存时间间隔
+        /// 自动储存时间间隔 单位:毫秒
         /// </summary>
         public int AutoSaveTime
         {
@@ -251,6 +253,8 @@ namespace LinePutScriptDataBase
             }
             set
             {
+                if (value < 1000)
+                    value = 1000;//最小值:1秒
                 Line li = DB.LPS.FindLine("autosavetime");
                 if (li == null)
                 {
@@ -261,7 +265,7 @@ namespace LinePutScriptDataBase
             }
         }
         /// <summary>
-        /// 自动备份时间间隔
+        /// 自动备份时间间隔 单位:毫秒
         /// </summary>
         public int AutoBackupTime
         {
@@ -270,13 +274,15 @@ namespace LinePutScriptDataBase
                 Line li = DB.LPS.FindLine("autobackuptime");
                 if (li == null || !int.TryParse(li.info, out int ot))
                 {
-                    DB.LPS.AddLine(new Line("autobackuptime", "3600000"));
+                    DB.LPS.AddLine(new Line("autobackuptime", "86400000"));
                     return 86400000;//默认1天备份一次
                 }
                 return ot;
             }
             set
             {
+                if (value < 60000)
+                    value = 60000;//最小值 1分钟
                 Line li = DB.LPS.FindLine("autobackuptime");
                 if (li == null)
                 {

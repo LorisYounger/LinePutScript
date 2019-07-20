@@ -608,5 +608,10 @@
             </summary>
             <returns>LinePutScript的文本格式</returns>
         </member>
+        <member name="P:LinePutScript.LpsDocument.Length">
+            <summary>
+            获得当前文档大小 单位:字节
+            </summary>
+        </member>
     </members>
 </doc>
