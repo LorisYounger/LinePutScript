@@ -21,7 +21,7 @@ namespace DBHost
         /// 默认储存地址
         /// </summary>
         public static readonly string PathMain = System.Environment.CurrentDirectory + @"\LPSDB";
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("正在启动 LPSDBHost");
             DirectoryInfo di = new DirectoryInfo(PathMain);
@@ -105,6 +105,21 @@ namespace DBHost
                     }
                     Host.SaveALL();
                     return;
+                case "mapstring":
+                    CMMapString(cm);
+                    break;
+                case "getstring":
+                    CMGETStringFromMemory(cm);
+                    break;
+                case "islock":
+                    CMIsLockMemory(cm);
+                    break;
+                case "lock":
+                    CMLockMemory(cm);
+                    break;
+                case "unlock":
+                    CMUnLockMemory(cm);
+                    break;
                 default:
                     Console.WriteLine("错误的指令,请检查拼写 输入 help:| 查看帮助");
                     break;
@@ -357,7 +372,7 @@ namespace DBHost
                 return;
             }
             Console.WriteLine($"数据库:'{db.Name}' 映射:{db.Mapping.ToString()}\n密码:{db.Password}\n已用/分配:{ToSizeString(db.Length)}/{ToSizeString(db.Capacity)}"
-                + $"自动备份:{db.AutoBackup.ToString()} 自动部署:{db.AutoMapping.ToString()}");
+                + $"\n自动备份:{db.AutoBackup.ToString()} 自动部署:{db.AutoMapping.ToString()}");
         }
         /// <summary>
         /// 储存指定数据库
@@ -404,6 +419,7 @@ namespace DBHost
             if (db.Mapping)
             {
                 Console.WriteLine($"数据库 '{cm.info}' 已经映射至内存,无需重复映射");
+                return;
             }
             db.MaptoMemory();
             Console.WriteLine($"数据库 '{cm.info}' 成功映射至内存");
@@ -423,6 +439,7 @@ namespace DBHost
             if (!db.Mapping)
             {
                 Console.WriteLine($"数据库 '{cm.info}' 已经关闭映射,无需重复关闭");
+                return;
             }
             db.Mapoff();
             Console.WriteLine($"数据库 '{cm.info}' 成功关闭映射");
@@ -459,7 +476,44 @@ namespace DBHost
                 Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + ToSizeString(db.Length) + '/' + ToSizeString(db.Capacity));
             }
         }
-
-
+        /// <summary>
+        /// 映射指定文本到内存
+        /// </summary>
+        static void CMMapString(Line cm)
+        {
+            MapHelper.MapStringToMemory("lpsdb" + cm.info.ToUpper(), cm.Text);
+            Console.WriteLine($"'lpsdb{cm.info.ToUpper()}'写入文本 \"{cm.Text}\"");
+        }
+        /// <summary>
+        /// 映射指定数据库到内存
+        /// </summary>
+        static void CMGETStringFromMemory(Line cm)
+        {
+            Console.WriteLine("获取的string内容如下:");
+            Console.WriteLine(MapHelper.GETStringFromMemory("lpsdb" + cm.info.ToUpper()));
+        }
+        /// <summary>
+        /// 检查锁定状态
+        /// </summary>
+        static void CMIsLockMemory(Line cm)
+        {
+            Console.WriteLine("锁定状态:"+ MapHelper.IsLock("lpsdb"+cm.info.ToUpper()));
+        }
+        /// <summary>
+        /// 锁定内存状态
+        /// </summary>
+        static void CMLockMemory(Line cm)
+        {
+            MapHelper.Lock("lpsdb" + cm.info.ToUpper());
+            Console.WriteLine("内存锁定");
+        }
+        /// <summary>
+        /// 解锁内存状态
+        /// </summary>
+        static void CMUnLockMemory(Line cm)
+        {
+            MapHelper.Lock("lpsdb" + cm.info.ToUpper());
+            Console.WriteLine("内存解锁");
+        }
     }
 }

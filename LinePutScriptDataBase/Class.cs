@@ -2,6 +2,7 @@
 using System.Text;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace LinePutScript.DataBase
 {
@@ -28,7 +29,7 @@ namespace LinePutScript.DataBase
             Name = name;
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
-                LPS.AddLine(new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
+                LPS.InsertLine(0,new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
         }
         public DataBase(string name, FileInfo lpsdb)
         {
@@ -40,7 +41,7 @@ namespace LinePutScript.DataBase
             sr.Dispose();
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
-                LPS.AddLine(new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
+                LPS.InsertLine(0,new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
 
         }
 
@@ -55,12 +56,12 @@ namespace LinePutScript.DataBase
         /// <summary>
         /// 分配的内存容量
         /// </summary>
-        public long Capacity
+        public int Capacity
         {
             get
             {
                 Sub sb = LPS.First().Find("capacity");
-                if (sb == null || !long.TryParse(sb.info, out long ot))
+                if (sb == null || !int.TryParse(sb.info, out int ot))
                 {
                     LPS.First().AddSub(new Sub("capacity", "1048576"));
                     return 1048576;//默认分配1mb
@@ -84,7 +85,7 @@ namespace LinePutScript.DataBase
         /// </summary>
         public int Length
         {
-            get => LPS.Length * 4;//保险起见用*4进行计算
+            get => LPS.Length * 10;//保险起见用*40进行计算
         }
 
         /// <summary>
@@ -175,6 +176,7 @@ namespace LinePutScript.DataBase
             get => mapping;
         }
 
+        public List<MemoryMappedFile> MMFS = new List<MemoryMappedFile>();
 
         /// <summary>
         /// 映射数据库到内存中
@@ -183,35 +185,47 @@ namespace LinePutScript.DataBase
         {
             if (mapping)
                 return;
-            if (Length > Capacity)//如果空间不足,不进行映射
+            int ca = Capacity / 10; int cp = ca / 100;
+            if (Length > ca * 5 || LPS.Assemblage.Count * 2 > cp)//如果空间不足,不进行映射
                 return;
-
 
             //mmf不需要回收
             string tmp; MemoryMappedFile mmf; MemoryMappedViewAccessor mmva;
+
             Line index = new Line("lpsdb" + Name);
             //index: ilpsdbdbname#{递增id}:|line名字#id{被用在mmf}:|.... 其中这个sub顺序决定最终储存的位置
             foreach (Line li in LPS)
-            {                
+            {
                 tmp = li.ToString();
-                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString(), Capacity, MemoryMappedFileAccess.ReadWrite);
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString(), ca, MemoryMappedFileAccess.ReadWrite);
                 mmva = mmf.CreateViewAccessor();
                 mmva.Write(0, tmp.Length);
                 mmva.WriteArray(4, tmp.ToCharArray(), 0, tmp.Length);
                 index.AddSub(new Sub(li.Name, index.Subs.Count.ToString()));
                 mmva.Dispose();
+                MMFS.Add(mmf);
             }
 
-            index.info = index.Subs.Count.ToString();
+            //创建预留的缓存空间
+            int cs = index.Subs.Count;
+            index.info = cs.ToString();
 
-            mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name, Capacity, MemoryMappedFileAccess.ReadWrite);
+            for (int i = cs; i <= cp; i++)
+            {
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString(), ca, MemoryMappedFileAccess.ReadWrite);
+                MMFS.Add(mmf);
+            }
+
+
+
+            mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name, ca, MemoryMappedFileAccess.ReadWrite);
             mmva = mmf.CreateViewAccessor();
             tmp = index.ToString();
             mmva.Write(0, tmp.Length);
             mmva.WriteArray(4, tmp.ToCharArray(), 0, tmp.Length);
             mmva.Dispose();
 
-            
+            MMFS.Add(mmf);
 
             mapping = true;
         }
@@ -222,16 +236,18 @@ namespace LinePutScript.DataBase
         {
             if (!mapping)
                 return;
+            //首先获得index确认位置
             MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name);
             MemoryMappedViewAccessor mmva = mmf.CreateViewAccessor();
             int len = mmva.ReadInt32(0);
             char[] buff = new char[len];
             mmva.ReadArray<char>(4, buff, 0, len);
             mmva.Dispose();
-            
+
             mmf.Dispose();//关掉mmf进行回收
             Line index = new Line(new string(buff));
 
+            //通过index获取数据
             LPS.Assemblage.Clear();//清除内部数据准备填装
             for (int i = 0; i < index.Subs.Count; i++)
             {
@@ -244,38 +260,74 @@ namespace LinePutScript.DataBase
                 mmf.Dispose();//关掉mmf进行回收
                 LPS.Assemblage.Add(new Line(new string(buff)));
             }
+
+            //回收内存
+            foreach (MemoryMappedFile mmff in MMFS)
+                mmff.Dispose();
+            MMFS.Clear();
+
             mapping = false;
         }
-
-    }
-
-    
-
-
-
-    /// <summary>
-    /// 映射在内存的数据库
-    /// </summary>
-    public struct DataBaseLocker
-    {
-        private DataBase DB;
         /// <summary>
-        /// 获取储存在其中的DataBase 密码错误则退回null
+        /// 将映射在数据库的内存 储存回LPS
         /// </summary>
-        /// <param name="password">密码,未设置则为空即可</param>
-        /// <returns></returns>
-        public DataBase GetDataBase(string password = "")
+        public void SaveMemory()
         {
-            if (DB == null)
-                return null;
-            if (password == DB.Password)
-                return DB;
-            return null;
-        }
-        public DataBaseLocker(DataBase db)
-        {
-            DB = db;
+            if (!mapping)
+                return;
+            //首先获得index确认位置
+            MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name);
+            MemoryMappedViewAccessor mmva = mmf.CreateViewAccessor();
+            int len = mmva.ReadInt32(0);
+            char[] buff = new char[len];
+            mmva.ReadArray<char>(4, buff, 0, len);
+            mmva.Dispose();
+            mmf.Dispose();
+            Line index = new Line(new string(buff));
+            
+            //通过index获取数据
+            LPS.Assemblage.Clear();//清除内部数据准备填装
+            for (int i = 0; i < index.Subs.Count; i++)
+            {
+                mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name + index.Subs[i].info);
+                mmva = mmf.CreateViewAccessor();
+                len = mmva.ReadInt32(0);
+                buff = new char[len];
+                mmva.ReadArray<char>(4, buff, 0, len);
+                mmva.Dispose();
+                mmf.Dispose();
+                LPS.Assemblage.Add(new Line(new string(buff)));
+            }
         }
     }
+
+
+
+
+
+    ///// <summary>
+    ///// 映射在内存的数据库
+    ///// </summary>
+    //public struct DataBaseLocker
+    //{
+    //    private DataBase DB;
+    //    /// <summary>
+    //    /// 获取储存在其中的DataBase 密码错误则退回null
+    //    /// </summary>
+    //    /// <param name="password">密码,未设置则为空即可</param>
+    //    /// <returns></returns>
+    //    public DataBase GetDataBase(string password = "")
+    //    {
+    //        if (DB == null)
+    //            return null;
+    //        if (password == DB.Password)
+    //            return DB;
+    //        return null;
+    //    }
+    //    public DataBaseLocker(DataBase db)
+    //    {
+    //        DB = db;
+    //    }
+    //}
 
 }

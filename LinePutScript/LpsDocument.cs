@@ -168,7 +168,7 @@ namespace LinePutScript
         /// <returns>如果在Assemblage中找到相同的名字，则为True；否则为false</returns>
         public bool HaveLine(string lineName)
         {
-            return (Assemblage.FirstOrDefault(x => x.Name.Contains(lineName)) != null);
+            return (Assemblage.FirstOrDefault(x => x.Name == lineName) != null);
         }
         /// <summary>
         /// 确定某sub(名字定位)是否在Assemblage中

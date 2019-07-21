@@ -68,14 +68,14 @@ namespace LinePutScript.DataBase
         /// 自动备份和自动储存计时器
         /// </summary>
         public void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
+        {           
+            SaveALL();
             backuptime -= CONFIG.AutoSaveTime;
             if (backuptime <= 0)
             {
                 backuptime = CONFIG.AutoBackupTime;
                 BackUpAuto();
             }
-            SaveALL();
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace LinePutScript.DataBase
         }
 
         /// <summary>
-        /// 进行备份操作
+        /// 进行备份操作 注意:如果在备份前未保存,需要先使用 SaveMemory 将内存数据拉回本地
         /// </summary>
         public void BackUp(DataBase db)
         {
@@ -119,7 +119,7 @@ namespace LinePutScript.DataBase
             {
                 di.Create();//如果目录不存在则创建
             }
-            FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + '\\' + DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString() + ".lpsdb");
+            FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + '\\' + DateTime.Now.ToString("yyMMddhhmm") + ".lpsdb") ;
             FileStream fs = fi.Create();
             byte[] buff = Encoding.UTF8.GetBytes(db.LPS.ToString());
             fs.Write(buff, 0, buff.Length);
@@ -141,6 +141,7 @@ namespace LinePutScript.DataBase
         /// </summary>
         public void Save(DataBase db)
         {
+            db.SaveMemory();
             FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + ".lpsdb");
             FileStream fs = fi.Create();
             byte[] buff = Encoding.UTF8.GetBytes(db.LPS.ToString());
