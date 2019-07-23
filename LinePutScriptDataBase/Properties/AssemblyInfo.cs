@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("LinePutScriptDataBase")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("针对LPS的数据库动态库")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("L版公司")]
 [assembly: AssemblyProduct("LinePutScriptDataBase")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("LB Copyright ©  2019")]
+[assembly: AssemblyTrademark("exLB.org")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型

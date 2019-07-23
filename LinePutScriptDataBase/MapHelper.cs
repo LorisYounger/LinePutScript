@@ -212,356 +212,347 @@ namespace LinePutScript.DataBase
         //    => GetLPSDB(DBName, password).LPS;
 
         /// <summary>
+        /// 行读取帮助类
+        /// </summary>
+        public class LineHelper
+        {
+            /// <summary>
+            /// 连接数据库名
+            /// </summary>
+            public string DBName;
+            public LineHelper(string dbname)
+            {
+                DBName = dbname;
+            }
+
+            public Line LineLock() => GETLineAndLock(DBName);
+            public void LineUnLock() => UnLock(DBName);
+
+            /// <summary>
+            /// 获取行
+            /// </summary>
+            public Line line
+            {
+                get => GETLineFromMemory(DBName);
+                set => MapStringToMemory(DBName, value.ToString());
+            }
+            /// <summary>
+            /// 名称 没有唯一性
+            /// </summary>
+            public string Name
+            {
+                get => line.Name;
+                set
+                {
+                    Line tmp = line;
+                    tmp.Name = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 信息 (去除关键字的文本)
+            /// </summary>
+            public string info
+            {
+                get => line.info;
+                set
+                {
+                    Line tmp = line;
+                    tmp.info = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 信息 (正常)
+            /// </summary>
+            public string Info
+            {
+                get => line.Info;
+                set
+                {
+                    Line tmp = line;
+                    tmp.Info = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
+            /// </summary>
+            public string test
+            {
+                get => line.text;
+                set
+                {
+                    Line tmp = line;
+                    tmp.text = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 文本 在末尾没有结束行号的文本 (正常)
+            /// </summary>
+            public string Test
+            {
+                get => line.Text;
+                set
+                {
+                    Line tmp = line;
+                    tmp.Text = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 子项目 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            public List<Sub> Subs
+            {
+                get => line.Subs;
+                set
+                {
+                    Line tmp = line;
+                    tmp.Subs = value;
+                    line = tmp;
+                }
+            }
+            /// <summary>
+            /// 将指定的Sub添加到Subs列表的末尾
+            /// </summary>
+            /// <param name="newSub">要添加的Sub</param>
+            public void AddSub(Sub newSub)
+            {
+                Line tmp = LineLock();
+                tmp.Subs.Add(newSub);
+                line = tmp;
+                LineUnLock();
+            }
+            /// <summary>
+            /// 将指定Sub的元素添加到Subs的末尾
+            /// </summary>
+            /// <param name="newSubs">要添加的多个Sub</param>
+            public void AddRange(params Sub[] newSubs)
+            {
+                Line tmp = LineLock();
+                tmp.Subs.AddRange(newSubs); ;
+                line = tmp;
+                LineUnLock();
+            }
+            /// <summary>
+            /// 将指定的Sub添加到指定索引处
+            /// </summary>
+            /// <param name="index">应插入 Sub 的从零开始的索引</param>
+            /// <param name="newSub">要添加的Sub</param>
+            public void InsertSub(int index, Sub newSub)
+            {
+                Line tmp = LineLock();
+                tmp.Subs.Insert(index, newSub);
+                line = tmp;
+                LineUnLock();
+            }
+            /// <summary>
+            /// 将指定Sub的元素添加指定索引处
+            /// </summary>
+            /// <param name="index">应插入 Sub 的从零开始的索引</param>
+            /// <param name="newSubs">要添加的多个Sub</param>
+            public void InsertRange(int index, params Sub[] newSubs)
+            {
+                Line tmp = LineLock();
+                tmp.Subs.InsertRange(index, newSubs);
+                line = tmp;
+                LineUnLock();
+            }
+            /// <summary>
+            /// 从Subs中移除特定对象的第一个匹配项
+            /// </summary>
+            /// <param name="SubName">要从Subs中删除的Sub的名称</param>
+            /// <returns>如果成功移除了Sub，则为 true；否则为 false</returns>
+            public bool Remove(string SubName)
+            {
+                Line tmp = LineLock();
+                if (tmp.Remove(SubName))
+                {
+                    line = tmp;
+                    LineUnLock();
+                    return true;
+                }
+                LineUnLock();
+                return false;
+            }
+
+            /// <summary>
+            /// 返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
+            /// </summary>
+            /// <param name="value">字段</param>
+            /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+            public bool Contains(string value)
+            {
+                return (Subs.FirstOrDefault(x => x.Name.Contains(value)) != null);
+            }
+            /// <summary>
+            /// 确定某Sub是否在Line集合中
+            /// </summary>
+            /// <param name="subName">要在Line集合中定位的Sub的名字</param>
+            /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+            public bool Have(string subName)
+            {
+                if (Name == subName)
+                    return true;
+                return (Subs.FirstOrDefault(x => x.Name == subName) != null);
+            }
+
+
+            /// <summary>
+            /// 匹配拥有相同名称的Line或sub的所有元素 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <param name="subName">用于定义匹配的名称</param>
+            /// <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
+            public Sub[] FindAll(string subName)
+            {
+                List<Sub> subs = new List<Sub>();
+                Line tmp = line;
+                if (Name == subName)
+                    subs.Add(tmp);
+                foreach (Sub su in tmp)
+                    if (su.Name == subName)
+                        subs.Add(su);
+                return subs.ToArray();
+            }
+            /// <summary>
+            /// 搜索与指定名称，并返回Line或整个Subs中的第一个匹配元素 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <param name="subName">用于定义匹配的名称</param>
+            /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
+            public Sub Find(string subName)
+            {
+                return Subs.FirstOrDefault(x => x.Name == subName);
+            }
+
+            /// <summary>
+            /// 搜索全部相似名称的Sub的所有元素 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <param name="value">字段</param>
+            /// <returns>如果找到相似名称的Sub,则为数组；否则为一个空的Array</returns>
+            public Sub[] SeachALL(string value)
+            {
+                Line tmp = line;
+                List<Sub> subs = new List<Sub>();
+                if (Name.Contains(value))
+                    subs.Add(tmp);
+                foreach (Sub su in tmp)
+                    if (su.Name.Contains(value))
+                        subs.Add(su);
+                return subs.ToArray();
+            }
+            /// <summary>
+            /// 搜索字段是否出现在Line名称，并返回整个Subs中的第一个匹配元素 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <param name="value">字段</param>
+            /// <returns>如果找到相似名称的第一个Sub，则为该Sub；否则为null</returns>
+            public Sub Seach(string value)
+            {
+                Line tmp = line;
+                if (this.Name.Contains(value))
+                    return tmp;
+                return tmp.Subs.FirstOrDefault(x => x.Name.Contains(value));
+            }
+
+            /// <summary>
+            /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引
+            /// </summary>
+            /// <param name="subName">用于定义匹配的名称</param>
+            /// <returns>如果找到相同名称的sub的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
+            public int IndexOf(string subName)
+            {
+                var sb = Subs;
+                for (int i = 0; i < sb.Count; i++)
+                {
+                    if (sb[i].Name == subName)
+                        return i;
+                }
+                return -1;
+            }
+            /// <summary>
+            /// 搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引
+            /// </summary>
+            /// <param name="subName">用于定义匹配的名称</param>
+            /// <returns>如果找到相同名称的sub的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
+            public int[] IndexsOf(string subName)
+            {
+                List<Sub> sb = Subs;
+                List<int> lines = new List<int>();
+                for (int i = 0; i < sb.Count; i++)
+                {
+                    if (sb[i].Name == subName)
+                        lines.Add(i);
+                }
+                return lines.ToArray();
+            }
+
+            /// <summary>
+            /// 将当前Line转换成文本格式 (info已经被转义/去除关键字)
+            /// </summary>
+            /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
+            public new string ToString()//不能继承
+            {
+                return GETStringFromMemory(DBName);
+            }
+
+            /// <summary>
+            /// 返回循环访问 Subs 的枚举数。 !注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <returns>用于 Subs 的枚举数</returns>
+            public IEnumerator<Sub> GetEnumerator()
+            {
+                return Subs.GetEnumerator();
+            }
+            /// <summary>
+            /// 返回一个 Subs 的第一个元素。!注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <returns>要返回的第一个元素</returns>
+            public Sub First()
+            {
+                List<Sub> sb = Subs;
+                if (sb.Count == 0)
+                    return null;
+                return sb[0];
+            }
+            /// <summary>
+            /// 返回一个 Subs 的最后一个元素。!注意:无法直接修改,仅供获取!
+            /// </summary>
+            /// <returns>要返回的最后一个元素</returns>
+            public Sub Last()
+            {
+                List<Sub> sb = Subs;
+                if (sb.Count == 0)
+                    return null;
+                return sb[sb.Count - 1];
+            }
+
+            /// <summary>
+            /// 添加或替换Sub在Subs
+            /// </summary>
+            /// <param name="sub">被替换的subs</param>
+            public void AddOrReplace(Sub sub)
+            {
+                Line tmp = LineLock();
+                Sub sb = tmp.Find(sub.Name);
+                if (sb == null)
+                {
+                    tmp.AddSub(sub);
+                }
+                else
+                {
+                    sb.info = sub.info;
+                }
+                line = tmp;
+                LineUnLock();
+            }
+
+        }
+        /// <summary>
         /// 数据库读取帮助类
         /// </summary>
         public class DBHelper
-        {
-            /// <summary>
-            /// 行读取帮助类
-            /// </summary>
-            public class LineHelper
-            {
-                /// <summary>
-                /// 连接数据库名
-                /// </summary>
-                public string DBName;
-                public LineHelper(string dbname)
-                {
-                    DBName = dbname;
-                }
-
-                public Line LineLock() => GETLineAndLock(DBName);
-                public void LineUnLock() => UnLock(DBName);
-
-                /// <summary>
-                /// 获取行
-                /// </summary>
-                public Line line
-                {
-                    get => GETLineFromMemory(DBName);
-                    set => MapStringToMemory(DBName, value.ToString());
-                }
-                /// <summary>
-                /// 名称 没有唯一性
-                /// </summary>
-                public string Name
-                {
-                    get => line.Name;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.Name = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 信息 (去除关键字的文本)
-                /// </summary>
-                public string info
-                {
-                    get => line.info;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.info = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 信息 (正常)
-                /// </summary>
-                public string Info
-                {
-                    get => line.Info;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.Info = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
-                /// </summary>
-                public string test
-                {
-                    get => line.text;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.text = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 文本 在末尾没有结束行号的文本 (正常)
-                /// </summary>
-                public string Test
-                {
-                    get => line.Text;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.Text = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 子项目 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                public List<Sub> Subs
-                {
-                    get => line.Subs;
-                    set
-                    {
-                        Line tmp = line;
-                        tmp.Subs = value;
-                        line = tmp;
-                    }
-                }
-                /// <summary>
-                /// 将指定的Sub添加到Subs列表的末尾
-                /// </summary>
-                /// <param name="newSub">要添加的Sub</param>
-                public void AddSub(Sub newSub)
-                {
-                    Line tmp = LineLock();
-                    tmp.Subs.Add(newSub);
-                    line = tmp;
-                    LineUnLock();
-                }
-                /// <summary>
-                /// 将指定Sub的元素添加到Subs的末尾
-                /// </summary>
-                /// <param name="newSubs">要添加的多个Sub</param>
-                public void AddRange(params Sub[] newSubs)
-                {
-                    Line tmp = LineLock();
-                    tmp.Subs.AddRange(newSubs); ;
-                    line = tmp;
-                    LineUnLock();
-                }
-                /// <summary>
-                /// 将指定的Sub添加到指定索引处
-                /// </summary>
-                /// <param name="index">应插入 Sub 的从零开始的索引</param>
-                /// <param name="newSub">要添加的Sub</param>
-                public void InsertSub(int index, Sub newSub)
-                {
-                    Line tmp = LineLock();
-                    tmp.Subs.Insert(index, newSub);
-                    line = tmp;
-                    LineUnLock();
-                }
-                /// <summary>
-                /// 将指定Sub的元素添加指定索引处
-                /// </summary>
-                /// <param name="index">应插入 Sub 的从零开始的索引</param>
-                /// <param name="newSubs">要添加的多个Sub</param>
-                public void InsertRange(int index, params Sub[] newSubs)
-                {
-                    Line tmp = LineLock();
-                    tmp.Subs.InsertRange(index, newSubs);
-                    line = tmp;
-                    LineUnLock();
-                }
-                /// <summary>
-                /// 从Subs中移除特定对象的第一个匹配项
-                /// </summary>
-                /// <param name="Sub">要从Subs中删除的Sub的名称</param>
-                /// <returns>如果成功移除了Sub，则为 true；否则为 false</returns>
-                public bool Remove(Sub Sub)
-                {
-                    Line tmp = LineLock();
-                    if (tmp.Subs.Remove(Sub))
-                    {
-                        line = tmp;
-                        LineUnLock();
-                        return true;
-                    }
-                    LineUnLock();
-                    return false;
-                }
-
-                /// <summary>
-                /// 确定某Sub是否在Line集合中
-                /// </summary>
-                /// <param name="sub">要在Line集合中定位的Sub</param>
-                /// <returns>如果在Line集合中找到sub，则为True；否则为false</returns>
-                public bool Contains(Sub sub)
-                {
-                    return Subs.Contains(sub);
-                }
-                /// <summary>
-                /// 返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
-                /// </summary>
-                /// <param name="value">字段</param>
-                /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
-                public bool Contains(string value)
-                {
-                    return (Subs.FirstOrDefault(x => x.Name.Contains(value)) != null);
-                }
-                /// <summary>
-                /// 确定某Sub是否在Line集合中
-                /// </summary>
-                /// <param name="subName">要在Line集合中定位的Sub的名字</param>
-                /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
-                public bool Have(string subName)
-                {
-                    if (Name == subName)
-                        return true;
-                    return (Subs.FirstOrDefault(x => x.Name == subName) != null);
-                }
-
-
-                /// <summary>
-                /// 匹配拥有相同名称的Line或sub的所有元素 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <param name="subName">用于定义匹配的名称</param>
-                /// <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
-                public Sub[] FindAll(string subName)
-                {
-                    List<Sub> subs = new List<Sub>();
-                    Line tmp = line;
-                    if (Name == subName)
-                        subs.Add(tmp);
-                    foreach (Sub su in tmp)
-                        if (su.Name == subName)
-                            subs.Add(su);
-                    return subs.ToArray();
-                }
-                /// <summary>
-                /// 搜索与指定名称，并返回Line或整个Subs中的第一个匹配元素 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <param name="subName">用于定义匹配的名称</param>
-                /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
-                public Sub Find(string subName)
-                {
-                    return Subs.FirstOrDefault(x => x.Name == subName);
-                }
-
-                /// <summary>
-                /// 搜索全部相似名称的Sub的所有元素 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <param name="value">字段</param>
-                /// <returns>如果找到相似名称的Sub,则为数组；否则为一个空的Array</returns>
-                public Sub[] SeachALL(string value)
-                {
-                    Line tmp = line;
-                    List<Sub> subs = new List<Sub>();
-                    if (Name.Contains(value))
-                        subs.Add(tmp);
-                    foreach (Sub su in tmp)
-                        if (su.Name.Contains(value))
-                            subs.Add(su);
-                    return subs.ToArray();
-                }
-                /// <summary>
-                /// 搜索字段是否出现在Line名称，并返回整个Subs中的第一个匹配元素 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <param name="value">字段</param>
-                /// <returns>如果找到相似名称的第一个Sub，则为该Sub；否则为null</returns>
-                public Sub Seach(string value)
-                {
-                    Line tmp = line;
-                    if (this.Name.Contains(value))
-                        return tmp;
-                    return tmp.Subs.FirstOrDefault(x => x.Name.Contains(value));
-                }
-
-                /// <summary>
-                /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引
-                /// </summary>
-                /// <param name="subName">用于定义匹配的名称</param>
-                /// <returns>如果找到相同名称的sub的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
-                public int IndexOf(string subName)
-                {
-                    var sb = Subs;
-                    for (int i = 0; i < sb.Count; i++)
-                    {
-                        if (sb[i].Name == subName)
-                            return i;
-                    }
-                    return -1;
-                }
-                /// <summary>
-                /// 搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引
-                /// </summary>
-                /// <param name="subName">用于定义匹配的名称</param>
-                /// <returns>如果找到相同名称的sub的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
-                public int[] IndexsOf(string subName)
-                {
-                    List<Sub> sb = Subs;
-                    List<int> lines = new List<int>();
-                    for (int i = 0; i < sb.Count; i++)
-                    {
-                        if (sb[i].Name == subName)
-                            lines.Add(i);
-                    }
-                    return lines.ToArray();
-                }
-
-                /// <summary>
-                /// 将当前Line转换成文本格式 (info已经被转义/去除关键字)
-                /// </summary>
-                /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
-                public new string ToString()//不能继承
-                {
-                    return GETStringFromMemory(DBName);
-                }
-
-                /// <summary>
-                /// 返回循环访问 Subs 的枚举数。 !注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <returns>用于 Subs 的枚举数</returns>
-                public IEnumerator<Sub> GetEnumerator()
-                {
-                    return Subs.GetEnumerator();
-                }
-                /// <summary>
-                /// 返回一个 Subs 的第一个元素。!注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <returns>要返回的第一个元素</returns>
-                public Sub First()
-                {
-                    List<Sub> sb = Subs;
-                    if (sb.Count == 0)
-                        return null;
-                    return sb[0];
-                }
-                /// <summary>
-                /// 返回一个 Subs 的最后一个元素。!注意:无法直接修改,仅供获取!
-                /// </summary>
-                /// <returns>要返回的最后一个元素</returns>
-                public Sub Last()
-                {
-                    List<Sub> sb = Subs;
-                    if (sb.Count == 0)
-                        return null;
-                    return sb[sb.Count - 1];
-                }
-
-                /// <summary>
-                /// 添加或替换Sub在Subs
-                /// </summary>
-                /// <param name="sub">被替换的subs</param>
-                public void AddOrReplace(Sub sub)
-                {
-                    Line tmp = LineLock();
-                    Sub sb = tmp.Find(sub.Name);
-                    if (sb == null)
-                    {
-                        tmp.AddSub(sub);
-                    }
-                    else
-                    {
-                        sb.info = sub.info;
-                    }
-                    line = tmp;
-                    LineUnLock();
-                }
-
-            }
+        {          
             /// <summary>
             /// 要求:全称 包括前缀lpsdb
             /// </summary>
@@ -622,7 +613,8 @@ namespace LinePutScript.DataBase
             /// 将指定的Line添加到Assemblage列表的末尾
             /// </summary>
             /// <param name="newLine">要添加的Line</param>
-            public void AddLine(Line newLine)
+            /// <returns>返回添加行的数据位置</returns>
+            public LineHelper AddLine(Line newLine)
             {
                 //首先先获得index
                 Line idx = IndexLock();
@@ -632,6 +624,7 @@ namespace LinePutScript.DataBase
                 idx.info = (id + 1).ToString();//将新序号加入index
                 Index = idx;//写入
                 IndexUnLock();//解锁
+                return new LineHelper(DBName + id.ToString());
             }
             /// <summary>
             /// 将指定Line的元素添加到Assemblage的末尾
@@ -656,7 +649,8 @@ namespace LinePutScript.DataBase
             /// </summary>
             /// <param name="index">应插入 Line 的从零开始的索引</param>
             /// <param name="newLine">要添加的Line</param>
-            public void InsertLine(int index, Line newLine)
+            /// <returns>返回添加行的数据位置</returns>
+            public LineHelper InsertLine(int index, Line newLine)
             {
                 //首先先获得index
                 Line idx = IndexLock();
@@ -666,6 +660,7 @@ namespace LinePutScript.DataBase
                 idx.info = (id + 1).ToString();//将新序号加入index
                 Index = idx;//写入
                 IndexUnLock();//解锁
+                return new LineHelper(DBName + id.ToString());
             }
             /// <summary>
             /// 将指定Line的元素添加指定索引处
