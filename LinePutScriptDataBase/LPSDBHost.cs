@@ -44,7 +44,7 @@ namespace LinePutScript.DataBase
             DirectoryInfo di = new DirectoryInfo(path);
             foreach (FileInfo fi in di.EnumerateFiles().Where(x => x.Extension.ToLower() == ".lpsdb"))
             {
-                DataBases.Add(new DataBase(fi.Name.Substring(0,fi.Name.Length-6).ToUpper(),fi));
+                DataBases.Add(new DataBase(fi.Name.Substring(0, fi.Name.Length - 6).ToUpper(), fi));
             }
             //获取配置文件
             DataBase tmp = DataBases.Find(x => x.Name == "CONFIG");
@@ -68,7 +68,7 @@ namespace LinePutScript.DataBase
         /// 自动备份和自动储存计时器
         /// </summary>
         public void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {           
+        {
             SaveALL();
             backuptime -= CONFIG.AutoSaveTime;
             if (backuptime <= 0)
@@ -119,7 +119,7 @@ namespace LinePutScript.DataBase
             {
                 di.Create();//如果目录不存在则创建
             }
-            FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + '\\' + DateTime.Now.ToString("yyMMddhhmm") + ".lpsdb") ;
+            FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + '\\' + DateTime.Now.ToString("yyMMddhhmm") + ".lpsdb");
             FileStream fs = fi.Create();
             byte[] buff = Encoding.UTF8.GetBytes(db.LPS.ToString());
             fs.Write(buff, 0, buff.Length);
@@ -199,7 +199,8 @@ namespace LinePutScript.DataBase
         public Config()
         {
             DB = new DataBase("CONFIG");
-            DB.Capacity = 16384;//默认容量 16k(如果不映射 0k也是可以的)
+            DB.LineCapacity = 1024;//默认容量 1k(如果不映射 0k也是可以的)
+            DB.LinePrepare = 50;//默认预备行 50
             DB.AutoBackup = false;//不自动备份配置文件
             DB.AutoMapping = false;//不自动映射配置文件
         }

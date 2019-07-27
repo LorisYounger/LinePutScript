@@ -22,14 +22,14 @@ namespace LinePutScript.DataBase
         public DataBase(string name)
         {
             Name = name;
-            LPS = new LpsDocument($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|");
+            LPS = new LpsDocument($"DataBase#{name}:|ver#1:|capacity#10240:|automapping#1:|");
         }
         public DataBase(string name, string lps)
         {
             Name = name;
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
-                LPS.InsertLine(0,new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
+                LPS.InsertLine(0, new Line($"DataBase#{name}:|ver#1:|capacity#10240:|automapping#1:|"));
         }
         public DataBase(string name, FileInfo lpsdb)
         {
@@ -41,7 +41,7 @@ namespace LinePutScript.DataBase
             sr.Dispose();
             LPS = new LpsDocument(lps);
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
-                LPS.InsertLine(0,new Line($"DataBase#{name}:|ver#1:|capacity#1048576:|automapping#1:|"));
+                LPS.InsertLine(0, new Line($"DataBase#{name}:|ver#1:|capacity#10240:|automapping#1:|"));
 
         }
 
@@ -54,17 +54,17 @@ namespace LinePutScript.DataBase
         //设置内容
 
         /// <summary>
-        /// 分配的内存容量
+        /// 分配给每行的内存容量
         /// </summary>
-        public int Capacity
+        public int LineCapacity
         {
             get
             {
                 Sub sb = LPS.First().Find("capacity");
                 if (sb == null || !int.TryParse(sb.info, out int ot))
                 {
-                    LPS.First().AddSub(new Sub("capacity", "1048576"));
-                    return 1048576;//默认分配1mb
+                    LPS.First().AddSub(new Sub("capacity", "10240"));
+                    return 10240;//默认分配10kb
                 }
                 return ot;
             }
@@ -81,11 +81,57 @@ namespace LinePutScript.DataBase
         }
 
         /// <summary>
+        /// 提前准备多少行
+        /// </summary>
+        public int LinePrepare
+        {
+            get
+            {
+                Sub sb = LPS.First().Find("prepare");
+                if (sb == null || !int.TryParse(sb.info, out int ot))
+                {
+                    LPS.First().AddSub(new Sub("prepare", "1000"));
+                    return 1000;//默认分配1000行
+                }
+                return ot;
+            }
+            set
+            {
+                Sub sb = LPS.First().Find("prepare");
+                if (sb == null)
+                {
+                    LPS.First().AddSub(new Sub("prepare", value.ToString()));
+                }
+                else
+                    sb.info = value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 获取使用了多少行
+        /// </summary>
+        public int UsePrepare()
+        {
+            if (mapping)
+            {
+                MemoryMappedFile mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name);
+                MemoryMappedViewAccessor mmva = mmf.CreateViewAccessor();
+                int len = mmva.ReadInt32(0);
+                char[] buff = new char[len];
+                mmva.ReadArray<char>(4, buff, 0, len);
+                mmva.Dispose();
+                mmf.Dispose();
+                return new Line(new string(buff)).InfoToInt;
+            }
+            return LPS.Assemblage.Count;
+        }
+
+        /// <summary>
         /// 获取文件大小
         /// </summary>
         public int Length
         {
-            get => LPS.Length * 10;//保险起见用*40进行计算
+            get => LPS.Length * 20 / LPS.Assemblage.Count;//保险起见用*40进行计算
         }
 
         /// <summary>
@@ -185,8 +231,8 @@ namespace LinePutScript.DataBase
         {
             if (mapping)
                 return;
-            int ca = Capacity / 10; int cp = ca / 100;
-            if (Length > ca * 5 || LPS.Assemblage.Count * 2 > cp)//如果空间不足,不进行映射
+            int ca = LineCapacity; int cp = LinePrepare;
+            if (Length > ca || LPS.Assemblage.Count * 2 > cp)//如果空间不足,不进行映射
                 return;
 
             //mmf不需要回收
@@ -284,7 +330,7 @@ namespace LinePutScript.DataBase
             mmva.Dispose();
             mmf.Dispose();
             Line index = new Line(new string(buff));
-            
+
             //通过index获取数据
             LPS.Assemblage.Clear();//清除内部数据准备填装
             for (int i = 0; i < index.Subs.Count; i++)

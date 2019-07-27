@@ -352,8 +352,12 @@ namespace DBHost
                         Console.WriteLine($"'{cm.info}'设置:访问密码;内容={db.Password}");
                         break;
                     case "capacity":
-                        db.Capacity = sb.InfoToInt;
-                        Console.WriteLine($"'{cm.info}'设置:分配的内存容量;内容={db.Capacity.ToString()}({ToSizeString(db.Capacity)})");
+                        db.LineCapacity = sb.InfoToInt;
+                        Console.WriteLine($"'{cm.info}'设置:分配的行内存容量;内容={db.LineCapacity.ToString()}({ToSizeString(db.LineCapacity)})");
+                        break;
+                    case "prepare":
+                        db.LinePrepare = sb.InfoToInt;
+                        Console.WriteLine($"'{cm.info}'设置:分配的提前准本行;内容={db.LineCapacity.ToString()}({ToSizeString(db.LineCapacity)})");
                         break;
                 }
             }
@@ -371,8 +375,8 @@ namespace DBHost
                 Console.WriteLine($"找不到数据库 '{cm.info}' 请检查名称后重试");
                 return;
             }
-            Console.WriteLine($"数据库:'{db.Name}' 映射:{db.Mapping.ToString()}\n密码:{db.Password}\n已用/分配:{ToSizeString(db.Length)}/{ToSizeString(db.Capacity)}"
-                + $"\n自动备份:{db.AutoBackup.ToString()} 自动部署:{db.AutoMapping.ToString()}");
+            Console.WriteLine($"数据库:'{db.Name}' 映射:{db.Mapping.ToString()}\n密码:{db.Password}\n行/预备:{db.UsePrepare()}/{db.LinePrepare}"
+                + $"\n平均/分配:{ToSizeString(db.Length)}/{ToSizeString(db.LineCapacity)}\n自动备份:{db.AutoBackup.ToString()} 自动部署:{db.AutoMapping.ToString()}");
         }
         /// <summary>
         /// 储存指定数据库
@@ -453,27 +457,27 @@ namespace DBHost
             {
                 if (cm.Find("mapping").info == "0")
                 {
-                    Console.WriteLine("列出所有未映射的数据库\n--数据库名--        --映射状态--  --已用大小/分配大小--");
+                    Console.WriteLine("列出所有未映射的数据库\n--数据库名--        --映射状态--  --已用行/分配行--");
                     foreach (DataBase db in Host.DataBases.Where(x => !x.Mapping))
                     {
-                        Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + ToSizeString(db.Length) + '/' + ToSizeString(db.Capacity));
+                        Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + db.UsePrepare() + '/' + db.LinePrepare);
                     }
                     return;
                 }
                 else
                 {
-                    Console.WriteLine("列出所有映射的数据库\n--数据库名--        --映射状态--  --已用大小/分配大小--");
+                    Console.WriteLine("列出所有映射的数据库\n--数据库名--        --映射状态--  --已用行/分配行--");
                     foreach (DataBase db in Host.DataBases.Where(x => x.Mapping))
                     {
-                        Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + ToSizeString(db.Length) + '/' + ToSizeString(db.Capacity));
+                        Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + db.UsePrepare() + '/' + db.LinePrepare);
                     }
                     return;
                 }
             }
-            Console.WriteLine("列出所有数据库\n--数据库名--        --映射状态--  --已用大小/分配大小--");
+            Console.WriteLine("列出所有数据库\n--数据库名--        --映射状态--  --已用行/分配行--");
             foreach (DataBase db in Host.DataBases)
             {
-                Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + ToSizeString(db.Length) + '/' + ToSizeString(db.Capacity));
+                Console.WriteLine(db.Name.PadRight(25) + db.Mapping.ToString().PadRight(15) + db.UsePrepare() + '/' + db.LinePrepare);
             }
         }
         /// <summary>
@@ -497,7 +501,7 @@ namespace DBHost
         /// </summary>
         static void CMIsLockMemory(Line cm)
         {
-            Console.WriteLine("锁定状态:"+ MapHelper.IsLock("lpsdb"+cm.info.ToUpper()));
+            Console.WriteLine("锁定状态:" + MapHelper.IsLock("lpsdb" + cm.info.ToUpper()));
         }
         /// <summary>
         /// 锁定内存状态

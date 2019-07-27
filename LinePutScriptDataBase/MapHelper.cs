@@ -225,16 +225,77 @@ namespace LinePutScript.DataBase
                 DBName = dbname;
             }
 
-            public Line LineLock() => GETLineAndLock(DBName);
-            public void LineUnLock() => UnLock(DBName);
+            /// <summary>
+            /// 源数据
+            /// </summary>
+            public string RAW
+            {
+                get
+                {
+                    if (usedatacache)
+                        return datacache;
+                    return GETStringFromMemory(DBName);
+
+                }
+                set
+                {
+                    //if (usedatacache)//复现bug
+                    //    datacache = value;
+                    //else
+                    MapStringToMemory(DBName, value);
+                }
+            }
+
+            public Line LineLock()
+            {
+                if (usedatacache)
+                    return new Line(datacache);
+                return GETLineAndLock(DBName);
+            }
+            public void LineUnLock()
+            {
+                if (!usedatacache)
+                    UnLock(DBName);
+            }
+
+
+            //这个是用来锁定+读写缓存,用于减轻疯狂读写的压力
+            private bool usedatacache = false;
+            /// <summary>
+            /// 是否正在使用缓存技术
+            /// </summary>
+            public bool UseDataCache
+            {
+                get => usedatacache;
+            }
+            string datacache;
+            /// <summary>
+            /// 之后的操作不会被写入数据库,而是缓存起来
+            /// </summary>
+            public void StartCache()
+            {
+                datacache = GETStringAndLock(DBName);
+                usedatacache = true;
+            }
+            /// <summary>
+            /// 将缓存的内容写入数据库,同时关闭写入缓存
+            /// </summary>
+            public void CacheToMemory()
+            {
+                MapStringToMemory(DBName, datacache);
+                usedatacache = false;
+                UnLock(DBName);
+            }
+
+
 
             /// <summary>
             /// 获取行
             /// </summary>
             public Line line
             {
-                get => GETLineFromMemory(DBName);
-                set => MapStringToMemory(DBName, value.ToString());
+                get => new Line(RAW);
+                set => RAW = value.ToString();
             }
             /// <summary>
             /// 名称 没有唯一性
@@ -278,7 +339,7 @@ namespace LinePutScript.DataBase
             /// <summary>
             /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
             /// </summary>
-            public string test
+            public string text
             {
                 get => line.text;
                 set
@@ -291,7 +352,7 @@ namespace LinePutScript.DataBase
             /// <summary>
             /// 文本 在末尾没有结束行号的文本 (正常)
             /// </summary>
-            public string Test
+            public string Text
             {
                 get => line.Text;
                 set
@@ -493,7 +554,7 @@ namespace LinePutScript.DataBase
             /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
             public new string ToString()//不能继承
             {
-                return GETStringFromMemory(DBName);
+                return RAW;
             }
 
             /// <summary>
@@ -552,7 +613,7 @@ namespace LinePutScript.DataBase
         /// 数据库读取帮助类
         /// </summary>
         public class DBHelper
-        {          
+        {
             /// <summary>
             /// 要求:全称 包括前缀lpsdb
             /// </summary>
@@ -605,7 +666,19 @@ namespace LinePutScript.DataBase
                     return lps;
                 }
             }
-
+            /// <summary>
+            /// 获取所有行数据
+            /// </summary>
+            public LineHelper[] Assemblage()
+            {
+                Line idx = Index;
+                List<LineHelper> LHs = new List<LineHelper>();
+                foreach (Sub sb in idx)
+                {
+                    LHs.Add(new LineHelper(DBName + sb.info));
+                }
+                return LHs.ToArray();
+            }
 
             //List数据操作
 
