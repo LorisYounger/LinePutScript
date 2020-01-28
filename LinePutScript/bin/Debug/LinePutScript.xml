@@ -232,6 +232,12 @@
             <param name="SubName">要从Subs中删除的Sub的名称</param>
             <returns>如果成功移除了Sub，则为 true；否则为 false</returns>
         </member>
+        <member name="M:LinePutScript.Line.RemoveAll(System.String)">
+            <summary>
+            从Subs中移除特定名称的所有元素
+            </summary>
+            <param name="SubName">要从Subs中删除的Sub的名称</param>
+        </member>
         <member name="M:LinePutScript.Line.Contains(LinePutScript.Sub)">
             <summary>
             确定某Sub是否在Line集合中

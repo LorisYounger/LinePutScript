@@ -239,10 +239,10 @@ namespace LinePutScript.DataBase
                 }
                 set
                 {
-                    //if (usedatacache)//复现bug
-                    //    datacache = value;
-                    //else
-                    MapStringToMemory(DBName, value);
+                    if (usedatacache)
+                        datacache = value;
+                    else
+                        MapStringToMemory(DBName, value);
                 }
             }
 
@@ -438,7 +438,19 @@ namespace LinePutScript.DataBase
                 LineUnLock();
                 return false;
             }
+            /// <summary>
+            /// 从Subs中移除特定对象的所有元素
+            /// </summary>
+            /// <param name="SubName">要从Subs中删除的Sub的名称</param>
+            public void RemoveAll(string SubName)
+            {
+                Line tmp = LineLock();
+                tmp.RemoveAll(SubName);
+                line = tmp;
+                LineUnLock();
+                return;
 
+            }
             /// <summary>
             /// 返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
             /// </summary>
@@ -692,8 +704,8 @@ namespace LinePutScript.DataBase
                 //首先先获得index
                 Line idx = IndexLock();
                 int id = idx.InfoToInt;//这是这次操作要进行的id
-                MapStringToMemory(DBName + id.ToString(), newLine.ToString());//映射到内存
-                idx.AddSub(new Sub(newLine.Name, id.ToString()));//绑定到index
+                MapStringToMemory(DBName + idx.info, newLine.ToString());//映射到内存
+                idx.AddSub(new Sub(newLine.Name, idx.info));//绑定到index
                 idx.info = (id + 1).ToString();//将新序号加入index
                 Index = idx;//写入
                 IndexUnLock();//解锁
@@ -908,8 +920,8 @@ namespace LinePutScript.DataBase
                 if (sb == null)
                 {
                     int id = idx.InfoToInt;//这是这次操作要进行的id
-                    MapStringToMemory(DBName + id.ToString(), line.ToString());//映射到内存
-                    idx.AddSub(new Sub(line.Name, id.ToString()));//绑定到index
+                    MapStringToMemory(DBName + idx.info, line.ToString());//映射到内存
+                    idx.AddSub(new Sub(line.Name, idx.info));//绑定到index
                     idx.info = (id + 1).ToString();//将新序号加入index
                     Index = idx;//写入
                     IndexUnLock();

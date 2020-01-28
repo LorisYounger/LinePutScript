@@ -250,15 +250,30 @@ namespace LinePutScript.DataBase
                 index.AddSub(new Sub(li.Name, index.Subs.Count.ToString()));
                 mmva.Dispose();
                 MMFS.Add(mmf);
+                //提前把锁定给解锁了免得出现 运行时卡死不报错bug
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString() + "lock", 1, MemoryMappedFileAccess.ReadWrite);
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, false);//启动挂起 开始进行操作
+                mmva.Dispose();//不可以销毁mmf因为需要保留数据
+                MMFS.Add(mmf);
             }
 
             //创建预留的缓存空间
             int cs = index.Subs.Count;
             index.info = cs.ToString();
 
-            for (int i = cs; i <= cp; i++)
+            for (int i = cs; i < cp; i++)
             {
-                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + index.Subs.Count.ToString(), ca, MemoryMappedFileAccess.ReadWrite);
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + i.ToString(), ca, MemoryMappedFileAccess.ReadWrite);
+                MMFS.Add(mmf);
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, false);//随便写点东西占用这个内存,免得被系统回收
+                mmva.Dispose();
+                //提前把锁定给解锁了免得出现 运行时卡死不报错bug
+                mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + i.ToString() + "lock", 1, MemoryMappedFileAccess.ReadWrite);
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, false);//启动挂起 开始进行操作
+                mmva.Dispose();//不可以销毁mmf因为需要保留数据
                 MMFS.Add(mmf);
             }
 
@@ -270,7 +285,12 @@ namespace LinePutScript.DataBase
             mmva.Write(0, tmp.Length);
             mmva.WriteArray(4, tmp.ToCharArray(), 0, tmp.Length);
             mmva.Dispose();
-
+            MMFS.Add(mmf);
+            //提前把锁定给解锁了免得出现 运行时卡死不报错bug
+            mmf = MemoryMappedFile.CreateOrOpen("lpsdb" + Name + "lock", 1, MemoryMappedFileAccess.ReadWrite);
+            mmva = mmf.CreateViewAccessor();
+            mmva.Write(0, false);//启动挂起 开始进行操作
+            mmva.Dispose();//不可以销毁mmf因为需要保留数据
             MMFS.Add(mmf);
 
             mapping = true;
@@ -344,7 +364,24 @@ namespace LinePutScript.DataBase
                 mmf.Dispose();
                 LPS.Assemblage.Add(new Line(new string(buff)));
             }
+            //把多余的内存重新激活一下
+            int cp = LinePrepare;
+            for (int i = index.InfoToInt; i< cp; i++)
+            {
+                mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name + i.ToString());
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, false);//随便写点东西占用这个内存,免得被系统回收
+                mmva.Dispose();
+                mmf.Dispose();
+                //提前把锁定给解锁了免得出现 运行时卡死不报错bug
+                mmf = MemoryMappedFile.OpenExisting("lpsdb" + Name + i.ToString() + "lock");
+                mmva = mmf.CreateViewAccessor();
+                mmva.Write(0, false);//启动挂起 开始进行操作
+                mmva.Dispose();//
+                mmf.Dispose();
+            }
         }
+
     }
 
 

@@ -60,7 +60,10 @@ namespace LinePutScript.DataBase
                 MaptoMemoryAuto();
 
             timer = new System.Timers.Timer();
+            timer.Elapsed += Timer_Elapsed;
             timer.Interval = CONFIG.AutoSaveTime;
+            timer.AutoReset = true;
+            timer.Start();
             backuptime = CONFIG.AutoBackupTime;
         }
 
@@ -150,6 +153,19 @@ namespace LinePutScript.DataBase
             fs.Dispose();
         }
         /// <summary>
+        /// 进行关闭操作
+        /// </summary>
+        public void Close(DataBase db)
+        {
+            db.Mapoff();
+            FileInfo fi = new FileInfo(PathMain + '\\' + db.Name + ".lpsdb");
+            FileStream fs = fi.Create();
+            byte[] buff = Encoding.UTF8.GetBytes(db.LPS.ToString());
+            fs.Write(buff, 0, buff.Length);
+            fs.Close();
+            fs.Dispose();
+        }
+        /// <summary>
         /// 存档全部数据库
         /// </summary>
         public void SaveALL()
@@ -157,6 +173,16 @@ namespace LinePutScript.DataBase
             foreach (DataBase db in DataBases)
             {
                 Save(db);
+            }
+        }
+        /// <summary>
+        /// 退出全部数据库
+        /// </summary>
+        public void CloseALL()
+        {
+            foreach (DataBase db in DataBases)
+            {
+                Close(db);
             }
         }
         /// <summary>

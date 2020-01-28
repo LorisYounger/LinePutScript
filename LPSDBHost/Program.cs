@@ -103,7 +103,7 @@ namespace DBHost
                         Console.WriteLine("退出操作已经取消");
                         break;
                     }
-                    Host.SaveALL();
+                    Host.CloseALL();
                     return;
                 case "mapstring":
                     CMMapString(cm);
@@ -516,7 +516,7 @@ namespace DBHost
         /// </summary>
         static void CMUnLockMemory(Line cm)
         {
-            MapHelper.Lock("lpsdb" + cm.info.ToUpper());
+            MapHelper.UnLock("lpsdb" + cm.info.ToUpper());
             Console.WriteLine("内存解锁");
         }
     }

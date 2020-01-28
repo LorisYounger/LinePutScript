@@ -5,7 +5,6 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\b
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\bin\Release\LPSDataBase.pdb
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\bin\Release\LinePutScript.pdb
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csprojAssemblyReference.cache
-C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CoreCompileInputs.cache
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.exe
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.pdb

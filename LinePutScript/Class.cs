@@ -327,7 +327,7 @@ namespace LinePutScript
             }
             set
             {
-                info = value.ToString();
+                text = value.ToString();
             }
         }
         /// <summary>
@@ -342,7 +342,7 @@ namespace LinePutScript
             }
             set
             {
-                info = value.ToString();
+                text = value.ToString();
             }
         }
         /// <summary>
@@ -436,6 +436,20 @@ namespace LinePutScript
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 从Subs中移除特定名称的所有元素
+        /// </summary>
+        /// <param name="SubName">要从Subs中删除的Sub的名称</param>
+        public void RemoveAll(string SubName)
+        {
+            for (int i = 0; i < Subs.Count; i++)
+            {
+                if (Subs[i].Name == SubName)
+                {
+                    Subs.RemoveAt(i--);                    
+                }
+            }
         }
         /// <summary>
         /// 确定某Sub是否在Line集合中
