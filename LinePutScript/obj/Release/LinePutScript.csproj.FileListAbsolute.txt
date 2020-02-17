@@ -3,3 +3,4 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.csprojAssemblyReference.cache
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.pdb
+C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.csproj.CoreCompileInputs.cache

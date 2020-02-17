@@ -9,3 +9,4 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.pdb
+C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csproj.CoreCompileInputs.cache

@@ -6,3 +6,4 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Release\LinePutScript.DataBase.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Release\LPSDataBase.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Release\LPSDataBase.pdb
+C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Release\LinePutScript.DataBase.csproj.CoreCompileInputs.cache

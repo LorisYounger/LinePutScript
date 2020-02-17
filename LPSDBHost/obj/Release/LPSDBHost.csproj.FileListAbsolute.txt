@@ -8,3 +8,4 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\o
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.exe
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.pdb
+C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CoreCompileInputs.cache
