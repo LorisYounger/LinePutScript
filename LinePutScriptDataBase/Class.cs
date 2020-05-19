@@ -19,11 +19,20 @@ namespace LinePutScript.DataBase
         /// 数据文件
         /// </summary>
         public LpsDocument LPS;
+        /// <summary>
+        /// 创建新的内存数据库
+        /// </summary>
+        /// <param name="name">新内存数据库名称</param>
         public DataBase(string name)
         {
             Name = name;
             LPS = new LpsDocument($"DataBase#{name}:|ver#1:|capacity#10240:|automapping#1:|");
         }
+        /// <summary>
+        /// 创建新的内存数据库
+        /// </summary>
+        /// <param name="name">新内存数据库名称</param>
+        /// <param name="lps">预先导入数据</param>
         public DataBase(string name, string lps)
         {
             Name = name;
@@ -31,6 +40,11 @@ namespace LinePutScript.DataBase
             if (LPS.First() == null || LPS.First().Name.ToLower() != "database")
                 LPS.InsertLine(0, new Line($"DataBase#{name}:|ver#1:|capacity#10240:|automapping#1:|"));
         }
+        /// <summary>
+        /// 创建新的内存数据库
+        /// </summary>
+        /// <param name="name">新内存数据库名称</param>
+        /// /// <param name="lpsdb">预先导入数据库文件</param>
         public DataBase(string name, FileInfo lpsdb)
         {
             Name = name;

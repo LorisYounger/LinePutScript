@@ -4,3 +4,10 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.pdb
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\bin\Release\LinePutScript.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\bin\Release\LinePutScript.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.csprojAssemblyReference.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\obj\Release\LinePutScript.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript\bin\Release\LinePutScript.xml

@@ -8,3 +8,13 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LinePutScript.DataBase.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LPSDataBase.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LPSDataBase.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\bin\Debug\LPSDataBase.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\bin\Debug\LPSDataBase.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\bin\Debug\LinePutScript.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\bin\Debug\LinePutScript.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\bin\Debug\LinePutScript.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LinePutScript.DataBase.csprojAssemblyReference.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LinePutScript.DataBase.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LinePutScript.DataBase.csproj.CopyComplete
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LPSDataBase.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScriptDataBase\obj\Debug\LPSDataBase.pdb

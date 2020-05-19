@@ -6,6 +6,9 @@ using System.Data;
 
 namespace LinePutScript.SQLHelper
 {
+    /// <summary>
+    /// LinePutScript -> MySQL
+    /// </summary>
     public class MySQLHelper
     {
         private MySqlConnection conn = null;
@@ -15,10 +18,24 @@ namespace LinePutScript.SQLHelper
         /// <summary>
         /// 新建数据库连接
         /// </summary>
-        /// <param name="connStr">连接数据库所用数据 eg:Server=localhost;port=3306;Database=dbname;User=dbuser;Password=dbpassword;</param>
+        /// <param name="connStr">连接数据库所用数据
+        /// eg:Server=localhost;port=3306;Database=dbname;User=dbuser;Password=dbpassword;</param>
         public MySQLHelper(string connStr)
         {
             conn = new MySqlConnection(connStr); //数据库连接
+        }
+        /// <summary>
+        /// 新建数据库连接
+        /// </summary>
+        /// <param name="Server">服务器</param>
+        /// <param name="port">端口</param>
+        /// <param name="DatabaseName">数据库名</param>
+        /// <param name="User">数据库用户名</param>
+        /// <param name="Password">数据库密码</param>
+        /// <param name="Other">其他参数</param>
+        public MySQLHelper(string Server,string port,string DatabaseName,string User,string Password, string Other = null)
+        {
+            conn = new MySqlConnection($"Server={Server};port={port};Database={DatabaseName};User={User};Password={Password};{Other}"); //数据库连接
         }
 
         /// <summary>
@@ -48,7 +65,6 @@ namespace LinePutScript.SQLHelper
         /// 执行不带参数的增删改SQL语句或存储过程{不安全}
         /// </summary>
         /// <param name="cmdText">增删改SQL语句或存储过程的字符串{不安全}</param>
-        /// <param name="ct">命令类型</param>
         /// <returns>受影响的函数</returns>
         public int ExecuteNonQuery(string cmdText)
         {
@@ -66,7 +82,6 @@ namespace LinePutScript.SQLHelper
         /// </summary>
         /// <param name="cmdText">增删改SQL语句或存储过程的字符串</param>
         /// <param name="paras">往存储过程或SQL中赋的参数集合</param>
-        /// <param name="ct">命令类型</param>
         /// <returns>受影响的函数</returns>
         public int ExecuteNonQuery(string cmdText, params Parameter[] paras)
         {
@@ -85,7 +100,6 @@ namespace LinePutScript.SQLHelper
         /// 执行不带参数的查询SQL语句或存储过程{不安全}
         /// </summary>
         /// <param name="cmdText">查询SQL语句或存储过程的字符串{不安全}</param>
-        /// <param name="ct">命令类型</param>
         /// <returns>查询到的DataTable对象</returns>
         public LpsDocument ExecuteQuery(string cmdText)
         {
@@ -117,7 +131,6 @@ namespace LinePutScript.SQLHelper
         /// </summary>
         /// <param name="cmdText">查询SQL语句或存储过程的字符串</param>
         /// <param name="paras">参数集合</param>
-        /// <param name="ct">命令类型</param>
         /// <returns></returns>
         public LpsDocument ExecuteQuery(string cmdText, params Parameter[] paras)
         {
@@ -188,7 +201,11 @@ namespace LinePutScript.SQLHelper
             /// </summary>
             public object Value;
 
-
+            /// <summary>
+            /// 新建SQL参数类
+            /// </summary>
+            /// <param name="name">参数化名称</param>
+            /// <param name="value">参数化数据</param>
             public Parameter(string name, object value)
             {
                 ParameterName = name;
@@ -418,7 +435,10 @@ namespace LinePutScript.SQLHelper
             //    Value = value;
             //    Type = type;
             //}
-
+            /// <summary>
+            /// 转换成MySql参数类
+            /// </summary>
+            /// <returns></returns>
             public MySqlParameter ToMySqlParameter()
             {
                 //var sqlp =  new MySqlParameter(ParameterName, Value);

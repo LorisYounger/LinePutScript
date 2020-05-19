@@ -10,3 +10,23 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScri
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.dll
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.pdb
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.SQLHelper.dll.config
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.SQLHelper.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.SQLHelper.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\MySql.Data.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\System.Buffers.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\System.Memory.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\Zstandard.Net.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\Ubiety.Dns.Core.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\MySql.Data.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\System.Buffers.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\System.Memory.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csprojAssemblyReference.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.csproj.CopyComplete
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\obj\Release\LinePutScript.SQLHelper.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.SQLHelper.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper\bin\Release\LinePutScript.xml
