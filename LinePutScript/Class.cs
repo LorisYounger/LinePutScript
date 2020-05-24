@@ -186,6 +186,8 @@ namespace LinePutScript
         /// <returns>反转义后的文本 正常显示的文本</returns>
         public static string TextDeReplace(string Reptex)
         {
+            if (Reptex == null)
+                return "";
             Reptex = Reptex.Replace("/stop", ":|");
             Reptex = Reptex.Replace("/tab", "\t");
             Reptex = Reptex.Replace("/n", "\n");
@@ -202,6 +204,8 @@ namespace LinePutScript
         /// <returns>转义后的文本 (去除关键字的文本)</returns>
         public static string TextReplace(string Reptex)
         {
+            if (Reptex == null)
+                return "";
             Reptex = Reptex.Replace(":|", "/stop");
             Reptex = Reptex.Replace("\t", "/tab");
             Reptex = Reptex.Replace("\n", "/n");
