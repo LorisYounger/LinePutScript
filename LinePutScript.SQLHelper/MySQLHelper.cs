@@ -33,7 +33,7 @@ namespace LinePutScript.SQLHelper
         /// <param name="User">数据库用户名</param>
         /// <param name="Password">数据库密码</param>
         /// <param name="Other">其他参数</param>
-        public MySQLHelper(string Server,string port,string DatabaseName,string User,string Password, string Other = null)
+        public MySQLHelper(string Server, string port, string DatabaseName, string User, string Password, string Other = null)
         {
             conn = new MySqlConnection($"Server={Server};port={port};Database={DatabaseName};User={User};Password={Password};{Other}"); //数据库连接
         }
@@ -116,10 +116,10 @@ namespace LinePutScript.SQLHelper
             Line tmp;
             for (int l = 0; l < dt.Rows.Count; l++)
             {
-                tmp = new Line(dt.Columns[0].ColumnName, Convert.ToString(dt.Rows[l].ItemArray[0]));
+                tmp = new Line(dt.Columns[0].ColumnName, Convert(dt.Rows[l].ItemArray[0].ToString()));
                 for (int s = 1; s < dt.Rows[l].ItemArray.Length; s++)
                 {
-                    tmp.AddSub(new Sub(dt.Columns[s].ColumnName, Convert.ToString(dt.Rows[l].ItemArray[s])));
+                    tmp.AddSub(new Sub(dt.Columns[s].ColumnName, Convert(dt.Rows[l].ItemArray[s].ToString())));
                 }
                 lps.AddLine(tmp);
             }
@@ -149,14 +149,27 @@ namespace LinePutScript.SQLHelper
             Line tmp;
             for (int l = 0; l < dt.Rows.Count; l++)
             {
-                tmp = new Line(dt.Columns[0].ColumnName, Convert.ToString(dt.Rows[l].ItemArray[0]));
+                tmp = new Line(dt.Columns[0].ColumnName, Convert(dt.Rows[l].ItemArray[0].ToString()));
                 for (int s = 1; s < dt.Rows[l].ItemArray.Length; s++)
                 {
-                    tmp.AddSub(new Sub(dt.Columns[s].ColumnName, Convert.ToString(dt.Rows[l].ItemArray[s])));
+                    tmp.AddSub(new Sub(dt.Columns[s].ColumnName, Convert(dt.Rows[l].ItemArray[s].ToString())));
                 }
                 lps.AddLine(tmp);
             }
             return lps;
+        }
+
+        public static string Convert(object obj)
+        {
+            switch (obj.GetType().FullName)
+            {
+                case "System.DateTime":
+                    return ((DateTime)obj).ToString("yyyy-MM-dd HH:mm");
+
+                default:
+                    return System.Convert.ToString(obj.ToString());
+
+            }
         }
 
         ///// <summary>
