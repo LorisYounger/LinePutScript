@@ -36,6 +36,21 @@ namespace LinePutScript
             Assemblage.Add(newLine);
         }
         /// <summary>
+        /// 若无相同名称(Name)的Line,则将指定的Line添加到Assemblage列表的末尾
+        /// 若有,则替换成要添加的Line
+        /// </summary>
+        /// <param name="newLine">要添加的Line</param>
+        public void AddorReplaceLine(Line newLine)
+        {
+            Line oldline = FindLine(newLine.Name);
+            if (oldline != null)
+            {
+                oldline.Set(newLine);
+            }
+            else
+                Assemblage.Add(newLine);
+        }
+        /// <summary>
         /// 将指定Line的元素添加到Assemblage的末尾
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
@@ -318,7 +333,10 @@ namespace LinePutScript
             }
             return lines.ToArray();
         }
-
+        /// <summary>
+        /// 获得Assemblage目前储存的Line数量
+        /// </summary>
+        public int Count => Assemblage.Count;
         #endregion
 
         //就是行操作
@@ -421,16 +439,6 @@ namespace LinePutScript
         {
             return LineNode != Assemblage.Count;
         }
-
-        /// <summary>
-        /// 获取最后一行的信息
-        /// </summary>
-        /// <returns>最后一行的信息</returns>
-        public Line LastLine()
-        {
-            return Assemblage.Last();
-        }
-
         #endregion
 
 

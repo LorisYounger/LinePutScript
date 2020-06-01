@@ -101,14 +101,14 @@
         </member>
         <member name="M:LinePutScript.Sub.TextDeReplace(System.String)">
             <summary>
-            将文本进行反转义处理(正常显示的文本)
+            将文本进行反转义处理(成为正常显示的文本)
             </summary>
             <param name="Reptex">要反转义的文本</param>
             <returns>反转义后的文本 正常显示的文本</returns>
         </member>
         <member name="M:LinePutScript.Sub.TextReplace(System.String)">
             <summary>
-            将文本进行转义处理(去除关键字的文本)
+            将文本进行转义处理(成为去除关键字的文本)
             </summary>
             <param name="Reptex">要转义的文本</param>
             <returns>转义后的文本 (去除关键字的文本)</returns>
@@ -195,6 +195,13 @@
         <member name="M:LinePutScript.Line.AddSub(LinePutScript.Sub)">
             <summary>
             将指定的Sub添加到Subs列表的末尾
+            </summary>
+            <param name="newSub">要添加的Sub</param>
+        </member>
+        <member name="M:LinePutScript.Line.AddorReplaceSub(LinePutScript.Sub)">
+            <summary>
+            若无相同名称(Name)的Sub,则将指定的Sub添加到Subs列表的末尾
+            若有,则替换成要添加的Sub
             </summary>
             <param name="newSub">要添加的Sub</param>
         </member>
@@ -349,6 +356,13 @@
         <member name="M:LinePutScript.LpsDocument.AddLine(LinePutScript.Line)">
             <summary>
             将指定的Line添加到Assemblage列表的末尾
+            </summary>
+            <param name="newLine">要添加的Line</param>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.AddorReplaceLine(LinePutScript.Line)">
+            <summary>
+            若无相同名称(Name)的Line,则将指定的Line添加到Assemblage列表的末尾
+            若有,则替换成要添加的Line
             </summary>
             <param name="newLine">要添加的Line</param>
         </member>
@@ -516,6 +530,11 @@
             <param name="lineName">用于定义匹配的名称</param>
             <returns>如果找到相同名称的Line的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
         </member>
+        <member name="P:LinePutScript.LpsDocument.Count">
+            <summary>
+            获得Assemblage目前储存的Line数量
+            </summary>
+        </member>
         <member name="P:LinePutScript.LpsDocument.LineNode">
             <summary>
             当前Line读取进度
@@ -576,12 +595,6 @@
             判断是否能够继续读取数据
             </summary>
             <returns>如果还有下一行，返回True，否则False</returns>
-        </member>
-        <member name="M:LinePutScript.LpsDocument.LastLine">
-            <summary>
-            获取最后一行的信息
-            </summary>
-            <returns>最后一行的信息</returns>
         </member>
         <member name="M:LinePutScript.LpsDocument.Load(System.String)">
             <summary>
