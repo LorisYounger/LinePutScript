@@ -345,7 +345,7 @@ namespace DBHost
                             db.AutoBackup = false;
                         else
                             db.AutoBackup = true;
-                        Console.WriteLine($"'{cm.info}'设置:启动后自动映射;内容={db.AutoBackup}");
+                        Console.WriteLine($"'{cm.info}'设置:自动备份;内容={db.AutoBackup}");
                         break;
                     case "password":
                         db.Password = sb.Info;
@@ -353,11 +353,11 @@ namespace DBHost
                         break;
                     case "capacity":
                         db.LineCapacity = sb.InfoToInt;
-                        Console.WriteLine($"'{cm.info}'设置:分配的行内存容量;内容={db.LineCapacity.ToString()}({ToSizeString(db.LineCapacity)})");
+                        Console.WriteLine($"'{cm.info}'设置:分配的行内存容量;内容={db.LineCapacity}({ToSizeString(db.LineCapacity)})");
                         break;
                     case "prepare":
                         db.LinePrepare = sb.InfoToInt;
-                        Console.WriteLine($"'{cm.info}'设置:分配的提前准本行;内容={db.LineCapacity.ToString()}({ToSizeString(db.LineCapacity)})");
+                        Console.WriteLine($"'{cm.info}'设置:分配的提前准本行;内容={db.LinePrepare}");
                         break;
                 }
             }
@@ -425,8 +425,7 @@ namespace DBHost
                 Console.WriteLine($"数据库 '{cm.info}' 已经映射至内存,无需重复映射");
                 return;
             }
-            db.MaptoMemory();
-            Console.WriteLine($"数据库 '{cm.info}' 成功映射至内存");
+            Console.WriteLine($"数据库 '{cm.info}' {(db.MaptoMemory() ? "成功" : "失败")}映射至内存");
         }
         /// <summary>
         /// 关闭映射指定数据库到内存

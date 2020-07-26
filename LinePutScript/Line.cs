@@ -204,7 +204,7 @@ namespace LinePutScript
         /// 从Subs中移除特定对象的第一个匹配项
         /// </summary>
         /// <param name="Sub">要从Subs中删除的Sub的名称</param>
-        /// <returns>如果成功移除了Sub，则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了Sub,则为 true；否则为 false</returns>
         public bool Remove(Sub Sub)
         {
             return Subs.Remove(Sub);
@@ -213,7 +213,7 @@ namespace LinePutScript
         /// 从Subs中移除特定名称的第一个匹配项
         /// </summary>
         /// <param name="SubName">要从Subs中删除的Sub的名称</param>
-        /// <returns>如果成功移除了Sub，则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了Sub,则为 true；否则为 false</returns>
         public bool Remove(string SubName)
         {
             for (int i = 0; i < Subs.Count; i++)
@@ -244,7 +244,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="sub">要在Line集合中定位的Sub</param>
-        /// <returns>如果在Line集合中找到sub，则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到sub,则为True；否则为false</returns>
         public bool Contains(Sub sub)
         {
             if (this == sub)
@@ -252,10 +252,10 @@ namespace LinePutScript
             return Subs.Contains(sub);
         }
         /// <summary>
-        /// 返回一个值，该值指示指定的字段是否出现在Subs的Sub的名字
+        /// 返回一个值,该值指示指定的字段是否出现在Subs的Sub的名字
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到符合的名字,则为True；否则为false</returns>
         public bool Contains(string value)
         {
             if (Name.Contains(value))
@@ -266,7 +266,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="subName">要在Line集合中定位的Sub的名字</param>
-        /// <returns>如果在Line集合中找到符合的名字，则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到符合的名字,则为True；否则为false</returns>
         public bool Have(string subName)
         {
             if (Name == subName)
@@ -279,7 +279,7 @@ namespace LinePutScript
         /// 匹配拥有相同名称的Line或sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub，其中所有元素均与指定谓词定义的条件匹配，则为该数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组；否则为一个空的Array</returns>
         public Sub[] FindAll(string subName)
         {
             List<Sub> subs = new List<Sub>();
@@ -291,10 +291,10 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
-        /// 搜索与指定名称，并返回Line或整个Subs中的第一个匹配元素
+        /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个sub，则为该sub；否则为null</returns>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub；否则为null</returns>
         public Sub Find(string subName)
         {
             if (this.Name == subName)
@@ -302,7 +302,25 @@ namespace LinePutScript
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
 
-
+        /// <summary>
+        /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub；否则为新建的相同名称sub</returns>
+        public Sub FindorAdd(string subName)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+            {
+                sub = new Line(subName, "", "");
+                AddSub(sub);
+                return sub;
+            }
+            else
+            {
+                return sub;
+            }
+        }
 
 
         /// <summary>
@@ -321,10 +339,10 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
-        /// 搜索字段是否出现在Line名称，并返回整个Subs中的第一个匹配元素
+        /// 搜索字段是否出现在Line名称,并返回整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的第一个Sub，则为该Sub；否则为null</returns>
+        /// <returns>如果找到相似名称的第一个Sub,则为该Sub；否则为null</returns>
         public Sub Seach(string value)
         {
             if (this.Name.Contains(value))
@@ -335,10 +353,10 @@ namespace LinePutScript
 
 
         /// <summary>
-        /// 搜索相同名称的Sub，并返回整个Subs中第一个匹配的sub从零开始的索引
+        /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub的第一个元素，则为该元素的从零开始的索引；否则为 -1</returns>
+        /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引；否则为 -1</returns>
         public int IndexOf(string subName)
         {
             for (int i = 0; i < Subs.Count; i++)
@@ -349,10 +367,10 @@ namespace LinePutScript
             return -1;
         }
         /// <summary>
-        /// 搜索相同名称的Sub，并返回整个Sub中全部匹配的sub从零开始的索引
+        /// 搜索相同名称的Sub,并返回整个Sub中全部匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub的元素，则为该元素的从零开始的索引组；否则为空的Array</returns>
+        /// <returns>如果找到相同名称的sub的元素,则为该元素的从零开始的索引组；否则为空的Array</returns>
         public int[] IndexsOf(string subName)
         {
             List<int> lines = new List<int>();

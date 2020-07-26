@@ -10,15 +10,3 @@ C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\o
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.csproj.CopyComplete
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.exe
 C:\Users\Zou Jin\Documents\Visual Studio 2017\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.pdb
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LPSDBHost.exe
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LPSDBHost.pdb
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LinePutScript.dll
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LPSDataBase.dll
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LPSDataBase.pdb
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LinePutScript.pdb
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Debug\LinePutScript.xml
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.csprojAssemblyReference.cache
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.csproj.CoreCompileInputs.cache
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.csproj.CopyComplete
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.exe
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Debug\LPSDBHost.pdb

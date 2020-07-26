@@ -241,13 +241,13 @@ namespace LinePutScript.DataBase
         /// <summary>
         /// 映射数据库到内存中
         /// </summary>
-        public void MaptoMemory()
+        public bool MaptoMemory()
         {
             if (mapping)
-                return;
+                return false;
             int ca = LineCapacity; int cp = LinePrepare;
             if (Length > ca || LPS.Assemblage.Count * 2 > cp)//如果空间不足,不进行映射
-                return;
+                return false;
 
             //mmf不需要回收
             string tmp; MemoryMappedFile mmf; MemoryMappedViewAccessor mmva;
@@ -308,6 +308,7 @@ namespace LinePutScript.DataBase
             MMFS.Add(mmf);
 
             mapping = true;
+            return true;
         }
         /// <summary>
         /// 关闭映射数据库
