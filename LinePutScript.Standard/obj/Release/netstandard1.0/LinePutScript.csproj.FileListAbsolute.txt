@@ -1,0 +1,10 @@
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\bin\Release\netstandard1.0\LinePutScript.deps.json
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\bin\Release\netstandard1.0\LinePutScript.dll
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\bin\Release\netstandard1.0\LinePutScript.pdb
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.csprojAssemblyReference.cache
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.AssemblyInfoInputs.cache
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.AssemblyInfo.cs
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.dll
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\obj\Release\netstandard1.0\LinePutScript.pdb
+C:\Users\ZOUJI\source\repos\LinePutScript\LinePutScript\bin\Release\netstandard1.0\LinePutScript.xml

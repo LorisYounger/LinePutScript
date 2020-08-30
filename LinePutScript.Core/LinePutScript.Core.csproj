@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>LinePutScript</RootNamespace>
+    <Authors>LorisYounger</Authors>
+    <Description>LinePutScript是一种定义行读取结构和描述其内容的标准语言</Description>
+    <Company>深圳市L版公司</Company>
+    <Product>LinePutScript</Product>
+    <PackageId>LinePutScript</PackageId>
+    <Copyright>exLB.org</Copyright>
+    <PackageProjectUrl>https://github.com/LorisYounger/LinePutScript</PackageProjectUrl>
+    <Version>1.1.4</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\LinePutScript.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>

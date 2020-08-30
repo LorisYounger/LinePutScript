@@ -54,6 +54,24 @@
         /// 名称 没有唯一性
         /// </summary>
         public string Name = "lps";
+
+        /// <summary>
+        /// ID 根据Name生成 没有唯一性
+        /// </summary>
+        public long ID
+        {
+            get
+            {
+                if (long.TryParse(Name, out long i))
+                    return i;
+                return Name.GetHashCode();
+            }
+            set
+            {
+                Name = value.ToString();
+            }
+        }
+
         /// <summary>
         /// 信息 (去除关键字的文本)
         /// </summary>
@@ -186,7 +204,7 @@
             Reptex = Reptex.Replace("/tab", "\t");
             Reptex = Reptex.Replace("/n", "\n");
             Reptex = Reptex.Replace("/r", "\r");
-            Reptex = Reptex.Replace("/id", "#");            
+            Reptex = Reptex.Replace("/id", "#");
             Reptex = Reptex.Replace("/com", ",");
             Reptex = Reptex.Replace("/!", "/");
             return Reptex;
@@ -206,7 +224,7 @@
             Reptex = Reptex.Replace("\n", "/n");
             Reptex = Reptex.Replace("\r", "/r");
             Reptex = Reptex.Replace("#", "/id");
-            Reptex = Reptex.Replace(",", "/com");           
+            Reptex = Reptex.Replace(",", "/com");
             return Reptex;
         }
         /// <summary>
@@ -230,7 +248,7 @@
 
 
     }
-    
+
 
     ////目前不清楚是否需要组类别 用户可以自行设定,没必要限制用户想象力
     ///// <summary>

@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\LinePutScript.xml</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Lineput.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +50,9 @@
     <Compile Include="Line.cs" />
     <Compile Include="LpsDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lineput.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

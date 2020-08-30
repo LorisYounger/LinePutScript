@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>LinePutScript是一种定义行读取结构和描述其内容的标准语言</Description>
+    <Authors>LorisYounger</Authors>
+    <Company>LB Copyright © 2018</Company>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <Copyright>LB Copyright © 2018</Copyright>
+    <PackageProjectUrl>https://github.com/LorisYounger/LinePutScript</PackageProjectUrl>
+    <PackageIcon>Lineput.png</PackageIcon>
+    <Version>1.1.4</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <FileVersion>1.1.2.0</FileVersion>
+    <PackageId>LinePutScript</PackageId>
+    <Product>LinePutScript</Product>
+    <AssemblyName>LinePutScript</AssemblyName>
+    <RootNamespace>LinePutScript</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>LinePutScript.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>  
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="Lineput.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

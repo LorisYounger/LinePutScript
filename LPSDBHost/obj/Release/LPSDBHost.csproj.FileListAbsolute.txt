@@ -14,11 +14,11 @@ C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LinePutScript.dll
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LPSDataBase.dll
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LPSDataBase.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LPSDataBase.xml
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LinePutScript.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LinePutScript.xml
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csprojAssemblyReference.cache
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CoreCompileInputs.cache
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.csproj.CopyComplete
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.exe
 C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\obj\Release\LPSDBHost.pdb
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LPSDataBase.xml
-C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LPSDBHost\bin\Release\LinePutScript.xml

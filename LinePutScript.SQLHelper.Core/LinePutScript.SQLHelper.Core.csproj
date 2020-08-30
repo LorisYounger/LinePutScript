@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>LinePutScript.SQLHelper</RootNamespace>
+    <PackageId>LinePutScript.SQLHelper</PackageId>
+    <Authors>LorisYounger</Authors>
+    <Company>exLB.org</Company>
+    <Product>LinePutScript.SQLHelper</Product>
+    <Version>1.1.3</Version>
+    <PackageProjectUrl>https://github.com/LorisYounger/LinePutScript</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>使用LineputScript的SQL帮助类</Description>
+    <Copyright>exLB.org</Copyright>
+    <PackageIcon>Lineput.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.SQLHelper.Core\LinePutScript.SQLHelper.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinePutScript.Core\LinePutScript.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\Lineput.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

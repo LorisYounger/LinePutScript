@@ -1,0 +1,10 @@
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\bin\Release\netcoreapp3.1\LinePutScript.Core.deps.json
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\bin\Release\netcoreapp3.1\LinePutScript.Core.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\bin\Release\netcoreapp3.1\LinePutScript.Core.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\bin\Release\netcoreapp3.1\LinePutScript.Core.xml
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.AssemblyInfoInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.AssemblyInfo.cs
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.csproj.CoreCompileInputs.cache
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.dll
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.pdb
+C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\obj\Release\netcoreapp3.1\LinePutScript.Core.csprojAssemblyReference.cache

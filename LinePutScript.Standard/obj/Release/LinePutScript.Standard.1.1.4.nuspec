@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>LinePutScript.Standard</id>
+    <version>1.1.4</version>
+    <authors>LorisYounger</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>Lineput.png</icon>
+    <projectUrl>https://github.com/LorisYounger/LinePutScript</projectUrl>
+    <description>LinePutScript是一种定义行读取结构和描述其内容的标准语言</description>
+    <copyright>LB Copyright © 2018</copyright>
+    <dependencies>
+      <group targetFramework=".NETStandard1.0">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Standard\bin\Release\netstandard1.0\LinePutScript.Standard.dll" target="lib\netstandard1.0\LinePutScript.Standard.dll" />
+    <file src="C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Standard\bin\Release\netstandard1.0\LinePutScript.xml" target="lib\netstandard1.0\LinePutScript.xml" />
+    <file src="C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LICENSE" target="LICENSE" />
+    <file src="C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Standard\Lineput.png" target="Lineput.png" />
+  </files>
+</package>

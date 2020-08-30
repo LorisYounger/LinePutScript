@@ -44,6 +44,11 @@
             名称 没有唯一性
             </summary>
         </member>
+        <member name="P:LinePutScript.Sub.ID">
+            <summary>
+            ID 根据Name生成 没有唯一性
+            </summary>
+        </member>
         <member name="F:LinePutScript.Sub.info">
             <summary>
             信息 (去除关键字的文本)
