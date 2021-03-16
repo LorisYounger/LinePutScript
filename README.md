@@ -1,7 +1,7 @@
 LinePutScript
 ===
 
-<img src="Lineput.png" alt="Lineput" style="zoom:20%;" />
+<img src="Lineput.png" alt="Lineput" height="100px" />
 
 LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
