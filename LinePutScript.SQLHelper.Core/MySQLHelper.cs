@@ -159,12 +159,12 @@ namespace LinePutScript.SQLHelper
             return lps;
         }
 
-        public static string Convert(object obj)
+        private static string Convert(object obj)
         {
             switch (obj.GetType().FullName)
             {
                 case "System.DateTime":
-                    return ((DateTime)obj).ToString("yyyy-MM-dd HH:mm");
+                    return ((DateTime)obj).ToString("yyyy-MM-dd HH:mm:ss");
 
                 default:
                     return System.Convert.ToString(obj.ToString());

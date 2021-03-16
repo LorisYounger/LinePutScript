@@ -527,7 +527,34 @@ namespace LinePutScript
                 sb.Append(li.ToString() + "\n");
             return sb.ToString().Trim('\n');
         }
-
+        /// <summary>
+        /// 获得该LPS文档的长哈希代码
+        /// </summary>
+        /// <returns>64位哈希代码</returns>
+        public long GetLongHashCode()
+        {
+            int id = 2;
+            long hash = 0;
+            foreach (Line li in Assemblage)
+                hash += li.GetLongHashCode() * id++;
+            return hash;
+        }
+        /// <summary>
+        /// 获得该LPS文档的哈希代码
+        /// </summary>
+        /// <returns>32位哈希代码</returns>
+        public override int GetHashCode() => (int)GetLongHashCode();
+        /// <summary>
+        /// 确认对象是否等于当前对象
+        /// </summary>
+        /// <param name="obj">Subs</param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != GetType())
+                return false;
+            return ((LpsDocument)obj).GetLongHashCode() == GetLongHashCode();
+        }
         /// <summary>
         /// 获得当前文档大小 单位:字节
         /// </summary>

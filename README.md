@@ -1,6 +1,8 @@
 LinePutScript
 ===
 
+<img src="Lineput.png" alt="Lineput" style="zoom:20%;" />
+
 LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
 可以应用于 保存 设置,资源,模板文件 等各种场景
@@ -36,7 +38,7 @@ LinePutScript.SQLHelper.Core 为.net Core版本
 ### LPSDBHost*
 
 一个简单的内存数据库通过使用LinePutScript.DataBase类实现
-<br/>**\*注: 有内存无法正确回收的bug,可能需要重启解决**
+**\*注: 有内存无法正确回收的bug,可能需要重启解决**
 
 
 ## 如何使用:
@@ -61,3 +63,4 @@ Install-Package LinePutScript.SQLHelper
 3. 直接下载dll引用
 
 [Releases](https://github.com/LorisYounger/LinePutScript/releases)
+

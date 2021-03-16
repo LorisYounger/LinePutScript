@@ -204,7 +204,7 @@
             Reptex = Reptex.Replace("/tab", "\t");
             Reptex = Reptex.Replace("/n", "\n");
             Reptex = Reptex.Replace("/r", "\r");
-            Reptex = Reptex.Replace("/id", "#");            
+            Reptex = Reptex.Replace("/id", "#");
             Reptex = Reptex.Replace("/com", ",");
             Reptex = Reptex.Replace("/!", "/");
             return Reptex;
@@ -224,7 +224,7 @@
             Reptex = Reptex.Replace("\n", "/n");
             Reptex = Reptex.Replace("\r", "/r");
             Reptex = Reptex.Replace("#", "/id");
-            Reptex = Reptex.Replace(",", "/com");           
+            Reptex = Reptex.Replace(",", "/com");
             return Reptex;
         }
         /// <summary>
@@ -245,10 +245,29 @@
         //        return new string[1] { input };
         //    return new string[2] { input.}
         //}
-
-
+        /// <summary>
+        /// 获得该Sub的哈希代码
+        /// </summary>
+        /// <returns>32位哈希代码</returns>
+        public override int GetHashCode() => (int)GetLongHashCode();
+        /// <summary>
+        /// 获得该Sub的长哈希代码
+        /// </summary>
+        /// <returns>64位哈希代码</returns>
+        public long GetLongHashCode() => Name.GetHashCode() * 2 + info.GetHashCode() * 3;
+        /// <summary>
+        /// 确认对象是否等于当前对象
+        /// </summary>
+        /// <param name="obj">Subs</param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != GetType())
+                return false;
+            return ((Sub)obj).GetLongHashCode() == GetLongHashCode();
+        }
     }
-    
+
 
     ////目前不清楚是否需要组类别 用户可以自行设定,没必要限制用户想象力
     ///// <summary>

@@ -398,7 +398,36 @@ namespace LinePutScript
             str.Append(text);
             return str.ToString();
         }
-
+        /// <summary>
+        /// 获得该Line的长哈希代码
+        /// </summary>
+        /// <returns>64位哈希代码</returns>
+        public new long GetLongHashCode()
+        {
+            int id = 5;
+            long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
+            foreach (Sub su in Subs)
+            {
+                hash += su.GetHashCode() * id++;
+            }
+            return hash;
+        }
+        /// <summary>
+        /// 获得该Line的哈希代码
+        /// </summary>
+        /// <returns>32位哈希代码</returns>
+        public override int GetHashCode() => (int)GetLongHashCode();
+        /// <summary>
+        /// 确认对象是否等于当前对象
+        /// </summary>
+        /// <param name="obj">Subs</param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != GetType())
+                return false;
+            return ((Line)obj).GetLongHashCode() == GetLongHashCode();
+        }
         /// <summary>
         /// 返回循环访问 Subs 的枚举数。
         /// </summary>
