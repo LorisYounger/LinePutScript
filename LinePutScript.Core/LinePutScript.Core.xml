@@ -51,6 +51,11 @@
             文本 在末尾没有结束行号的文本 (正常)
             </summary>
         </member>
+        <member name="F:LinePutScript.Line.Comments">
+            <summary>
+            注释 ///为注释
+            </summary>
+        </member>
         <member name="P:LinePutScript.Line.TextToInt">
             <summary>
             文本 (int)
@@ -205,6 +210,25 @@
             将当前Line转换成文本格式 (info已经被转义/去除关键字)
             </summary>
             <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
+        </member>
+        <member name="M:LinePutScript.Line.GetLongHashCode">
+            <summary>
+            获得该Line的长哈希代码
+            </summary>
+            <returns>64位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.Line.GetHashCode">
+            <summary>
+            获得该Line的哈希代码
+            </summary>
+            <returns>32位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.Line.Equals(System.Object)">
+            <summary>
+            确认对象是否等于当前对象
+            </summary>
+            <param name="obj">Subs</param>
+            <returns></returns>
         </member>
         <member name="M:LinePutScript.Line.GetEnumerator">
             <summary>
@@ -526,6 +550,25 @@
             </summary>
             <returns>LinePutScript的文本格式</returns>
         </member>
+        <member name="M:LinePutScript.LpsDocument.GetLongHashCode">
+            <summary>
+            获得该LPS文档的长哈希代码
+            </summary>
+            <returns>64位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.GetHashCode">
+            <summary>
+            获得该LPS文档的哈希代码
+            </summary>
+            <returns>32位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.LpsDocument.Equals(System.Object)">
+            <summary>
+            确认对象是否等于当前对象
+            </summary>
+            <param name="obj">Subs</param>
+            <returns></returns>
+        </member>
         <member name="P:LinePutScript.LpsDocument.Length">
             <summary>
             获得当前文档大小 单位:字节
@@ -650,6 +693,25 @@
             将当前Sub转换成文本格式 (info已经被转义/去除关键字)
             </summary>
             <returns>Sub的文本格式 (info已经被转义/去除关键字)</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.GetHashCode">
+            <summary>
+            获得该Sub的哈希代码
+            </summary>
+            <returns>32位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.GetLongHashCode">
+            <summary>
+            获得该Sub的长哈希代码
+            </summary>
+            <returns>64位哈希代码</returns>
+        </member>
+        <member name="M:LinePutScript.Sub.Equals(System.Object)">
+            <summary>
+            确认对象是否等于当前对象
+            </summary>
+            <param name="obj">Subs</param>
+            <returns></returns>
         </member>
     </members>
 </doc>

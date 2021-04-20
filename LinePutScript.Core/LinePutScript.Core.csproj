@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\ZOUJI\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\LinePutScript.Core.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\\zoujin\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\LinePutScript.Core.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>

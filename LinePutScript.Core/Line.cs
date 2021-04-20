@@ -20,8 +20,12 @@ namespace LinePutScript
         /// <param name="lpsLine">lpsSub文本</param>
         public Line(string lpsLine)
         {
-            string[] sts = Regex.Split(lpsLine, @"\:\|", RegexOptions.IgnoreCase);
-
+            string[] sts = Regex.Split(lpsLine, @"///", RegexOptions.IgnoreCase);
+            for (int i = 1; i < sts.Length - 1; i++)
+            {
+                Comments += sts[i];
+            }
+            sts = Regex.Split(sts[0], @"\:\|", RegexOptions.IgnoreCase);
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             if (st.Length > 1)
@@ -89,6 +93,10 @@ namespace LinePutScript
                 text = TextReplace(value);
             }
         }
+        /// <summary>
+        /// 注释 ///为注释
+        /// </summary>
+        public string Comments = "";
         /// <summary>
         /// 文本 (int)
         /// </summary>
@@ -392,10 +400,16 @@ namespace LinePutScript
             StringBuilder str = new StringBuilder(TextReplace(Name));
             if (info != "")
                 str.Append('#' + info);
-            str.Append(":|");
+            if (str.Length != 0)
+                str.Append(":|");
             foreach (Sub su in Subs)
                 str.Append(su.ToString());
             str.Append(text);
+            if (Comments != "")
+            {
+                str.Append("///");
+                str.Append(Comments);
+            }
             return str.ToString();
         }
         /// <summary>
