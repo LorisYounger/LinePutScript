@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("LinePutScript.LinePut")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("LinePutXAML输出")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("L版公司")]
 [assembly: AssemblyProduct("LinePutScript.LinePut")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © exLB.org 2020")]
+[assembly: AssemblyTrademark("exLB.org")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型

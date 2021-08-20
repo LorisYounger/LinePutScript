@@ -31,6 +31,12 @@ LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
 LinePutScript.SQLHelper.Core 为.net Core版本
 
+### LinePutScript.Lineput
+
+LinePut是使用LinePutScript描述富文本的一种格式
+
+这个类帮助转换LinePut为XAML FlowDocument
+
 ### LinePutScriptDataBase
 
 一个数据库构造类 通过映射LPS类型内容到内存, 从而实现基于LPS的快速数据库
@@ -53,12 +59,18 @@ LinePutScript.SQLHelper
 ```
 Install-Package LinePutScript.SQLHelper
 ```
+LinePutScript.LinePut
+```
+Install-Package LinePutScript.LinePut
+```
 
 2. 通过nuget.org
 
 [LinePutScript](https://www.nuget.org/packages/LinePutScript/)
 
 [LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
+
+[LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut/1.1.6)
 
 3. 直接下载dll引用
 

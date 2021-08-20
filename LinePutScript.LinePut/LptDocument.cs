@@ -72,140 +72,6 @@ namespace LinePutScript.LinePut
             string returnValue = Convert.ToInt32(Color.R * 65536 + Color.G * 256 + Color.B).ToString("x");
             return returnValue.PadLeft(6, '0');
         }
-        #endregion
-        /// <summary>
-        /// 新建一个LPT文档从LPT文本
-        /// </summary>
-        /// <param name="LPT">lpt文本</param>
-        public LptDocument(string LPT) : base(LPT)
-        {
-            foreach (Sub sub in First())
-            {
-                switch (sub.Name.ToLower())
-                {
-                    case "allfontcolor":
-                    case "fontcolor":
-                        if (sub.info == null)
-                        {
-                            //log.Append(sub.Name + ":未找到颜色记录\n");
-                        }
-                        else
-                        {
-                            OADisplay.FontColor = HEXToColor(sub.info);
-                        }
-                        break;
-
-                    case "backgroundcolor":
-                    case "background":
-                    case "allbackcolor":
-                    case "backcolor":
-                        if (sub.info == null)
-                        {
-                            //log.Append(sub.Name + ":未找到颜色记录\n");
-                        }
-                        else
-                        {
-                            OADisplay.BackColor = HEXToColor(sub.info);
-                        }
-                        break;
-                    case "fontsize":
-                    case "allfontsize":
-                        if (sub.info == null)
-                        {
-                            //log.Append(sub.Name + ":未找到颜色记录\n");
-                        }
-                        else
-                        {
-                            OADisplay.FontSize = Convert.ToSingle(sub.info);
-                        }
-                        break;
-
-                    case "font":
-                    case "fontfamily":
-                    case "allfontfamily":
-                        if (sub.info == null)
-                        {
-                            //log.Append(sub.Name + ":未找到颜色记录\n");
-                        }
-                        else
-                        {
-                            OADisplay.FontFamily = new FontFamily(sub.info);
-                        }
-                        break;
-
-                    case "u":
-                    case "underline":
-                        OADisplay.Underline = true; break;
-                    case "b":
-                    case "bold":
-                        OADisplay.Bold = true; break;
-                    case "i":
-                    case "italic":
-                        OADisplay.Italic = true; break;
-                    case "d":
-                    case "deleteline":
-                        OADisplay.Strikethrough = true; break;
-                    case "l":
-                    case "left":
-                        OADisplay.Alignment = TextAlignment.Left; break;
-                    case "r":
-                    case "right":
-                        OADisplay.Alignment = TextAlignment.Right; break;
-                    case "c":
-                    case "center":
-                        OADisplay.Alignment = TextAlignment.Center; break;
-                    case "j":
-                    case "justify":
-                        OADisplay.Alignment = TextAlignment.Justify; break;
-
-
-                    case "ver":
-                    case "verizon":
-                        if (sub.info != null)
-                        {
-                            Verison = sub.info;
-                        }
-                        break;
-
-                    default:
-                        FirstLineOtherInfo += $"{sub.Name}#{sub.info}:|";
-                        break;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 获取文件版本
-        /// </summary>
-        public string Verison = "-1";
-        /// <summary>
-        /// 获取第一行除了版本以外的其他全部信息
-        /// </summary>
-        public string FirstLineOtherInfo = "";
-        /// <summary>
-        /// 编译错误记录
-        /// </summary>
-        public StringBuilder log = new StringBuilder();
-
-        /// <summary>
-        /// 实际输出用的文本转换,无可逆
-        /// </summary>
-        /// <param name="Reptex">要被转换的文本</param>
-        public void TextReplace(ref string Reptex)
-        {
-            Reptex = Reptex.Replace("/date", DateTime.Now.ToShortDateString());
-            Reptex = Reptex.Replace("/time", DateTime.Now.ToShortTimeString());
-            Reptex = Reptex.Replace("/datetime", DateTime.Now.ToString());
-            Reptex = Reptex.Replace("/lnow", LineNode.ToString());
-            Reptex = Reptex.Replace("/llen", Assemblage.Count.ToString());
-        }
-
-        public LineDisplay OADisplay = new LineDisplay();
-        /// <summary>
-        /// 如果为true,跳过一次pageend
-        /// </summary>
-        public bool IsSkipPageEnd = false;
         /// <summary>
         /// 显示其中一行的内容//只是单纯的显示(编辑用)
         /// </summary>
@@ -469,18 +335,6 @@ namespace LinePutScript.LinePut
             Reptex = Reptex.Replace("/com", ",");
             return Reptex;
         }
-        ////Todo:完全弃用这个方法?转移到Player? 或从Player转移到这个
-        ///// <summary>
-        ///// 显示当前阅读行的//包括替换(演讲用)
-        ///// </summary>
-        ///// <param name="line">哪一行的内容是</param>
-        ///// <param name="fd">要被显示的文档</param>
-        ///// <param name="IAld">半全局变量 会随时更改</param>
-        ///// <param name="dc">播放控制</param>
-        //public void DisplayLine(Line line, FlowDocument fd, LineDisplay IAld, DisplayControl dc)//Todo:使用委托在Player实现特殊替换的等功能 这样player就不用担心
-        //{
-        //    //ToDo
-        //}
 
         /// <summary>
         /// 控制显示委托 可用于插件,实现特殊功能等
@@ -489,6 +343,164 @@ namespace LinePutScript.LinePut
         /// <param name="ldp">预备显示内容</param>
         /// <param name="fd">流文档(输出端口</param>
         public delegate void DisplayControl(Sub order, ref LineDisplay ldp, ref FlowDocument fd);
+        /// <summary>
+        /// 核心方法:显示文档内容
+        /// </summary>
+        /// <param name="Document">FlowDocument</param>
+        /// <param name="lpt">LPT文档</param>
+        public static void DisplayDocument(FlowDocument Document, LptDocument lpt)
+        {
+            Document.Blocks.Clear();
+            Document.Background = new SolidColorBrush(lpt.OADisplay.BackColor);
+            LineDisplay IADisplay = new LineDisplay(lpt.OADisplay);//清空旧的IA
+
+            Document.Foreground = new SolidColorBrush(lpt.OADisplay.FontColor);
+            Document.Background = new SolidColorBrush(lpt.OADisplay.BackColor);
+
+            //用于判断下一行要不要用run 主要方法是判断行末是否有\n
+            bool NextUseRun = false;
+            lpt.LineNode = 1;
+            while (lpt.ReadCanNext())
+            {
+                DisplayLine(lpt.ReadNext(), Document, IADisplay, ref NextUseRun);
+            }
+        }
+        #endregion
+        /// <summary>
+        /// 新建一个LPT文档从LPT文本
+        /// </summary>
+        /// <param name="LPT">lpt文本</param>
+        public LptDocument(string LPT) : base(LPT)
+        {
+            foreach (Sub sub in First())
+            {
+                switch (sub.Name.ToLower())
+                {
+                    case "allfontcolor":
+                    case "fontcolor":
+                        if (sub.info == null)
+                        {
+                            //log.Append(sub.Name + ":未找到颜色记录\n");
+                        }
+                        else
+                        {
+                            OADisplay.FontColor = HEXToColor(sub.info);
+                        }
+                        break;
+
+                    case "backgroundcolor":
+                    case "background":
+                    case "allbackcolor":
+                    case "backcolor":
+                        if (sub.info == null)
+                        {
+                            //log.Append(sub.Name + ":未找到颜色记录\n");
+                        }
+                        else
+                        {
+                            OADisplay.BackColor = HEXToColor(sub.info);
+                        }
+                        break;
+                    case "fontsize":
+                    case "allfontsize":
+                        if (sub.info == null)
+                        {
+                            //log.Append(sub.Name + ":未找到颜色记录\n");
+                        }
+                        else
+                        {
+                            OADisplay.FontSize = Convert.ToSingle(sub.info);
+                        }
+                        break;
+
+                    case "font":
+                    case "fontfamily":
+                    case "allfontfamily":
+                        if (sub.info == null)
+                        {
+                            //log.Append(sub.Name + ":未找到颜色记录\n");
+                        }
+                        else
+                        {
+                            OADisplay.FontFamily = new FontFamily(sub.info);
+                        }
+                        break;
+
+                    case "u":
+                    case "underline":
+                        OADisplay.Underline = true; break;
+                    case "b":
+                    case "bold":
+                        OADisplay.Bold = true; break;
+                    case "i":
+                    case "italic":
+                        OADisplay.Italic = true; break;
+                    case "d":
+                    case "deleteline":
+                        OADisplay.Strikethrough = true; break;
+                    case "l":
+                    case "left":
+                        OADisplay.Alignment = TextAlignment.Left; break;
+                    case "r":
+                    case "right":
+                        OADisplay.Alignment = TextAlignment.Right; break;
+                    case "c":
+                    case "center":
+                        OADisplay.Alignment = TextAlignment.Center; break;
+                    case "j":
+                    case "justify":
+                        OADisplay.Alignment = TextAlignment.Justify; break;
+
+
+                    case "ver":
+                    case "verizon":
+                        if (sub.info != null)
+                        {
+                            Verison = sub.info;
+                        }
+                        break;
+
+                    default:
+                        FirstLineOtherInfo += $"{sub.Name}#{sub.info}:|";
+                        break;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取文件版本
+        /// </summary>
+        public string Verison = "-1";
+        /// <summary>
+        /// 获取第一行除了版本以外的其他全部信息
+        /// </summary>
+        public string FirstLineOtherInfo = "";
+        /// <summary>
+        /// 编译错误记录
+        /// </summary>
+        public StringBuilder log = new StringBuilder();
+
+        /// <summary>
+        /// 实际输出用的文本转换,无可逆
+        /// </summary>
+        /// <param name="Reptex">要被转换的文本</param>
+        public void TextReplace(ref string Reptex)
+        {
+            Reptex = Reptex.Replace("/date", DateTime.Now.ToShortDateString());
+            Reptex = Reptex.Replace("/time", DateTime.Now.ToShortTimeString());
+            Reptex = Reptex.Replace("/datetime", DateTime.Now.ToString());
+            Reptex = Reptex.Replace("/lnow", LineNode.ToString());
+            Reptex = Reptex.Replace("/llen", Assemblage.Count.ToString());
+        }
+        /// <summary>
+        /// 全局显示
+        /// </summary>
+        public LineDisplay OADisplay = new LineDisplay();
+        /// <summary>
+        /// 如果为true,跳过一次pageend
+        /// </summary>
+        public bool IsSkipPageEnd = false;
 
     }
 }

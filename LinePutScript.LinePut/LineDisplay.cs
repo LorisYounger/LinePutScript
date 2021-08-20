@@ -16,22 +16,57 @@ namespace LinePutScript.LinePut
     /// </summary>
     public class LineDisplay
     {
+        /// <summary>
+        /// 字体大小
+        /// </summary>
         public float FontSize = 12;
+        /// <summary>
+        /// 字体颜色
+        /// </summary>
         public Color FontColor = Colors.White;
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
         public Color BackColor = Color.FromRgb(68, 68, 68);
+        /// <summary>
+        /// 字体
+        /// </summary>
         public FontFamily FontFamily = new FontFamily("Microsoft YaHei UI");
+        /// <summary>
+        /// 输出文本内容
+        /// </summary>
         public string OutPut = "";//部分可能会用到
+        /// <summary>
+        /// 位置
+        /// </summary>
         public TextAlignment Alignment = TextAlignment.Left;//有其他属性以paragraph结尾
-
+        /// <summary>
+        /// 加粗
+        /// </summary>
         public bool Bold = false;
+        /// <summary>
+        /// 斜体
+        /// </summary>
         public bool Italic = false;
+        /// <summary>
+        /// 下划线
+        /// </summary>
         public bool Underline = false;
+        /// <summary>
+        /// 横线
+        /// </summary>
         public bool Strikethrough = false;
-
+        /// <summary>
+        /// 新建实体行
+        /// </summary>
         public LineDisplay()
         {
 
         }
+        /// <summary>
+        /// 复制实体行格式(不包括输出)
+        /// </summary>
+        /// <param name="ld"></param>
         public LineDisplay(LineDisplay ld)
         {
             Set(ld);
@@ -67,10 +102,19 @@ namespace LinePutScript.LinePut
         {
             return Alignment == TextAlignment.Left;
         }
+        /// <summary>
+        /// 在什么情况下用Paragraph或者Run: 有非默认的TextAlignment
+        /// </summary>
+        /// <param name="OA"></param>
+        /// <returns></returns>
         public bool UseRun(LineDisplay OA)
         {
             return OA.Alignment == TextAlignment.Left;
         }
+        /// <summary>
+        /// 输出Run
+        /// </summary>
+        /// <returns></returns>
         public Run OutPutRun()
         {
             Run run = new Run(OutPut);
@@ -94,7 +138,11 @@ namespace LinePutScript.LinePut
             //run.TextAlignment = Alignment;
             return run;
         }
-
+        /// <summary>
+        /// 输出Run
+        /// </summary>
+        /// <param name="OA">覆盖通用格式</param>
+        /// <returns></returns>
         public Run OutPutRun(LineDisplay OA)
         {
             Run run = new Run(OutPut);
@@ -126,40 +174,10 @@ namespace LinePutScript.LinePut
             //run.TextAlignment = Alignment;
             return run;
         }
-        //public Paragraph OutPutParagraph(LineDisplay OA)//没有这需求 新建paragraph的时候是没有格式的，使用OA会呈现错误的格式
-        //{
-        //    Paragraph run = new Paragraph(new Run(OutPut));
-
-        //    if (OA.Bold != Bold)
-        //        if (Bold)
-        //            run.FontWeight = FontWeights.Bold;
-
-        //    if (OA.Italic != Italic)
-        //        if (Italic)
-        //            run.FontStyle = FontStyles.Italic;
-
-        //    if (OA.Underline != Underline)
-        //        if (Underline)
-        //            run.TextDecorations = TextDecorations.Underline;
-
-        //    if (OA.Strikethrough != Strikethrough)
-        //        if (Strikethrough)
-        //            run.TextDecorations = TextDecorations.Strikethrough;
-
-        //    if (OA.FontSize != FontSize)
-        //        run.FontSize = FontSize;
-        //    if (OA.FontFamily != FontFamily)
-        //        run.FontFamily = FontFamily;
-        //    if (OA.BackColor != BackColor)
-        //        run.Background = new SolidColorBrush(BackColor);
-        //    if (OA.FontColor != FontColor)
-        //        run.Foreground = new SolidColorBrush(FontColor);
-
-        //    run.TextAlignment = Alignment;
-
-        //    return run;
-        //}
-
+        /// <summary>
+        /// 输出Paragraph
+        /// </summary>
+        /// <returns></returns>
         public Paragraph OutPutParagraph()
         {
             Paragraph run = new Paragraph(new Run(OutPut));
