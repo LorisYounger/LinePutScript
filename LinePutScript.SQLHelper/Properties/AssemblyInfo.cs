@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("LinePutScript.SQLHelper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SQL 帮助类")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LinePutScript.SQLHelper")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © exLB.org 2020")]
+[assembly: AssemblyTrademark("exLB.org")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("41e9da4a-6248-46a1-8d79-ef459a4c4b29")]
+[assembly: Guid("5ae669f5-099d-44ad-bb33-618e9bf42544")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
