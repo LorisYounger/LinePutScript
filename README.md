@@ -1,7 +1,7 @@
 LinePutScript
 ===
 
-<img src="Lineput.png" alt="Lineput" height="100px" />
+<img src="Lineput.png" alt="Lineput" height="150px" />
 
 LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
@@ -13,8 +13,6 @@ LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
 提供开源源代码 可以自行修改支持更多功能
 
-详细使用方法见[LinePutScript\bin\Release\LinePutScript.xml](https://github.com/LorisYounger/LinePutScript/blob/master/LinePutScript/bin/Release/LinePutScript.xml)
-
 ## 项目文件解释
 
 ### LinePutScript
@@ -22,14 +20,13 @@ LinePutScript是一种定义行读取结构和描述其内容的标准语言
 一个LPS基本操作类,是所有LPS的根引用
 如需操作lps文件,请使用这个文件
 
-'LinePutScript.Core' 为.net Core版本
-'LinePutScript.Standard' 为.net Standard版本
+*'LinePutScript.Core'* 为.net Core版本
 
 ### LinePutScript.SQLHelper
 
 一个操作数据库的帮助类 获得LPS结构的数据而非xml
 
-LinePutScript.SQLHelper.Core 为.net Core版本
+*LinePutScript.SQLHelper.Core* 为.net Core版本
 
 ### LinePutScript.Lineput
 
@@ -37,7 +34,7 @@ LinePut是使用LinePutScript描述富文本的一种格式
 
 这个类帮助转换LinePut为XAML FlowDocument
 
-### LinePutScriptDataBase
+### LinePutScriptDataBase*
 
 一个数据库构造类 通过映射LPS类型内容到内存, 从而实现基于LPS的快速数据库
 
@@ -71,8 +68,4 @@ Install-Package LinePutScript.LinePut
 [LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
 
 [LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut/1.1.6)
-
-3. 直接下载dll引用
-
-[Releases](https://github.com/LorisYounger/LinePutScript/releases)
 

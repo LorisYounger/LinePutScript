@@ -212,7 +212,7 @@ namespace LinePutScript
         /// 从Subs中移除特定对象的第一个匹配项
         /// </summary>
         /// <param name="Sub">要从Subs中删除的Sub的名称</param>
-        /// <returns>如果成功移除了Sub,则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了Sub,则为 true; 否则为 false</returns>
         public bool Remove(Sub Sub)
         {
             return Subs.Remove(Sub);
@@ -221,7 +221,7 @@ namespace LinePutScript
         /// 从Subs中移除特定名称的第一个匹配项
         /// </summary>
         /// <param name="SubName">要从Subs中删除的Sub的名称</param>
-        /// <returns>如果成功移除了Sub,则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了Sub,则为 true; 否则为 false</returns>
         public bool Remove(string SubName)
         {
             for (int i = 0; i < Subs.Count; i++)
@@ -252,7 +252,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="sub">要在Line集合中定位的Sub</param>
-        /// <returns>如果在Line集合中找到sub,则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到sub,则为True; 否则为false</returns>
         public bool Contains(Sub sub)
         {
             if (this == sub)
@@ -263,7 +263,7 @@ namespace LinePutScript
         /// 返回一个值,该值指示指定的字段是否出现在Subs的Sub的名字
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果在Line集合中找到符合的名字,则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到符合的名字,则为True; 否则为false</returns>
         public bool Contains(string value)
         {
             if (Name.Contains(value))
@@ -274,7 +274,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Line集合中
         /// </summary>
         /// <param name="subName">要在Line集合中定位的Sub的名字</param>
-        /// <returns>如果在Line集合中找到符合的名字,则为True；否则为false</returns>
+        /// <returns>如果在Line集合中找到符合的名字,则为True; 否则为false</returns>
         public bool Have(string subName)
         {
             if (Name == subName)
@@ -287,7 +287,7 @@ namespace LinePutScript
         /// 匹配拥有相同名称的Line或sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
         public Sub[] FindAll(string subName)
         {
             List<Sub> subs = new List<Sub>();
@@ -302,7 +302,7 @@ namespace LinePutScript
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个sub,则为该sub；否则为null</returns>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
         public Sub Find(string subName)
         {
             if (this.Name == subName)
@@ -314,7 +314,7 @@ namespace LinePutScript
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个sub,则为该sub；否则为新建的相同名称sub</returns>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
         public Sub FindorAdd(string subName)
         {
             Sub sub = Find(subName);
@@ -335,7 +335,7 @@ namespace LinePutScript
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的Sub,则为数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
         public Sub[] SeachALL(string value)
         {
             List<Sub> subs = new List<Sub>();
@@ -350,7 +350,7 @@ namespace LinePutScript
         /// 搜索字段是否出现在Line名称,并返回整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的第一个Sub,则为该Sub；否则为null</returns>
+        /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
         public Sub Seach(string value)
         {
             if (this.Name.Contains(value))
@@ -364,7 +364,7 @@ namespace LinePutScript
         /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引；否则为 -1</returns>
+        /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string subName)
         {
             for (int i = 0; i < Subs.Count; i++)
@@ -378,7 +378,7 @@ namespace LinePutScript
         /// 搜索相同名称的Sub,并返回整个Sub中全部匹配的sub从零开始的索引
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的sub的元素,则为该元素的从零开始的索引组；否则为空的Array</returns>
+        /// <returns>如果找到相同名称的sub的元素,则为该元素的从零开始的索引组; 否则为空的Array</returns>
         public int[] IndexsOf(string subName)
         {
             List<int> lines = new List<int>();
@@ -479,5 +479,136 @@ namespace LinePutScript
         //{
         //    return "line";
         //}
+        #region GETER
+        /// <summary>
+        /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
+        public Sub this[string subName]
+        {
+            get
+            {
+                return Find(subName);
+            }
+            set
+            {
+                AddorReplaceSub(value);
+            }
+        }
+        /// <summary>
+        /// 获得bool属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的sub,则为True; 否则为false</returns>
+        public bool GetBool(string subName) => Find(subName) != null;
+        /// <summary>
+        /// 设置bool属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">
+        /// 如果为ture,则在没有相同name为subName的sub时候添加新的sub
+        /// 如果为false,则删除所有name为subName的sub
+        /// </param>
+        public void SetBool(string subName, bool value)
+        {
+            if (value)
+                FindorAdd(subName);
+            else
+                RemoveAll(subName);
+        }
+        /// <summary>
+        /// 获得int属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的int值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public int GetInt(string subName, int defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return sub.InfoToInt;
+        }
+        /// <summary>
+        /// 设置int属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的int值</param>
+        public void SetInt(string subName, int value) => FindorAdd(subName).InfoToInt = value;
+
+        /// <summary>
+        /// 获得long属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的long值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public long GetInt64(string subName, long defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return sub.InfoToInt64;
+        }
+        /// <summary>
+        /// 设置long属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的long值</param>
+        public void SetInt64(string subName, long value) => FindorAdd(subName).InfoToInt64 = value;
+
+        /// <summary>
+        /// 获得String属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的String值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public string GetString(string subName, string defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return sub.Info;
+        }
+        /// <summary>
+        /// 设置String属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的String值</param>
+        public void SetString(string subName, string value) => FindorAdd(subName).Info = value;
+
+        /// <summary>
+        /// 获得double属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的double值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public double GetDouble(string subName, double defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return sub.InfoToDouble;
+        }
+        /// <summary>
+        /// 设置double属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的double值</param>
+        public void SetDouble(string subName, double value) => FindorAdd(subName).InfoToDouble = value;
+
+        #endregion
     }
 }

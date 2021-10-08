@@ -58,7 +58,14 @@ namespace LinePutScript
         {
             Assemblage.AddRange(newLines);
         }
-
+        /// <summary>
+        /// 将指定Line的元素添加到Assemblage的末尾
+        /// </summary>
+        /// <param name="newLines">要添加的多个Line</param>
+        public void AddRange(IEnumerable<Line> newLines)
+        {
+            Assemblage.AddRange(newLines);
+        }
         /// <summary>
         /// 将指定的Line添加到指定索引处
         /// </summary>
@@ -78,10 +85,19 @@ namespace LinePutScript
             Assemblage.InsertRange(index, newLines);
         }
         /// <summary>
+        /// 将指定Line的元素添加指定索引处
+        /// </summary>
+        /// <param name="index">应插入 Line 的从零开始的索引</param>
+        /// <param name="newLines">要添加的多个Line</param>
+        public void InsertRange(int index, IEnumerable<Line> newLines)
+        {
+            Assemblage.InsertRange(index, newLines);
+        }
+        /// <summary>
         /// 从Assemblage中移除特定对象的第一个匹配项
         /// </summary>
         /// <param name="line">要从Assemblage中删除的Line的名称</param>
-        /// <returns>如果成功移除了line,则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了line,则为 true; 否则为 false</returns>
         public bool Remove(Line line)
         {
             return Assemblage.Remove(line);
@@ -90,7 +106,7 @@ namespace LinePutScript
         /// 从Assemblage中移除特定名称的第一个匹配项
         /// </summary>
         /// <param name="lineName">要从Assemblage中删除的Line的名称</param>
-        /// <returns>如果成功移除了line,则为 true；否则为 false</returns>
+        /// <returns>如果成功移除了line,则为 true; 否则为 false</returns>
         public bool Remove(string lineName)
         {
             for (int i = 0; i < Assemblage.Count; i++)
@@ -139,7 +155,7 @@ namespace LinePutScript
         /// 确定某Line是否在Assemblage中
         /// </summary>
         /// <param name="line">要在Assemblage中定位的Line</param>
-        /// <returns>如果在Assemblage中找到line,则为True；否则为false </returns>
+        /// <returns>如果在Assemblage中找到line,则为True; 否则为false </returns>
         public bool Contains(Line line)
         {
             return Assemblage.Contains(line);
@@ -148,7 +164,7 @@ namespace LinePutScript
         /// 确定某Sub是否在Assemblage中
         /// </summary>
         /// <param name="sub">要在Assemblage中定位的Sub</param>
-        /// <returns>如果在Assemblage中找到line,则为True；否则为false</returns>
+        /// <returns>如果在Assemblage中找到line,则为True; 否则为false</returns>
         public bool Contains(Sub sub)
         {
             foreach (Line li in Assemblage)
@@ -160,7 +176,7 @@ namespace LinePutScript
         /// 返回一个值,该值指示指定的字段是否出现在Assemblage的line的名字。
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果在Assemblage的line中找到与value相似的名字,则为True；否则为false</returns>
+        /// <returns>如果在Assemblage的line中找到与value相似的名字,则为True; 否则为false</returns>
         public bool ContainsLine(string value)
         {
             return Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null;
@@ -169,7 +185,7 @@ namespace LinePutScript
         /// 返回一个值,该值指示指定的字段是否出现在Assemblage的Line或里面的Sub的名字
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果在Assemblage的line和line里面的sub中找到相似的名字,则为True；否则为false</returns>
+        /// <returns>如果在Assemblage的line和line里面的sub中找到相似的名字,则为True; 否则为false</returns>
         public bool ContainsSub(string value)
         {
             if (Assemblage.FirstOrDefault(x => x.Name.Contains(value)) != null)
@@ -180,7 +196,7 @@ namespace LinePutScript
         /// 确定某Line(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="lineName">Line的名字</param>
-        /// <returns>如果在Assemblage中找到相同的名字,则为True；否则为false</returns>
+        /// <returns>如果在Assemblage中找到相同的名字,则为True; 否则为false</returns>
         public bool HaveLine(string lineName)
         {
             return (Assemblage.FirstOrDefault(x => x.Name == lineName) != null);
@@ -189,7 +205,7 @@ namespace LinePutScript
         /// 确定某sub(名字定位)是否在Assemblage中
         /// </summary>
         /// <param name="subName">sub的名字</param>
-        /// <returns>如果在Assemblage的sub中找到相同的名字,则为True；否则为false</returns>
+        /// <returns>如果在Assemblage的sub中找到相同的名字,则为True; 否则为false</returns>
         public bool HaveSub(string subName)
         {
             if (Assemblage.FirstOrDefault(x => x.Name == subName) != null)
@@ -202,7 +218,7 @@ namespace LinePutScript
         /// 匹配拥有相同名称的Line的所有元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相同名称的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
         public Line[] FindAllLine(string lineName)
         {
             List<Line> lines = new List<Line>();
@@ -215,7 +231,7 @@ namespace LinePutScript
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Line,则为该Line；否则为null</returns>
+        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
         public Line FindLine(string lineName)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
@@ -224,7 +240,7 @@ namespace LinePutScript
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Line,则为该Line；否则为新建的相同名称Line</returns>
+        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
         public Line FindorAddLine(string lineName)
         {
             Line line = FindLine(lineName);
@@ -243,7 +259,7 @@ namespace LinePutScript
         /// 匹配拥有相同名称的Sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相同名称的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
         public Sub[] FindAllSub(string subName)
         {
             List<Sub> lines = new List<Sub>();
@@ -257,7 +273,7 @@ namespace LinePutScript
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Sub,则为该Line；否则为null</returns>
+        /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
         public Sub FindSub(string subName)
         {//ToDO:给全部find单个的sub进行优化(不使用have)
             foreach (Line li in Assemblage)
@@ -274,7 +290,7 @@ namespace LinePutScript
         /// 搜索全部相似名称的Line的所有元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的Line,则为数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相似名称的Line,则为数组; 否则为一个空的Array</returns>
         public Line[] SearchAllLine(string value)
         {
             List<Line> lines = new List<Line>();
@@ -287,7 +303,7 @@ namespace LinePutScript
         /// 搜索字段是否出现在Line名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的第一个Line,则为该Line；否则为null</returns>
+        /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
         public Line SearchLine(string value)
         {
             return Assemblage.FirstOrDefault(x => x.Name.Contains(value));
@@ -296,7 +312,7 @@ namespace LinePutScript
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相似名称的Line,则为该数组；否则为一个空的Array</returns>
+        /// <returns>如果找到相似名称的Line,则为该数组; 否则为一个空的Array</returns>
         public Sub[] SearchAllSub(string value)
         {
             List<Sub> lines = new List<Sub>();
@@ -310,7 +326,7 @@ namespace LinePutScript
         /// 搜索字段是否出现在Sub名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="value">字段</param>
-        /// <returns>如果找到相同名称的第一个Sub,则为该Sub；否则为null</returns>
+        /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
         public Sub SearchSub(string value)
         {//ToDO:给全部find单个的sub进行优化(不使用Contains)
             foreach (Line li in Assemblage)
@@ -327,7 +343,7 @@ namespace LinePutScript
         /// 搜索相同名称的Line,并返回整个Assemblage中第一个匹配的Line从零开始的索引
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引；否则为 -1</returns>
+        /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string lineName)
         {
             for (int i = 0; i < Assemblage.Count; i++)
@@ -341,7 +357,7 @@ namespace LinePutScript
         /// 搜索相同名称的Line,并返回整个Assemblage中全部匹配的Line从零开始的索引
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的Line的元素,则为该元素的从零开始的索引组；否则为空的Array</returns>
+        /// <returns>如果找到相同名称的Line的元素,则为该元素的从零开始的索引组; 否则为空的Array</returns>
         public int[] IndexsOf(string lineName)
         {
             List<int> lines = new List<int>();
@@ -460,7 +476,7 @@ namespace LinePutScript
         }
         #endregion
 
-
+        
 
 
 
@@ -516,6 +532,24 @@ namespace LinePutScript
             return Assemblage.GetEnumerator();
         }
 
+        /// <summary>
+        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
+        public Line this[string lineName]
+        {
+            get
+            {
+                return FindLine(lineName);
+            }
+            set
+            {
+                AddorReplaceLine(value);
+            }
+        }
+
+        
         /// <summary>
         /// 将当前Documents转换成文本格式
         /// </summary>
@@ -575,6 +609,123 @@ namespace LinePutScript
                 return l;
             }
         }
+
+        #region GETER
+
+        /// <summary>
+        /// 获得bool属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的line,则为True; 否则为false</returns>
+        public bool GetBool(string lineName) => FindLine(lineName) != null;
+        /// <summary>
+        /// 设置bool属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">
+        /// 如果为ture,则在没有相同name为lineName的line时候添加新的line
+        /// 如果为false,则删除所有name为lineName的line
+        /// </param>
+        public void SetBool(string lineName, bool value)
+        {
+            if (value)
+                FindorAddLine(lineName);
+            else
+                RemoveAll(lineName);
+        }
+        /// <summary>
+        /// 获得int属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的int值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public int GetInt(string lineName, int defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return line.InfoToInt;
+        }
+        /// <summary>
+        /// 设置int属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的int值</param>
+        public void SetInt(string lineName, int value) => FindorAddLine(lineName).InfoToInt = value;
+
+        /// <summary>
+        /// 获得long属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的long值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public long GetInt64(string lineName, long defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return line.InfoToInt64;
+        }
+        /// <summary>
+        /// 设置long属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的long值</param>
+        public void SetInt64(string lineName, long value) => FindorAddLine(lineName).InfoToInt64 = value;
+
+        /// <summary>
+        /// 获得String属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的String值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public string GetString(string lineName, string defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return line.Info;
+        }
+        /// <summary>
+        /// 设置String属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的String值</param>
+        public void SetString(string lineName, string value) => FindorAddLine(lineName).Info = value;
+
+        /// <summary>
+        /// 获得double属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的double值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public double GetDouble(string lineName, double defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return line.InfoToDouble;
+        }
+        /// <summary>
+        /// 设置double属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的double值</param>
+        public void SetDouble(string lineName, double value) => FindorAddLine(lineName).InfoToDouble = value;
+
+        #endregion
     }
 
 }
