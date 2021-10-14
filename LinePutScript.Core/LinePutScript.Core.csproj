@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>LinePutScript</RootNamespace>
     <Authors>LorisYounger</Authors>
     <Description>LinePutScript是一种定义行读取结构和描述其内容的标准语言</Description>
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\\zou jin\Documents\Visual Studio 2019\Projects\LinePutScript\LinePutScript.Core\LinePutScript.Core.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
 </Project>

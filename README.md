@@ -7,7 +7,7 @@ LinePutScript是一种定义行读取结构和描述其内容的标准语言
 
 可以应用于 保存 设置,资源,模板文件 等各种场景
 
-类似于XML但是比XML更易于使用(理论上)
+类似于XML或Json但是比XML和Json更易于使用(理论上)
 
 本类库可以更轻松的创建,修改,保存LinePutScript
 
@@ -67,5 +67,5 @@ Install-Package LinePutScript.LinePut
 
 [LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
 
-[LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut/1.1.6)
+[LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut)
 

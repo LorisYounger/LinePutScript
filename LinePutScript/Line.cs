@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// 行 包含多个子类 继承自子类
     /// </summary>
-    public class Line : Sub
+    public class Line : Sub, IList<Sub>, ICollection<Sub>, IEnumerable<Sub>, IEnumerable, IReadOnlyList<Sub>, IReadOnlyCollection<Sub>
     {
         /// <summary>
         /// 创建一行
@@ -155,8 +157,6 @@ namespace LinePutScript
         /// </summary>
         public List<Sub> Subs = new List<Sub>();
 
-
-
         #region List操作
         /// <summary>
         /// 将指定的Sub添加到Subs列表的末尾
@@ -211,7 +211,7 @@ namespace LinePutScript
         /// <summary>
         /// 从Subs中移除特定对象的第一个匹配项
         /// </summary>
-        /// <param name="Sub">要从Subs中删除的Sub的名称</param>
+        /// <param name="Sub">要从Subs中删除的Sub</param>
         /// <returns>如果成功移除了Sub,则为 true; 否则为 false</returns>
         public bool Remove(Sub Sub)
         {
@@ -608,6 +608,56 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double值</param>
         public void SetDouble(string subName, double value) => FindorAdd(subName).InfoToDouble = value;
+        #endregion
+
+        #region Enumerable
+
+        /// <summary>
+        /// 获取Sub数量
+        /// </summary>
+        public int Count => Subs.Count;
+        /// <summary>
+        /// 是否只读
+        /// </summary>
+        public bool IsReadOnly => ((ICollection<Sub>)Subs).IsReadOnly;
+        /// <summary>
+        /// 通过引索修改Line中Sub内容
+        /// </summary>
+        /// <param name="index">要获得或设置的引索</param>
+        /// <returns>引索指定的Sub</returns>
+        public Sub this[int index] { get => Subs[index]; set => Subs[index] = value; }
+        /// <summary>
+        /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的Sub从零开始的索引
+        /// </summary>
+        /// <param name="sub">用于定义匹配的Sub</param>
+        /// <returns>如果找到相同名称的Sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
+        public int IndexOf(Sub sub) => Subs.FindIndex(x => x.Equals(sub));
+        /// <summary>
+        /// 将指定的Sub添加到指定索引处
+        /// </summary>
+        /// <param name="index">应插入 Sub 的从零开始的索引</param>
+        /// <param name="newSub">要添加的Sub</param>
+        public void Insert(int index, Sub newSub) => InsertSub(index, newSub);
+        /// <summary>
+        /// 从Subs中移除特定引索的Sub
+        /// </summary>
+        /// <param name="index">要删除Sub的引索</param>
+        public void RemoveAt(int index) => Subs.RemoveAt(index);
+        /// <summary>
+        /// 将指定的Sub添加到Subs列表的末尾
+        /// </summary>
+        /// <param name="newSub">要添加的Sub</param>
+        public void Add(Sub newSub) => AddSub(newSub);
+        /// <summary>
+        /// 移除Line中所有的Sub
+        /// </summary>
+        public void Clear() => Subs.Clear();
+        /// <summary>
+        /// 将整个array复制到Line的Subs
+        /// </summary>
+        /// <param name="array">复制到Subs的Sub列表</param>
+        /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
+        public void CopyTo(Sub[] array, int arrayIndex) => Subs.CopyTo(array, arrayIndex);
 
         #endregion
     }

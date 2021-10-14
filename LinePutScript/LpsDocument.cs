@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,10 +8,11 @@ namespace LinePutScript
     /// <summary>
     /// 文件 包括文件读写等一系列操作
     /// </summary>
-    public class LpsDocument
-    {/// <summary>
-     /// 集合 全部文件的数据
-     /// </summary>
+    public class LpsDocument : IList<Line>, ICollection<Line>, IEnumerable<Line>, IEnumerable, IReadOnlyList<Line>, IReadOnlyCollection<Line>
+    {
+        /// <summary>
+        /// 集合 全部文件的数据
+        /// </summary>
         public List<Line> Assemblage = new List<Line>();
 
         /// <summary>
@@ -476,33 +478,22 @@ namespace LinePutScript
         }
         #endregion
 
-        
-
-
 
         /// <summary>
         /// 从指定的字符串加载LPS文档
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
-        /// <returns></returns>
-        public bool Load(string lps)
+        public void Load(string lps)
         {
             Assemblage.Clear();//清空当前文档
-            try
+            string[] file = lps.Replace("\r", "").Trim('\n').Split('\n');
+            foreach (string str in file)
             {
-                string[] file = lps.Replace("\r", "").Trim('\n').Split('\n');
-                foreach (string str in file)
-                {
-                    if (str != "")
-                        Assemblage.Add(new Line(str));
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
+                if (str != "")
+                    Assemblage.Add(new Line(str));
             }
         }
+
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
         /// </summary>
@@ -549,7 +540,7 @@ namespace LinePutScript
             }
         }
 
-        
+
         /// <summary>
         /// 将当前Documents转换成文本格式
         /// </summary>
@@ -609,6 +600,17 @@ namespace LinePutScript
                 return l;
             }
         }
+        /// <summary>
+        /// 是否只读
+        /// </summary>
+        public bool IsReadOnly => ((ICollection<Line>)Assemblage).IsReadOnly;
+
+        /// <summary>
+        /// 通过引索修改lps中Line内容
+        /// </summary>
+        /// <param name="index">要获得或设置的引索</param>
+        /// <returns>引索指定的Line</returns>
+        public Line this[int index] { get => Assemblage[index]; set => Assemblage[index] = value; }
 
         #region GETER
 
@@ -724,6 +726,42 @@ namespace LinePutScript
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double值</param>
         public void SetDouble(string lineName, double value) => FindorAddLine(lineName).InfoToDouble = value;
+
+        #endregion
+
+        #region Enumerable
+        /// <summary>
+        /// 搜索相同Line,并返回整个Assemblage中第一个匹配的Line从零开始的索引
+        /// </summary>
+        /// <param name="line">用于定义匹配的Line</param>
+        /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
+        public int IndexOf(Line line) => Assemblage.FindIndex(x => x.Equals(line));
+        /// <summary>
+        /// 将指定的Line添加到指定索引处
+        /// </summary>
+        /// <param name="index">应插入 Line 的从零开始的索引</param>
+        /// <param name="newLine">要添加的Line</param>
+        public void Insert(int index, Line newLine) => InsertLine(index, newLine);
+        /// <summary>
+        /// 将指定的Line添加到Assemblage列表的末尾
+        /// </summary>
+        /// <param name="newLine">要添加的Line</param>
+        public void Add(Line newLine) => AddLine(newLine);
+        /// <summary>
+        /// 移除Assemblage中所有的Line
+        /// </summary>
+        public void Clear() => Assemblage.Clear();
+        /// <summary>
+        /// 将整个array复制到Assemblage
+        /// </summary>
+        /// <param name="array">复制到Assemblage的Line列表</param>
+        /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
+        public void CopyTo(Line[] array, int arrayIndex) => Assemblage.CopyTo(array, arrayIndex);
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Assemblage).GetEnumerator();
+        }
 
         #endregion
     }
