@@ -3,7 +3,7 @@ LinePutScript
 
 <img src="Lineput.png" alt="Lineput" height="150px" />
 
-LinePutScript是一种定义行读取结构和描述其内容的标准语言
+LinePutScript是一种数据交换格式定义行读取结构和描述其内容的标准语言
 
 可以应用于 保存 设置,资源,模板文件 等各种场景
 

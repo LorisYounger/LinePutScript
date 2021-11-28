@@ -315,6 +315,21 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
+        /// 匹配拥有相同信息的Line或sub的所有元素
+        /// </summary>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Sub[] FindAllInfo(string subinfo)
+        {
+            List<Sub> subs = new List<Sub>();
+            if (info == subinfo)
+                subs.Add(this);
+            foreach (Sub su in Subs)
+                if (su.info == subinfo)
+                    subs.Add(su);
+            return subs.ToArray();
+        }
+        /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>

@@ -244,6 +244,19 @@ namespace LinePutScript
             return lines.ToArray();
         }
         /// <summary>
+        /// 匹配拥有相同信息的Line的所有元素
+        /// </summary>
+        /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Line[] FindAllLineInfo(string lineinfo)
+        {
+            List<Line> lines = new List<Line>();
+            foreach (Line li in Assemblage)
+                if (li.info == lineinfo)
+                    lines.Add(li);
+            return lines.ToArray();
+        }
+        /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
@@ -253,7 +266,7 @@ namespace LinePutScript
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
         }
         /// <summary>
-        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
+        /// 搜索与指定名称和信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
@@ -267,7 +280,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public Line FindInfo(string lineinfo)
+        public Line FindLineInfo(string lineinfo)
         {
             return Assemblage.FirstOrDefault(x => x.info == lineinfo);
         }
@@ -305,18 +318,83 @@ namespace LinePutScript
             return lines.ToArray();
         }
         /// <summary>
+        /// 匹配拥有相同名称和信息的Sub的所有元素
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Sub[] FindAllSub(string subName, string subinfo)
+        {
+            List<Sub> lines = new List<Sub>();
+            foreach (Line li in Assemblage)
+            {
+                lines.AddRange(li.FindAll(subName, subinfo));
+            }
+            return lines.ToArray();
+        }
+        /// <summary>
+        /// 匹配拥有相同信息的Sub的所有元素
+        /// </summary>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Sub[] FindAllSubInfo(string subinfo)
+        {
+            List<Sub> lines = new List<Sub>();
+            foreach (Line li in Assemblage)
+            {
+                lines.AddRange(li.FindAllInfo(subinfo));
+            }
+            return lines.ToArray();
+        }
+        /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
         public Sub FindSub(string subName)
-        {//ToDO:给全部find单个的sub进行优化(不使用have)
+        {
             foreach (Line li in Assemblage)
             {
                 if (li.Name == subName)
                     return li;
-                if (li.Have(subName))
-                    return li.Find(subName);
+                var l = li.Find(subName);
+                if (l != null)
+                    return l;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 搜索与指定名称和信息,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的第一个Sub,则为该Line; 否则为null</returns>
+        public Sub FindSub(string subName, string subinfo)
+        {
+            foreach (Line li in Assemblage)
+            {
+                if (li.Name == subName && li.info == subinfo)
+                    return li;
+                var l = li.Find(subName, subinfo);
+                if (l != null)
+                    return l;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的第一个Sub,则为该Line; 否则为null</returns>
+        public Sub FindSubInfo(string subinfo)
+        {
+            foreach (Line li in Assemblage)
+            {
+                if (li.info == subinfo)
+                    return li;
+                var l = li.FindInfo(subinfo);
+                if (l != null)
+                    return l;
             }
             return null;
         }
@@ -363,13 +441,14 @@ namespace LinePutScript
         /// <param name="value">字段</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
         public Sub SearchSub(string value)
-        {//ToDO:给全部find单个的sub进行优化(不使用Contains)
+        {
             foreach (Line li in Assemblage)
             {
                 if (li.Name.Contains(value))
                     return li;
-                if (li.Contains(value))
-                    return li.Seach(value);
+                var l = li.Seach(value);
+                if (l != null)
+                    return l;
             }
             return null;
         }
@@ -614,7 +693,7 @@ namespace LinePutScript
             return ((LpsDocument)obj).GetLongHashCode() == GetLongHashCode();
         }
         /// <summary>
-        /// 获得当前文档大小 单位:字节
+        /// 获得当前文档大小 单位:字符
         /// </summary>
         public int Length
         {
