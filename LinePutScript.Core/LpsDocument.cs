@@ -230,6 +230,20 @@ namespace LinePutScript
             return lines.ToArray();
         }
         /// <summary>
+        /// 匹配拥有相同名称和信息的Line的所有元素
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Line[] FindAllLine(string lineName, string lineinfo)
+        {
+            List<Line> lines = new List<Line>();
+            foreach (Line li in Assemblage)
+                if (li.Name == lineName && li.info == lineinfo)
+                    lines.Add(li);
+            return lines.ToArray();
+        }
+        /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
@@ -237,6 +251,25 @@ namespace LinePutScript
         public Line FindLine(string lineName)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
+        }
+        /// <summary>
+        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
+        public Line FindLine(string lineName, string lineinfo)
+        {
+            return Assemblage.FirstOrDefault(x => x.Name == lineName && x.info == lineinfo);
+        }
+        /// <summary>
+        /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
+        public Line FindInfo(string lineinfo)
+        {
+            return Assemblage.FirstOrDefault(x => x.info == lineinfo);
         }
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line

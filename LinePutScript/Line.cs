@@ -299,6 +299,22 @@ namespace LinePutScript
             return subs.ToArray();
         }
         /// <summary>
+        /// 匹配拥有相同名称和信息的Line或sub的所有元素
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
+        public Sub[] FindAll(string subName, string subinfo)
+        {
+            List<Sub> subs = new List<Sub>();
+            if (Name == subName && info == subinfo)
+                subs.Add(this);
+            foreach (Sub su in Subs)
+                if (su.Name == subName && su.info == subinfo)
+                    subs.Add(su);
+            return subs.ToArray();
+        }
+        /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
@@ -309,7 +325,25 @@ namespace LinePutScript
                 return this;
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
-
+        /// <summary>
+        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
+        public Sub Find(string subName, string subinfo)
+        {
+            return Subs.FirstOrDefault(x => x.Name == subName && x.info == subinfo);
+        }
+        /// <summary>
+        /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
+        /// </summary>
+        /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
+        /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
+        public Sub FindInfo(string subinfo)
+        {
+            return Subs.FirstOrDefault(x => x.info == subinfo);
+        }
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>

@@ -1,4 +1,6 @@
-﻿namespace LinePutScript
+﻿using System.Text;
+
+namespace LinePutScript
 {
     /// <summary>
     /// 子类 LinePutScript最基础的类
@@ -29,6 +31,22 @@
         {
             Name = name;
             Info = info;
+        }
+        /// <summary>
+        /// 通过名字和信息创建新的Sub
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">多个信息 (正常版本)</param>
+        public Sub(string name, params string[] info)
+        {
+            Name = name;
+            StringBuilder sb = new StringBuilder();
+            foreach (string s in info)
+            {
+                sb.Append(TextReplace(s));
+                sb.Append(',');
+            }
+            this.info = sb.ToString().TrimEnd(',');
         }
 
         /// <summary>
