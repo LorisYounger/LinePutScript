@@ -1,11 +1,13 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections;
+using System.Text;
 
 namespace LinePutScript
 {
     /// <summary>
     /// 子类 LinePutScript最基础的类
     /// </summary>
-    public class Sub
+    public class Sub : ICloneable, IEnumerable, IComparable<Sub>, IEquatable<Sub>
     {
         /// <summary>
         /// 创建一个子类
@@ -71,7 +73,7 @@ namespace LinePutScript
         /// <summary>
         /// 名称 没有唯一性
         /// </summary>
-        public string Name = "lps";
+        public string Name;
 
         /// <summary>
         /// ID 根据Name生成 没有唯一性
@@ -154,7 +156,7 @@ namespace LinePutScript
         /// 返回循环访问 Info集合 的枚举数。
         /// </summary>
         /// <returns>用于 Info集合 的枚举数</returns>
-        public System.Collections.IEnumerator GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
             return GetInfos().GetEnumerator();
         }
@@ -180,15 +182,7 @@ namespace LinePutScript
                 return null;
             return Subs[Subs.Length - 1];
         }
-        ////暂时应该不需要判断类型
-        ///// <summary>
-        ///// 获取当前标签的类型
-        ///// </summary>
-        ///// <returns>类型</returns>
-        //public new virtual string GetType()
-        //{
-        //    return "sub";
-        //}
+
         /// <summary>
         /// 退回Info的反转义文本 (正常显示)
         /// </summary>
@@ -256,13 +250,8 @@ namespace LinePutScript
             return TextReplace(Name) + '#' + info + ":|";
         }
 
-        //public static string[] Split(string input, string pattern)
-        //{
-        //    int splwhere = input.IndexOf(pattern);
-        //    if (splwhere == -1)
-        //        return new string[1] { input };
-        //    return new string[2] { input.}
-        //}
+        #region Interface
+
         /// <summary>
         /// 获得该Sub的哈希代码
         /// </summary>
@@ -278,36 +267,30 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public bool Equals(Sub obj)
         {
-            if (obj.GetType() != GetType())
-                return false;
-            return ((Sub)obj).GetLongHashCode() == GetLongHashCode();
+            return obj.GetLongHashCode() == GetLongHashCode();
         }
+        /// <summary>
+        /// 将当前sub与另一个sub进行比较,并退回一个整数指示在排序位置中是位于另一个对象之前之后还是相同位置
+        /// </summary>
+        /// <param name="other">另一个sub</param>
+        /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
+        public int CompareTo(Sub other)
+        {
+            int comp = Name.CompareTo(other.Name);
+            if (comp != 0)
+                return comp;
+            return info.CompareTo(other.info);
+        }
+        /// <summary>
+        /// 克隆一个Sub
+        /// </summary>
+        /// <returns>相同的sub</returns>
+        public object Clone()
+        {
+            return new Sub(this);
+        }
+        #endregion
     }
-
-
-    ////目前不清楚是否需要组类别 用户可以自行设定,没必要限制用户想象力
-    ///// <summary>
-    ///// 组 包含多个Line 继承自子类
-    ///// </summary>
-    //public class Group : Sub
-    //{
-    //    /// <summary>
-    //    /// 文本 在末尾没有结束Line号的文本
-    //    /// </summary>
-    //    public string Text = "";
-    //    /// <summary>
-    //    /// 子Line
-    //    /// </summary>
-    //    public List<Line> Lines = new List<Line>();
-    //    /// <summary>
-    //    /// 获取当前标签的类型
-    //    /// </summary>
-    //    /// <returns>类型</returns>
-    //    public override string GetType()
-    //    {
-    //        return "group";
-    //    }
-    //}  
 }

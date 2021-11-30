@@ -43,8 +43,9 @@ LinePut是使用LinePutScript描述富文本的一种格式
 一个简单的内存数据库通过使用LinePutScript.DataBase类实现
 **\*注: 有内存无法正确回收的bug,可能需要重启解决**
 
-
 ## 如何使用:
+
+### 安装
 
 1. 通过Parckage Manager
 
@@ -63,9 +64,100 @@ Install-Package LinePutScript.LinePut
 
 2. 通过nuget.org
 
-[LinePutScript](https://www.nuget.org/packages/LinePutScript/)
+   [LinePutScript](https://www.nuget.org/packages/LinePutScript/)
 
-[LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
+   [LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
 
-[LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut)
+   [LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut)
 
+3. 下载nuget包
+
+   [Nuget文件夹](https://github.com/LorisYounger/LinePutScript/tree/master/nuget)
+
+### 使用方法
+
+#### 案例:储存游戏设置
+
+##### 读取LPS文件
+
+```c#
+//读取LPS文件
+LpsDocument Save = new LpsDocument(File.ReadAllText("GAMEPATH\\save1.lps"));
+//或创建新LPS文件
+Save = new LpsDocument();
+```
+
+
+
+##### 获取和修改数据
+
+案例要求:
+
+* 储存金钱值为10000
+* 添加类型电脑并储存电脑名字为 "我的电脑"
+* 读取金钱值并加上500
+
+*方法1 (lps1.0) -- 早期版本lps 繁琐操作*
+
+```C#
+Save.AddLine(new Line("money","10000"));//添加行 money 10000
+Save.AddLine(new Line("computer",""));//添加行 compuer
+Save.FindLine("computer").Add(new Sub("name","我的电脑")); //在computer行下面添加子类name和信息我的电脑
+
+int Money = Convert.ToInt32((Save.FindLine("money").info)); //获得money储存的值
+Save.FindLine("money").info = (Money + 500).ToString();//储存 money+500
+```
+
+*方法2 (lps1.1)  -- 上上版本lps 半繁琐操作*
+
+```c#
+Save.AddLine("money").InfoToInt = 10000; //添加行 money 10000
+Save.FindorAddLine("computer").FindorAddLine("name").Info = "我的电脑";//查找行computer, 如果没找到,则创建一个新的. 在该computer行下查找或创建子类name,并修改其信息为 我的电脑
+
+Save.FindorAddLine("money").InfoToInt += 500;//给money+500
+```
+
+*方法3 (lps1.2)  -- 上版本lps 半繁琐操作*
+
+```c#
+Save.AddLine("money").InfoToInt = 10000;
+Save.FindorAddLine("computer").FindorAddLine("name").Info = "我的电脑";
+
+Save["money"].InfoToInt += 500;//给money+500
+```
+
+*方法4 (lps1.2+)  -- 上版本lps后期 普通操作*
+
+   ```c#
+   Save.SetInt("money",10000);//设置 money 行 值(int)为10000
+   
+   Save["computer"].SetString("name","我的电脑");
+   // 或这样 (对于string来说更方便)
+   Save["computer"]["name"].Info = "我的电脑";
+   
+   Save.SetInt("money",Save.GetInt("money")+500);//给money+500
+   ```
+
+*方法5 (lps1.3) -- 最新版本lps 高级操作*
+
+```c#
+Save[(gint)"money"] = 10000; //设置 money 行 值(int)为10000
+Save["computer"][(gstring)"name"] = "我的电脑";
+
+Save[(gint)"money"] += 500;
+```
+
+
+
+##### 储存LPS文件
+
+```c#
+//写入LPS源文件
+File.WriteAllText("GAMEPATH\\save1.lps",Save.ToString());
+```
+
+
+
+### 其他
+
+更多用法及参数参见对象管理器

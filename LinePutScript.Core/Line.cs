@@ -10,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// 行 包含多个子类 继承自子类
     /// </summary>
-    public class Line : Sub, IList<Sub>, ICollection<Sub>, IEnumerable<Sub>, IEnumerable, IReadOnlyList<Sub>, IReadOnlyCollection<Sub>
+    public class Line : Sub, IList<Sub>, ICollection<Sub>, IEnumerable<Sub>, IEnumerable, IReadOnlyList<Sub>, IReadOnlyCollection<Sub>, ICloneable, IComparable<Line>, IEquatable<Line>
     {
         /// <summary>
         /// 创建一行
@@ -485,11 +485,9 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public bool Equals(Line obj)
         {
-            if (obj.GetType() != GetType())
-                return false;
-            return ((Line)obj).GetLongHashCode() == GetLongHashCode();
+            return obj.GetLongHashCode() == GetLongHashCode();
         }
         /// <summary>
         /// 返回循环访问 Subs 的枚举数。
@@ -530,15 +528,15 @@ namespace LinePutScript
         //}
         #region GETER
         /// <summary>
-        /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
+        /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
+        /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
         public Sub this[string subName]
         {
             get
             {
-                return Find(subName);
+                return FindorAdd(subName);
             }
             set
             {
@@ -659,6 +657,64 @@ namespace LinePutScript
         public void SetDouble(string subName, double value) => FindorAdd(subName).InfoToDouble = value;
         #endregion
 
+        #region GOBJ
+
+        /// <summary>
+        /// 获取或设置 String 属性的sub
+        /// </summary>
+        /// <param name="subName">(gstr)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 String 属性的Sub</returns>
+        public string this[gstr subName]
+        {
+            get => GetString((string)subName);
+            set => SetString((string)subName, value);
+        }
+        /// <summary>
+        /// 获取或设置 Bool 属性的sub
+        /// </summary>
+        /// <param name="subName">(gbol)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 bool 属性的Sub</returns>
+        public bool this[gbol subName]
+        {
+            get => GetBool((string)subName);
+            set => SetBool((string)subName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Int 属性的sub
+        /// </summary>
+        /// <param name="subName">(gint)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 int 属性的Sub</returns>
+        public int this[gint subName]
+        {
+            get => GetInt((string)subName);
+            set => SetInt((string)subName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Long 属性的sub
+        /// </summary>
+        /// <param name="subName">(gi64)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 long 属性的Sub</returns>
+        public long this[gi64 subName]
+        {
+            get => GetInt64((string)subName);
+            set => SetInt64((string)subName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Double 属性的sub
+        /// </summary>
+        /// <param name="subName">(gdbe)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的Sub</returns>
+        public double this[gdbe subName]
+        {
+            get => GetDouble((string)subName);
+            set => SetDouble((string)subName, value);
+        }
+
+        #endregion
+
         #region Enumerable
 
         /// <summary>
@@ -708,6 +764,32 @@ namespace LinePutScript
         /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
         public void CopyTo(Sub[] array, int arrayIndex) => Subs.CopyTo(array, arrayIndex);
 
+
+
+        /// <summary>
+        /// 将当前line与另一个line进行比较,并退回一个整数指示在排序位置中是位于另一个对象之前之后还是相同位置
+        /// </summary>
+        /// <param name="other">另一个line</param>
+        /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
+        public int CompareTo(Line other)
+        {
+            int comp = Name.CompareTo(other.Name);
+            if (comp != 0)
+                return comp;
+            comp = info.CompareTo(other.info);
+            if (comp != 0)
+                return comp;
+            return ToString().CompareTo(other.ToString());
+        }
+
+        /// <summary>
+        /// 克隆一个Line
+        /// </summary>
+        /// <returns>相同的Line</returns>
+        public new object Clone()
+        {
+            return new Line(this);
+        }
         #endregion
     }
 }

@@ -636,15 +636,15 @@ namespace LinePutScript
         }
 
         /// <summary>
-        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
+        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
-        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
+        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
         public Line this[string lineName]
         {
             get
             {
-                return FindLine(lineName);
+                return FindorAddLine(lineName);
             }
             set
             {
@@ -839,6 +839,63 @@ namespace LinePutScript
         /// <param name="value">储存进line的double值</param>
         public void SetDouble(string lineName, double value) => FindorAddLine(lineName).InfoToDouble = value;
 
+        #endregion
+
+        #region GOBJ
+
+        /// <summary>
+        /// 获取或设置 String 属性的line
+        /// </summary>
+        /// <param name="lineName">(gstr)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 String 属性的Line</returns>
+        public string this[gstr lineName]
+        {
+            get => GetString((string)lineName);
+            set => SetString((string)lineName, value);
+        }
+        /// <summary>
+        /// 获取或设置 Bool 属性的line
+        /// </summary>
+        /// <param name="lineName">(gbol)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 bool 属性的Line</returns>
+        public bool this[gbol lineName]
+        {
+            get => GetBool((string)lineName);
+            set => SetBool((string)lineName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Int 属性的line
+        /// </summary>
+        /// <param name="lineName">(gint)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 int 属性的Line</returns>
+        public int this[gint lineName]
+        {
+            get => GetInt((string)lineName);
+            set => SetInt((string)lineName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Long 属性的line
+        /// </summary>
+        /// <param name="lineName">(gi64)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 long 属性的Line</returns>
+        public long this[gi64 lineName]
+        {
+            get => GetInt64((string)lineName);
+            set => SetInt64((string)lineName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Double 属性的line
+        /// </summary>
+        /// <param name="lineName">(gdbe)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的Line</returns>
+        public double this[gdbe lineName]
+        {
+            get => GetDouble((string)lineName);
+            set => SetDouble((string)lineName, value);
+        }
         #endregion
 
         #region Enumerable
