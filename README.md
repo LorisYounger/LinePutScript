@@ -142,7 +142,7 @@ Save["money"].InfoToInt += 500;//给money+500
 
 ```c#
 Save[(gint)"money"] = 10000; //设置 money 行 值(int)为10000
-Save["computer"][(gstring)"name"] = "我的电脑";
+Save["computer"][(gstr)"name"] = "我的电脑";
 
 Save[(gint)"money"] += 500;
 ```
