@@ -147,13 +147,18 @@ Save["computer"][(gstr)"name"] = "我的电脑";
 Save[(gint)"money"] += 500;
 ```
 
-
-
 ##### 储存LPS文件
 
 ```c#
 //写入LPS源文件
 File.WriteAllText("GAMEPATH\\save1.lps",Save.ToString());
+```
+
+##### 储存的LPS文件样式如下
+
+```lps
+money#10500:|
+computer:|name#我的电脑:|
 ```
 
 
