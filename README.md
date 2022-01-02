@@ -74,6 +74,73 @@ Install-Package LinePutScript.LinePut
 
    [Nuget文件夹](https://github.com/LorisYounger/LinePutScript/tree/master/nuget)
 
+### LPS结构
+
+LineputScript由Line组成, Line由sub组成 sub为 `subname#subinfo` 
+
+这是一个基础的LineputScript文件
+
+```
+line1name#line1info:|sub1name#sub1info:|sub2name#sub2info:|text
+line2name#line2info:|money#100:|goods#item1,item2,item3:|
+```
+
+通过C# 读取信息如下
+
+```C#
+LpsDocument tmp = new LpsDocument("line1...line2info:|");
+tmp.First().ToString(); //line1name#line1info:|sub1name#sub1info:|sub2name#sub2info:|text
+tmp.First().First().ToString();//line1name#line1info:|
+tmp["line1name"]["sub1name"].Info; //sub1info
+tmp[0].Text;//text
+tmp[1][(gint)"money"];//100
+tmp[1]["good"].GetInfos()[1];//item2
+```
+
+### 符号定义
+
+#### #
+
+分隔名称`Name`和信息`Info`
+
+#### :|
+
+分隔 `Sub` 与 `Sub` 或 `Line` 与 `Sub`
+
+#### :\n|
+
+lps文件支持多行并插入换行 例如
+
+```
+详细文档:| 这是一份文件:
+| 文件内容为空
+```
+
+和
+
+```
+详细文档:| 这是一份文件\n 文件内容为空
+```
+
+表达效果相同
+
+#### :\n:
+
+lps文件支持多行 例如
+
+```
+详细文档:| 这是一份文件:
+: 文件内容为空
+```
+
+和
+
+```
+详细文档:| 这是一份文件 文件内容为空
+```
+
+表达效果相同
+
 ### 使用方法
 
 #### 案例:储存游戏设置
@@ -86,8 +153,6 @@ LpsDocument Save = new LpsDocument(File.ReadAllText("GAMEPATH\\save1.lps"));
 //或创建新LPS文件
 Save = new LpsDocument();
 ```
-
-
 
 ##### 获取和修改数据
 
@@ -160,8 +225,6 @@ File.WriteAllText("GAMEPATH\\save1.lps",Save.ToString());
 money#10500:|
 computer:|name#我的电脑:|
 ```
-
-
 
 ### 其他
 

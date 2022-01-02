@@ -598,7 +598,7 @@ namespace LinePutScript
         public void Load(string lps)
         {
             Assemblage.Clear();//清空当前文档
-            string[] file = lps.Replace("\r", "").Trim('\n').Split('\n');
+            string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split('\n');
             foreach (string str in file)
             {
                 if (str != "")
