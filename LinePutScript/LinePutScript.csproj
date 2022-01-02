@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gobj.cs" />
     <Compile Include="Sub.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LpsDocument.cs" />

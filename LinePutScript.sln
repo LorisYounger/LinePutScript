@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinePutScript", "LinePutScript\LinePutScript.csproj", "{5DDF4B71-1925-4A49-909D-B5F2F4139A4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinePutScript.DataBase", "LinePutScriptDataBase\LinePutScript.DataBase.csproj", "{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinePutScript.DataBase", "LinePutScript.DataBase\LinePutScript.DataBase.csproj", "{BCF7E909-AC84-42F7-8AFD-0F0C3CB8EBAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LPSDBHost", "LPSDBHost\LPSDBHost.csproj", "{C67A92B7-CF24-4AD6-9E8A-316D49D7B980}"
 EndProject

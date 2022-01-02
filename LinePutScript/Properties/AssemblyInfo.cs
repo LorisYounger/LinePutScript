@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("LinePutScript")]
-[assembly: AssemblyDescription("LinePutScript是一种定义行读取结构和描述其内容的标准语言")]
+[assembly: AssemblyDescription("LinePutScript是一种数据交换格式定义行读取结构和描述其内容的标准语言")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("深圳市L版公司")]
 [assembly: AssemblyProduct("LinePutScript")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // 可以指定所有值,也可以使用以下所示的 "*" 预置版本号和修订号
 //通过使用 "*",如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.4.0")]
-[assembly: AssemblyFileVersion("1.1.4.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
