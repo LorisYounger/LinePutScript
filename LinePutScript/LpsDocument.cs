@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -799,7 +800,7 @@ namespace LinePutScript
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="defaultvalue">如果没找到返回的默认值</param>
         /// <returns>
-        /// 如果找到相同名称的line,返回line中储存的String值
+        /// 如果找到相同名称的line,返回line中储存的string值
         /// 如果没找到,则返回默认值
         /// </returns>
         public string GetString(string lineName, string defaultvalue = default)
@@ -838,6 +839,53 @@ namespace LinePutScript
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double值</param>
         public void SetDouble(string lineName, double value) => FindorAddLine(lineName).InfoToDouble = value;
+
+
+        /// <summary>
+        /// 获得double(long)属性的line 通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的double(long)值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public double GetFloat(string lineName, double defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return line.InfoToInt64 / 1000000000;
+        }
+        /// <summary>
+        /// 设置double(long)属性的line 通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的double(long)值</param>
+        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).InfoToInt64 = (int)(value * 1000000000);
+
+        /// <summary>
+        /// 获得DateTime属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的line,返回line中储存的DateTime值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public DateTime GetDateTime(string lineName, DateTime defaultvalue = default)
+        {
+            Line line = FindLine(lineName);
+            if (line == null)
+                return defaultvalue;
+            return new DateTime(line.InfoToInt64);
+        }
+        /// <summary>
+        /// 设置DateTime属性的line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <param name="value">储存进line的DateTime值</param>
+        public void SetDateTime(string lineName, DateTime value) => FindorAddLine(lineName).InfoToInt64 = value.Ticks;
 
         #endregion
 
@@ -895,6 +943,28 @@ namespace LinePutScript
         {
             get => GetDouble((string)lineName);
             set => SetDouble((string)lineName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 Double(long) 属性的line  通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="lineName">(gflt)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的line</returns>
+        public double this[gflt lineName]
+        {
+            get => GetFloat((string)lineName);
+            set => SetFloat((string)lineName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 DateTime 属性的line
+        /// </summary>
+        /// <param name="lineName">(gdbe)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的line</returns>
+        public DateTime this[gdat lineName]
+        {
+            get => GetDateTime((string)lineName);
+            set => SetDateTime((string)lineName, value);
         }
         #endregion
 

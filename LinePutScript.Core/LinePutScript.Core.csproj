@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>LinePutScript</RootNamespace>
     <Authors>LorisYounger</Authors>
     <Description>LinePutScript是一种数据交换格式定义行读取结构和描述其内容的标准语言</Description>

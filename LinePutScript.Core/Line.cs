@@ -23,7 +23,7 @@ namespace LinePutScript
         public Line(string lpsLine)
         {
             string[] sts = Regex.Split(lpsLine, @"///", RegexOptions.IgnoreCase);
-            for (int i = 1; i < sts.Length - 1; i++)
+            for (int i = 1; i < sts.Length; i++)
             {
                 Comments += sts[i];
             }
@@ -611,6 +611,52 @@ namespace LinePutScript
         public void SetInt64(string subName, long value) => FindorAdd(subName).InfoToInt64 = value;
 
         /// <summary>
+        /// 获得double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的double(long)值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public double GetFloat(string subName, double defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return sub.InfoToInt64 / 1000000000;
+        }
+        /// <summary>
+        /// 设置double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的double(long)值</param>
+        public void SetFloat(string subName, double value) => FindorAdd(subName).InfoToInt64 = (int)(value * 1000000000);
+
+        /// <summary>
+        /// 获得DateTime属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="defaultvalue">如果没找到返回的默认值</param>
+        /// <returns>
+        /// 如果找到相同名称的sub,返回sub中储存的DateTime值
+        /// 如果没找到,则返回默认值
+        /// </returns>
+        public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
+        {
+            Sub sub = Find(subName);
+            if (sub == null)
+                return defaultvalue;
+            return new DateTime(sub.InfoToInt64);
+        }
+        /// <summary>
+        /// 设置DateTime属性的sub
+        /// </summary>
+        /// <param name="subName">用于定义匹配的名称</param>
+        /// <param name="value">储存进sub的DateTime值</param>
+        public void SetDateTime(string subName, DateTime value) => FindorAdd(subName).InfoToInt64 = value.Ticks;
+
+        /// <summary>
         /// 获得String属性的sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
@@ -713,6 +759,27 @@ namespace LinePutScript
             set => SetDouble((string)subName, value);
         }
 
+        /// <summary>
+        /// 获取或设置 Double(long) 属性的sub  通过转换long获得更精确的小数,小数位最大保留9位
+        /// </summary>
+        /// <param name="subName">(gflt)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的Sub</returns>
+        public double this[gflt subName]
+        {
+            get => GetFloat((string)subName);
+            set => SetFloat((string)subName, value);
+        }
+
+        /// <summary>
+        /// 获取或设置 DateTime 属性的sub
+        /// </summary>
+        /// <param name="subName">(gdbe)用于定义匹配的名称</param>
+        /// <returns>获取或设置对 double 属性的Sub</returns>
+        public DateTime this[gdat subName]
+        {
+            get => GetDateTime((string)subName);
+            set => SetDateTime((string)subName, value);
+        }
         #endregion
 
         #region Enumerable

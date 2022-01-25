@@ -88,7 +88,7 @@ line2name#line2info:|money#100:|goods#item1,item2,item3:|
 通过C# 读取信息如下
 
 ```C#
-LpsDocument tmp = new LpsDocument("line1...line2info:|");
+LpsDocument tmp = new LpsDocument("line1...item3:|");
 tmp.First().ToString(); //line1name#line1info:|sub1name#sub1info:|sub2name#sub2info:|text
 tmp.First().First().ToString();//line1name#line1info:|
 tmp["line1name"]["sub1name"].Info; //sub1info

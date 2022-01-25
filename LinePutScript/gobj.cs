@@ -118,4 +118,49 @@ namespace LinePutScript
         /// <param name="str">string</param>
         public static explicit operator gdbe(string str) => new gdbe() { VALUE = str };
     }
+
+    /// <summary>
+    /// DateTime 可以通过强制转换进行更轻松的getset操作
+    /// 例: line[(gdat)"subname"]
+    /// </summary>
+    public class gdat
+    {
+        /// <summary>
+        /// 储存在gobject中的值
+        /// </summary>
+        public string VALUE;
+        /// <summary>
+        /// 强制转换gobjcet成string
+        /// </summary>
+        /// <param name="gobject">gobject</param>
+        public static explicit operator string(gdat gobject) => gobject.VALUE;
+        /// <summary>
+        /// 强制转换string成gobjcet
+        /// </summary>
+        /// <param name="str">string</param>
+        public static explicit operator gdat(string str) => new gdat() { VALUE = str };
+    }
+
+    /// <summary>
+    /// double(long) 通过转换long获得更精确的小数
+    /// 可以通过强制转换进行更轻松的getset操作
+    /// 例: line[(gflt)"subname"]
+    /// </summary>
+    public class gflt
+    {
+        /// <summary>
+        /// 储存在gobject中的值
+        /// </summary>
+        public string VALUE;
+        /// <summary>
+        /// 强制转换gobjcet成string
+        /// </summary>
+        /// <param name="gobject">gobject</param>
+        public static explicit operator string(gflt gobject) => gobject.VALUE;
+        /// <summary>
+        /// 强制转换string成gobjcet
+        /// </summary>
+        /// <param name="str">string</param>
+        public static explicit operator gflt(string str) => new gflt() { VALUE = str };
+    }
 }
