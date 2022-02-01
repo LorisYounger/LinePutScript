@@ -855,7 +855,7 @@ namespace LinePutScript
             Line line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
-            return line.InfoToInt64 / 1000000000;
+            return line.InfoToInt64 / 1000000000.0;
         }
         /// <summary>
         /// 设置double(long)属性的line 通过转换long获得更精确的小数,小数位最大保留9位
