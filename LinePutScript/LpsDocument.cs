@@ -862,7 +862,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double(long)值</param>
-        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).InfoToInt64 = (int)(value * 1000000000);
+        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).InfoToInt64 = (long)(value * 1000000000);
 
         /// <summary>
         /// 获得DateTime属性的line
