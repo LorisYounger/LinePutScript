@@ -34,7 +34,7 @@ LinePut是使用LinePutScript描述富文本的一种格式
 
 这个类帮助转换LinePut为XAML FlowDocument
 
-### LinePutScriptDataBase*
+### LinePutScript.DataBase*
 
 一个数据库构造类 通过映射LPS类型内容到内存, 从而实现基于LPS的快速数据库
 
@@ -74,7 +74,10 @@ Install-Package LinePutScript.LinePut
 
    [Nuget文件夹](https://github.com/LorisYounger/LinePutScript/tree/master/nuget)
 
-### LPS结构
+## 关于LinePutScript语言
+
+LinePutScript是一个最高4层*的数据储存语言
+*最新1.4版本支持第四层,更多层次也可以使用套娃添加,但是较为繁琐
 
 LineputScript由Line组成, Line由sub组成 sub为 `subname#subinfo` 
 

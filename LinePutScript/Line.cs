@@ -22,9 +22,10 @@ namespace LinePutScript
         /// <param name="lpsLine">lpsSub文本</param>
         public Line(string lpsLine)
         {
-            string[] sts = Split(lpsLine, @"///", 2).ToArray();
-            Comments = sts[1];
-            sts = Split(sts[0], @"\:\|").ToArray();
+            string[] sts = Split(lpsLine, "///", 2).ToArray();
+            if (sts.Length == 2)
+                Comments = sts[1];
+            sts = Split(sts[0], ":|").ToArray();
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             if (st.Length > 1)
@@ -38,7 +39,7 @@ namespace LinePutScript
             }
         }
 
-        
+
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>
