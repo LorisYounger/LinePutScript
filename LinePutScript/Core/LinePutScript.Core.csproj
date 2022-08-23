@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>LinePutScript</Title>
@@ -12,11 +12,14 @@
     <Copyright>LB Copyright © 2018</Copyright>
     <PackageProjectUrl>https://github.com/LorisYounger/LinePutScript</PackageProjectUrl>
     <RepositoryUrl>https://github.com/LorisYounger/LinePutScript</RepositoryUrl>
+    <AssemblyName>LinePutScript</AssemblyName>
+    <RootNamespace>LinePutScript</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\gobj.cs" />
     <Compile Include="..\Sub.cs" />
     <Compile Include="..\Line.cs" />
     <Compile Include="..\LpsDocument.cs" />
+    <Compile Include="..\StringStructure.cs" />
   </ItemGroup>
 </Project>

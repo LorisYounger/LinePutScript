@@ -95,6 +95,15 @@ namespace LinePutScript
             }
         }
         /// <summary>
+        /// 获得Text的String结构
+        /// </summary>
+        public StringStructure Texts
+        {
+            get => new StringStructure((x) => text = x, () => text);
+        }
+
+
+        /// <summary>
         /// 注释 ///为注释
         /// </summary>
         public string Comments = "";

@@ -5,6 +5,7 @@ using System.Text;
 #nullable enable
 namespace LinePutScript
 {
+
     /// <summary>
     /// 子类 LinePutScript最基础的类
     /// </summary>
@@ -112,6 +113,14 @@ namespace LinePutScript
             }
         }
         /// <summary>
+        /// 获得Info的String结构
+        /// </summary>
+        public StringStructure Infos
+        {
+            get => new StringStructure((x) => info = x, () => info);
+        }
+
+        /// <summary>
         /// 信息 (int)
         /// </summary>
         public int InfoToInt
@@ -206,45 +215,7 @@ namespace LinePutScript
                 sts[i] = TextDeReplace(sts[i]);
             return sts;
         }
-
-        /// <summary>
-        /// 将文本进行反转义处理(成为正常显示的文本)
-        /// </summary>
-        /// <param name="Reptex">要反转义的文本</param>
-        /// <returns>反转义后的文本 正常显示的文本</returns>
-        public static string TextDeReplace(string Reptex)
-        {
-            if (Reptex == null)
-                return "";
-            Reptex = Reptex.Replace("/stop", ":|");
-            Reptex = Reptex.Replace("/tab", "\t");
-            Reptex = Reptex.Replace("/n", "\n");
-            Reptex = Reptex.Replace("/r", "\r");
-            Reptex = Reptex.Replace("/id", "#");
-            Reptex = Reptex.Replace("/com", ",");
-            Reptex = Reptex.Replace("/!", "/");
-            Reptex = Reptex.Replace("/|", "|");
-            return Reptex;
-        }
-        /// <summary>
-        /// 将文本进行转义处理(成为去除关键字的文本)
-        /// </summary>
-        /// <param name="Reptex">要转义的文本</param>
-        /// <returns>转义后的文本 (去除关键字的文本)</returns>
-        public static string TextReplace(string Reptex)
-        {
-            if (Reptex == null)
-                return "";
-            Reptex = Reptex.Replace("|", "/|");
-            Reptex = Reptex.Replace("/", "/!");
-            Reptex = Reptex.Replace(":|", "/stop");
-            Reptex = Reptex.Replace("\t", "/tab");
-            Reptex = Reptex.Replace("\n", "/n");
-            Reptex = Reptex.Replace("\r", "/r");
-            Reptex = Reptex.Replace("#", "/id");
-            Reptex = Reptex.Replace(",", "/com");
-            return Reptex;
-        }
+        
         /// <summary>
         /// 将当前Sub转换成文本格式 (info已经被转义/去除关键字)
         /// </summary>
@@ -326,6 +297,48 @@ namespace LinePutScript
             }
             list.Add(lasttext);
             return list;
+        }
+        
+        /// <summary>
+        /// 将文本进行反转义处理(成为正常显示的文本)
+        /// </summary>
+        /// <param name="Reptex">要反转义的文本</param>
+        /// <returns>反转义后的文本 正常显示的文本</returns>
+        public static string TextDeReplace(string Reptex)
+        {
+            if (Reptex == null)
+                return "";
+            Reptex = Reptex.Replace("/stop", ":|");
+            Reptex = Reptex.Replace("/equ", "=");
+            Reptex = Reptex.Replace("/tab", "\t");
+            Reptex = Reptex.Replace("/n", "\n");
+            Reptex = Reptex.Replace("/r", "\r");
+            Reptex = Reptex.Replace("/id", "#");
+            Reptex = Reptex.Replace("/com", ",");
+            Reptex = Reptex.Replace("/!", "/");
+            Reptex = Reptex.Replace("/|", "|");
+            return Reptex;
+        }
+        
+        /// <summary>
+        /// 将文本进行转义处理(成为去除关键字的文本)
+        /// </summary>
+        /// <param name="Reptex">要转义的文本</param>
+        /// <returns>转义后的文本 (去除关键字的文本)</returns>
+        public static string TextReplace(string Reptex)
+        {
+            if (Reptex == null)
+                return "";
+            Reptex = Reptex.Replace("|", "/|");
+            Reptex = Reptex.Replace("/", "/!");
+            Reptex = Reptex.Replace(":|", "/stop");
+            Reptex = Reptex.Replace("\t", "/tab");
+            Reptex = Reptex.Replace("\n", "/n");
+            Reptex = Reptex.Replace("\r", "/r");
+            Reptex = Reptex.Replace("#", "/id");
+            Reptex = Reptex.Replace(",", "/com");
+            Reptex = Reptex.Replace("=", "/equ");
+            return Reptex;
         }
         #endregion
     }

@@ -37,6 +37,7 @@
     <DocumentationFile>bin\Release\LinePutScript.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -56,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gobj.cs" />
+    <Compile Include="StringStructure.cs" />
     <Compile Include="Sub.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LpsDocument.cs" />
