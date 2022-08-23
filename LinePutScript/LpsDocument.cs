@@ -45,7 +45,7 @@ namespace LinePutScript
         /// <param name="newLine">要添加的Line</param>
         public void AddorReplaceLine(Line newLine)
         {
-            Line oldline = FindLine(newLine.Name);
+            Line? oldline = FindLine(newLine.Name);
             if (oldline != null)
             {
                 oldline.Set(newLine);
@@ -262,7 +262,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
-        public Line FindLine(string lineName)
+        public Line? FindLine(string lineName)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
         }
@@ -272,7 +272,7 @@ namespace LinePutScript
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public Line FindLine(string lineName, string lineinfo)
+        public Line? FindLine(string lineName, string lineinfo)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName && x.info == lineinfo);
         }
@@ -281,7 +281,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public Line FindLineInfo(string lineinfo)
+        public Line? FindLineInfo(string lineinfo)
         {
             return Assemblage.FirstOrDefault(x => x.info == lineinfo);
         }
@@ -292,7 +292,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
         public Line FindorAddLine(string lineName)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
             {
                 line = new Line(lineName, "", "");
@@ -352,7 +352,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
-        public Sub FindSub(string subName)
+        public Sub? FindSub(string subName)
         {
             foreach (Line li in Assemblage)
             {
@@ -370,7 +370,7 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Sub,则为该Line; 否则为null</returns>
-        public Sub FindSub(string subName, string subinfo)
+        public Sub? FindSub(string subName, string subinfo)
         {
             foreach (Line li in Assemblage)
             {
@@ -387,7 +387,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Sub,则为该Line; 否则为null</returns>
-        public Sub FindSubInfo(string subinfo)
+        public Sub? FindSubInfo(string subinfo)
         {
             foreach (Line li in Assemblage)
             {
@@ -418,7 +418,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">字段</param>
         /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
-        public Line SearchLine(string value)
+        public Line? SearchLine(string value)
         {
             return Assemblage.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -441,7 +441,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">字段</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public Sub SearchSub(string value)
+        public Sub? SearchSub(string value)
         {
             foreach (Line li in Assemblage)
             {
@@ -512,7 +512,7 @@ namespace LinePutScript
         /// 读取读取进度当前Line 并且自动切换到下一Line
         /// </summary>
         /// <returns>如何有则返回当前Line,如果没有则返回null</returns>
-        public Line ReadNext()
+        public Line? ReadNext()
         {
             if (LineNode == Assemblage.Count)
                 return null;
@@ -522,7 +522,7 @@ namespace LinePutScript
         /// 获取读取进度当前Line
         /// </summary>
         /// <returns>如何有则返回当前Line,如果没有则返回null</returns>
-        public Line Read()
+        public Line? Read()
         {
             if (LineNode == Assemblage.Count)
                 return null;
@@ -554,7 +554,7 @@ namespace LinePutScript
         /// <param name="newSub">要添加的子类</param>
         public void AppendSub(params Sub[] newSub)
         {
-            Read().AddRange(newSub);
+            Read()?.AddRange(newSub);
         }
         /// <summary>
         /// 将指定的Sub添加到当前读取进度Line中
@@ -563,7 +563,7 @@ namespace LinePutScript
         /// <param name="info">要添加的行信息</param>
         public void AppendSub(string newSubName, string info = "")
         {
-            Read().AddSub(new Sub(newSubName, info));
+            Read()?.AddSub(new Sub(newSubName, info));
         }
 
 
@@ -611,7 +611,7 @@ namespace LinePutScript
         /// 返回一个Assemblage的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public Line First()
+        public Line? First()
         {
             if (Assemblage.Count == 0)
                 return null;
@@ -621,7 +621,7 @@ namespace LinePutScript
         /// 返回一个Assemblage的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public Line Last()
+        public Line? Last()
         {
             if (Assemblage.Count == 0)
                 return null;
@@ -687,9 +687,9 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj.GetType() != GetType())
+            if (obj?.GetType() != GetType())
                 return false;
             return ((LpsDocument)obj).GetLongHashCode() == GetLongHashCode();
         }
@@ -759,7 +759,7 @@ namespace LinePutScript
         /// </returns>
         public int GetInt(string lineName, int defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt;
@@ -782,7 +782,7 @@ namespace LinePutScript
         /// </returns>
         public long GetInt64(string lineName, long defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt64;
@@ -803,9 +803,9 @@ namespace LinePutScript
         /// 如果找到相同名称的line,返回line中储存的string值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public string GetString(string lineName, string defaultvalue = default)
+        public string? GetString(string lineName, string? defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.Info;
@@ -815,7 +815,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的String值</param>
-        public void SetString(string lineName, string value) => FindorAddLine(lineName).Info = value;
+        public void SetString(string lineName, string? value) => FindorAddLine(lineName).Info = value ?? "";
 
         /// <summary>
         /// 获得double属性的line
@@ -828,7 +828,7 @@ namespace LinePutScript
         /// </returns>
         public double GetDouble(string lineName, double defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToDouble;
@@ -852,7 +852,7 @@ namespace LinePutScript
         /// </returns>
         public double GetFloat(string lineName, double defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt64 / 1000000000.0;
@@ -875,7 +875,7 @@ namespace LinePutScript
         /// </returns>
         public DateTime GetDateTime(string lineName, DateTime defaultvalue = default)
         {
-            Line line = FindLine(lineName);
+            Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return new DateTime(line.InfoToInt64);
@@ -896,7 +896,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">(gstr)用于定义匹配的名称</param>
         /// <returns>获取或设置对 String 属性的Line</returns>
-        public string this[gstr lineName]
+        public string? this[gstr lineName]
         {
             get => GetString((string)lineName);
             set => SetString((string)lineName, value);

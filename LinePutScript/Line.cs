@@ -173,7 +173,7 @@ namespace LinePutScript
         /// <param name="newSub">要添加的Sub</param>
         public void AddorReplaceSub(Sub newSub)
         {
-            Sub oldsub = Find(newSub.Name);
+            Sub? oldsub = Find(newSub.Name);
             if (oldsub != null)
             {
                 oldsub.Set(newSub);
@@ -334,7 +334,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public Sub Find(string subName)
+        public Sub? Find(string subName)
         {
             if (this.Name == subName)
                 return this;
@@ -346,7 +346,7 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public Sub Find(string subName, string subinfo)
+        public Sub? Find(string subName, string subinfo)
         {
             return Subs.FirstOrDefault(x => x.Name == subName && x.info == subinfo);
         }
@@ -355,7 +355,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public Sub FindInfo(string subinfo)
+        public Sub? FindInfo(string subinfo)
         {
             return Subs.FirstOrDefault(x => x.info == subinfo);
         }
@@ -366,7 +366,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
         public Sub FindorAdd(string subName)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
             {
                 sub = new Line(subName, "", "");
@@ -400,7 +400,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">字段</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public Sub Seach(string value)
+        public Sub? Seach(string value)
         {
             if (this.Name.Contains(value))
                 return this;
@@ -485,9 +485,9 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public bool Equals(Line obj)
+        public bool Equals(Line? obj)
         {
-            return obj.GetLongHashCode() == GetLongHashCode();
+            return obj?.GetLongHashCode() == GetLongHashCode();
         }
         /// <summary>
         /// 返回循环访问 Subs 的枚举数。
@@ -501,7 +501,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new Sub First()
+        public new Sub? First()
         {
             if (Subs.Count == 0)
                 return null;
@@ -511,7 +511,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new Sub Last()
+        public new Sub? Last()
         {
             if (Subs.Count == 0)
                 return null;
@@ -575,7 +575,7 @@ namespace LinePutScript
         /// </returns>
         public int GetInt(string subName, int defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt;
@@ -598,7 +598,7 @@ namespace LinePutScript
         /// </returns>
         public long GetInt64(string subName, long defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64;
@@ -621,7 +621,7 @@ namespace LinePutScript
         /// </returns>
         public double GetFloat(string subName, double defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64 / 1000000000.0;
@@ -644,7 +644,7 @@ namespace LinePutScript
         /// </returns>
         public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return new DateTime(sub.InfoToInt64);
@@ -665,9 +665,9 @@ namespace LinePutScript
         /// 如果找到相同名称的sub,返回sub中储存的String值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public string GetString(string subName, string defaultvalue = default)
+        public string? GetString(string subName, string? defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.Info;
@@ -677,7 +677,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的String值</param>
-        public void SetString(string subName, string value) => FindorAdd(subName).Info = value;
+        public void SetString(string subName, string? value) => FindorAdd(subName).Info = value ?? "";
 
         /// <summary>
         /// 获得double属性的sub
@@ -690,7 +690,7 @@ namespace LinePutScript
         /// </returns>
         public double GetDouble(string subName, double defaultvalue = default)
         {
-            Sub sub = Find(subName);
+            Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToDouble;
@@ -710,7 +710,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">(gstr)用于定义匹配的名称</param>
         /// <returns>获取或设置对 String 属性的Sub</returns>
-        public string this[gstr subName]
+        public string? this[gstr subName]
         {
             get => GetString((string)subName);
             set => SetString((string)subName, value);
@@ -838,15 +838,15 @@ namespace LinePutScript
         /// </summary>
         /// <param name="other">另一个line</param>
         /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
-        public int CompareTo(Line other)
+        public int CompareTo(Line? other)
         {
-            int comp = Name.CompareTo(other.Name);
+            int comp = Name.CompareTo(other?.Name);
             if (comp != 0)
                 return comp;
-            comp = info.CompareTo(other.info);
+            comp = info.CompareTo(other?.info);
             if (comp != 0)
                 return comp;
-            return ToString().CompareTo(other.ToString());
+            return ToString().CompareTo(other?.ToString());
         }
 
         /// <summary>

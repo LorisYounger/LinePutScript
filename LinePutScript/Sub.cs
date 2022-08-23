@@ -12,7 +12,9 @@ namespace LinePutScript
         /// <summary>
         /// 创建一个子类
         /// </summary>
-        public Sub() { }
+        public Sub() {
+            Name = "";
+        }
         /// <summary>
         /// 通过lpsSub文本创建一个子类
         /// </summary>
@@ -164,7 +166,7 @@ namespace LinePutScript
         /// 返回一个 Info集合 的第一个string。
         /// </summary>
         /// <returns>要返回的第一个string</returns>
-        public string First()
+        public string? First()
         {
             string[] Subs = GetInfos();
             if (Subs.Length == 0)
@@ -175,7 +177,7 @@ namespace LinePutScript
         /// 返回一个 Info集合 的最后一个string。
         /// </summary>
         /// <returns>要返回的最后一个string</returns>
-        public string Last()
+        public string? Last()
         {
             string[] Subs = GetInfos();
             if (Subs.Length == 0)
@@ -219,6 +221,7 @@ namespace LinePutScript
             Reptex = Reptex.Replace("/id", "#");
             Reptex = Reptex.Replace("/com", ",");
             Reptex = Reptex.Replace("/!", "/");
+            Reptex = Reptex.Replace("/|", "|");
             return Reptex;
         }
         /// <summary>
@@ -230,6 +233,7 @@ namespace LinePutScript
         {
             if (Reptex == null)
                 return "";
+            Reptex = Reptex.Replace("|", "/|");
             Reptex = Reptex.Replace("/", "/!");
             Reptex = Reptex.Replace(":|", "/stop");
             Reptex = Reptex.Replace("\t", "/tab");
@@ -267,21 +271,21 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public bool Equals(Sub obj)
+        public bool Equals(Sub? obj)
         {
-            return obj.GetLongHashCode() == GetLongHashCode();
+            return obj?.GetLongHashCode() == GetLongHashCode();
         }
         /// <summary>
         /// 将当前sub与另一个sub进行比较,并退回一个整数指示在排序位置中是位于另一个对象之前之后还是相同位置
         /// </summary>
         /// <param name="other">另一个sub</param>
         /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
-        public int CompareTo(Sub other)
+        public int CompareTo(Sub? other)
         {
-            int comp = Name.CompareTo(other.Name);
+            int comp = Name.CompareTo(other?.Name);
             if (comp != 0)
                 return comp;
-            return info.CompareTo(other.info);
+            return info.CompareTo(other?.info);
         }
         /// <summary>
         /// 克隆一个Sub

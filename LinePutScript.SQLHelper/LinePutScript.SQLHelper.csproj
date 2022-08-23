@@ -62,11 +62,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LinePutScript\LinePutScript.csproj">
-      <Project>{5ddf4b71-1925-4a49-909d-b5f2f4139a4e}</Project>
-      <Name>LinePutScript</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
