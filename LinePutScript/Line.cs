@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace LinePutScript
 {
@@ -22,12 +22,9 @@ namespace LinePutScript
         /// <param name="lpsLine">lpsSub文本</param>
         public Line(string lpsLine)
         {
-            string[] sts = Regex.Split(lpsLine, @"///", RegexOptions.IgnoreCase);
-            for (int i = 1; i < sts.Length; i++)
-            {
-                Comments += sts[i];
-            }
-            sts = Regex.Split(sts[0], @"\:\|", RegexOptions.IgnoreCase);
+            string[] sts = Split(lpsLine, @"///", 2).ToArray();
+            Comments = sts[1];
+            sts = Split(sts[0], @"\:\|").ToArray();
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             if (st.Length > 1)
@@ -40,6 +37,8 @@ namespace LinePutScript
                 Subs.Add(new Sub(sts[i]));
             }
         }
+
+        
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>

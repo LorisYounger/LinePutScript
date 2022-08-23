@@ -12,7 +12,8 @@ namespace LinePutScript
         /// <summary>
         /// 创建一个子类
         /// </summary>
-        public Sub() {
+        public Sub()
+        {
             Name = "";
         }
         /// <summary>
@@ -294,6 +295,30 @@ namespace LinePutScript
         public object Clone()
         {
             return new Sub(this);
+        }
+        #endregion
+
+        #region Function
+
+        public static List<string> Split(string text, string separator, int count = -1)
+        {
+            List<string> list = new List<string>();
+            string lasttext = text;
+            for (int i = 0; i <= count || count == -1; i++)
+            {
+                int iof = lasttext.IndexOf(separator);
+                if (iof == -1)
+                {
+                    break;
+                }
+                else
+                {
+                    list.Add(lasttext.Substring(0, iof));
+                    lasttext = lasttext.Substring(iof + separator.Length);
+                }
+            }
+            list.Add(lasttext);
+            return list;
         }
         #endregion
     }

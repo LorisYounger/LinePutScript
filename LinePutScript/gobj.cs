@@ -8,17 +8,24 @@ namespace LinePutScript
 {
 
     // Get Object 可以通过强制转换进行更轻松的getset操作
-
-    /// <summary>
-    /// string 可以通过强制转换进行更轻松的getset操作
-    /// 例: line[(gstr)"subname"]
-    /// </summary>
-    public class gstr
+    public abstract class gobj
     {
         /// <summary>
         /// 储存在gobject中的值
         /// </summary>
         public string VALUE;
+        public gobj(string value) => VALUE = value;
+    }
+    /// <summary>
+    /// string 可以通过强制转换进行更轻松的getset操作
+    /// 例: line[(gstr)"subname"]
+    /// </summary>
+    public class gstr : gobj
+    {
+        public gstr(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -28,19 +35,19 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gstr(string str) => new gstr() { VALUE = str };
+        public static explicit operator gstr(string str) => new gstr(str);
     }
 
     /// <summary>
     /// bool 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gbol)"subname"]
     /// </summary>
-    public class gbol
+    public class gbol : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gbol(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -50,19 +57,19 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gbol(string str) => new gbol() { VALUE = str };
+        public static explicit operator gbol(string str) => new gbol(str);
     }
 
     /// <summary>
     /// int 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gint)"subname"]
     /// </summary>
-    public class gint
+    public class gint : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gint(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -72,19 +79,19 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gint(string str) => new gint() { VALUE = str };
+        public static explicit operator gint(string str) => new gint(str);
     }
 
     /// <summary>
     /// long 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gi64)"subname"]
     /// </summary>
-    public class gi64
+    public class gi64 : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gi64(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -94,19 +101,19 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gi64(string str) => new gi64() { VALUE = str };
+        public static explicit operator gi64(string str) => new gi64(str);
     }
 
     /// <summary>
     /// double 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gdbe)"subname"]
     /// </summary>
-    public class gdbe
+    public class gdbe : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gdbe(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -116,19 +123,19 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gdbe(string str) => new gdbe() { VALUE = str };
+        public static explicit operator gdbe(string str) => new gdbe(str);
     }
 
     /// <summary>
     /// DateTime 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gdat)"subname"]
     /// </summary>
-    public class gdat
+    public class gdat : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gdat(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -138,7 +145,7 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gdat(string str) => new gdat() { VALUE = str };
+        public static explicit operator gdat(string str) => new gdat(str);
     }
 
     /// <summary>
@@ -146,12 +153,12 @@ namespace LinePutScript
     /// 可以通过强制转换进行更轻松的getset操作
     /// 例: line[(gflt)"subname"]
     /// </summary>
-    public class gflt
+    public class gflt : gobj
     {
-        /// <summary>
-        /// 储存在gobject中的值
-        /// </summary>
-        public string VALUE;
+        public gflt(string value) : base(value)
+        {
+        }
+
         /// <summary>
         /// 强制转换gobjcet成string
         /// </summary>
@@ -161,6 +168,6 @@ namespace LinePutScript
         /// 强制转换string成gobjcet
         /// </summary>
         /// <param name="str">string</param>
-        public static explicit operator gflt(string str) => new gflt() { VALUE = str };
+        public static explicit operator gflt(string str) => new gflt(str);
     }
 }
