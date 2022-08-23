@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
-
+#nullable enable
 namespace LinePutScript
 {
     /// <summary>
@@ -299,12 +300,18 @@ namespace LinePutScript
         #endregion
 
         #region Function
-
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        /// <param name="text">需要分割的文本</param>
+        /// <param name="separator">分割符号</param>
+        /// <param name="count">分割次数 -1 为无限次数</param>
+        /// <returns></returns>
         public static List<string> Split(string text, string separator, int count = -1)
         {
             List<string> list = new List<string>();
             string lasttext = text;
-            for (int i = 0; i <= count || count == -1; i++)
+            for (int i = 0; i < count || count == -1; i++)
             {
                 int iof = lasttext.IndexOf(separator);
                 if (iof == -1)
