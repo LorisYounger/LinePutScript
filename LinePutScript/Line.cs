@@ -100,9 +100,13 @@ namespace LinePutScript
         /// </summary>
         public StringStructure Texts
         {
-            get => new StringStructure((x) => text = x, () => text);
+            get
+            {
+                texts ??= new StringStructure((x) => text = x, () => text);
+                return texts;
+            }
         }
-
+        StringStructure texts;
 
         /// <summary>
         /// 注释 ///为注释

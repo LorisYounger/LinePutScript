@@ -117,8 +117,13 @@ namespace LinePutScript
         /// </summary>
         public StringStructure Infos
         {
-            get => new StringStructure((x) => info = x, () => info);
+            get
+            {
+                infos ??= new StringStructure((x) => info = x, () => info);
+                return infos;
+            }
         }
+        private StringStructure? infos;
 
         /// <summary>
         /// 信息 (int)
@@ -215,7 +220,7 @@ namespace LinePutScript
                 sts[i] = TextDeReplace(sts[i]);
             return sts;
         }
-        
+
         /// <summary>
         /// 将当前Sub转换成文本格式 (info已经被转义/去除关键字)
         /// </summary>
@@ -298,7 +303,7 @@ namespace LinePutScript
             list.Add(lasttext);
             return list;
         }
-        
+
         /// <summary>
         /// 将文本进行反转义处理(成为正常显示的文本)
         /// </summary>
@@ -319,7 +324,7 @@ namespace LinePutScript
             Reptex = Reptex.Replace("/|", "|");
             return Reptex;
         }
-        
+
         /// <summary>
         /// 将文本进行转义处理(成为去除关键字的文本)
         /// </summary>
