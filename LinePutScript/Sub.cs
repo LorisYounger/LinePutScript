@@ -337,7 +337,7 @@ namespace LinePutScript
             Reptex = Reptex.Replace("\r", "/r");
             Reptex = Reptex.Replace("#", "/id");
             Reptex = Reptex.Replace(",", "/com");
-            Reptex = Reptex.Replace("=", "/equ");
+            //Reptex = Reptex.Replace("=", "/equ");
             return Reptex;
         }
         #endregion

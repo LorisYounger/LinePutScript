@@ -55,7 +55,7 @@ namespace LinePutScript
                     sb.Append(kv.Key);
                     sb.Append('=');
                     sb.Append(kv.Value);
-                    sb.Append('\n');
+                    sb.Append("/n");
                 }
                 setstr(sb.ToString());
             }
