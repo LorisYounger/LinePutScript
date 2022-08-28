@@ -106,7 +106,7 @@ namespace LinePutScript
                 return texts;
             }
         }
-        StringStructure texts;
+        StringStructure? texts;
 
         /// <summary>
         /// 注释 ///为注释
