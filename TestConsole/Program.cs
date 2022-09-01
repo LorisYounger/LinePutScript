@@ -42,6 +42,10 @@ namespace TestConsole
 
             Console.WriteLine("标准测试:" + lps.ToString().Equals(Properties.Resources.test1.Replace("\r", "")));
 
+            lps[(gflt)"flt"] = 3.1415926;
+            Console.WriteLine("标准测试1:" + lps[(gflt)"flt"].Equals(3.1415926));
+            lps["flt"][(gflt)"flt"] = 3.1415926;
+            Console.WriteLine("标准测试2:" + lps["flt"][(gflt)"flt"].Equals(3.1415926));
 
             lps = new LpsDocument();
             lps[(gstr)"str"] = "abc=abc";
@@ -61,6 +65,8 @@ namespace TestConsole
 
             Console.WriteLine("SS测试:" + lps.ToString().Equals(Properties.Resources.test2.Replace("\r", "")));
 
+            lps["str2"].Texts["crlf"] = "ab\nabc\nc";
+            Console.WriteLine("SS测试7:" + lps["str2"].Texts["crlf"].Equals("ab\nabc\nc"));
         }
     }
 }

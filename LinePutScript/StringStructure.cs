@@ -71,7 +71,7 @@ namespace LinePutScript
         {
             if (Cache.ContainsKey(key))
             {
-                return Sub.TextDeReplace(Cache[key]);
+                return Sub.TextDeReplace(Cache[key]).Replace("/!n", "\n");
             }
             else
                 return defaultvalue;
@@ -87,7 +87,7 @@ namespace LinePutScript
             if (value == null)
                 c.Remove(key);
             else
-                c[key] = Sub.TextReplace(value);
+                c[key] = Sub.TextReplace(value.Replace("\n", "/!n"));
             Cache = c;
         }
 
