@@ -267,7 +267,18 @@ namespace LinePutScript
                 case ObjectType.Float:
                     return new DateTime((long)(double)Value);
                 case ObjectType.String:
-                    return DateTime.Parse((string)Value);
+                    if (long.TryParse((string)Value, out long r))
+                    {
+                        return new DateTime(r);
+                    }
+                    else if (DateTime.TryParse((string)Value, out DateTime result))
+                    {
+                        return result;
+                    }
+                    else
+                    {
+                        return DateTime.MinValue;
+                    }
                 case ObjectType.Boolean:
                     return (bool)Value ? DateTime.MaxValue : DateTime.MinValue;
                 case ObjectType.DateTime:
