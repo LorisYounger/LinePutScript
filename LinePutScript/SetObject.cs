@@ -253,6 +253,37 @@ namespace LinePutScript
             }
         }
         /// <summary>
+        /// 转换成 double(int64) 类型
+        /// </summary>
+        public double GetFloat()
+        {
+            switch (Type)
+            {
+                case ObjectType.Integer:
+                    return (int)Value;
+                case ObjectType.Integer64:
+                    return (long)Value;
+                case ObjectType.DateTime:
+                    return ((DateTime)Value).Ticks;
+                case ObjectType.Double:
+                case ObjectType.Float:
+                    return (double)Value;
+                case ObjectType.String:
+                    if (long.TryParse((string)Value, out long result))
+                    {
+                        return result / 1000000000.0;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                case ObjectType.Boolean:
+                    return (bool)Value ? 1 : 0;
+                default:
+                    return 0;
+            }
+        }
+        /// <summary>
         /// 转换成 DateTime 类型
         /// </summary>
         public DateTime GetDateTime()
