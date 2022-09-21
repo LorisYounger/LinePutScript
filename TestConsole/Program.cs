@@ -46,6 +46,10 @@ namespace TestConsole
             Console.WriteLine("标准测试1:" + lps[(gflt)"flt"].Equals(3.1415926));
             lps["flt"][(gflt)"flt"] = 3.1415926;
             Console.WriteLine("标准测试2:" + lps["flt"][(gflt)"flt"].Equals(3.1415926));
+            var now = DateTime.Now;
+            lps[(gdat)"now"] = now;
+            Console.WriteLine("标准测试3:" + lps[(gdat)"now"].Equals(now));
+
 
             lps = new LpsDocument();
             lps[(gstr)"str"] = "abc=abc";
@@ -72,7 +76,7 @@ namespace TestConsole
             Console.WriteLine("SS测试8:" + lps["str2"].Texts[(gint)"gint1"].Equals(114514));
             lps["str2"].Texts[(gint)"gint2"] = 1145141919;
             Console.WriteLine("SS测试9:" + lps["str2"].Texts[(gint)"gint2"].Equals(1145141919));
-            Console.WriteLine(lps.ToString());
+           
         }
     }
 }

@@ -141,8 +141,9 @@ namespace LinePutScript
                 case ObjectType.Integer:
                     return ((int)Value).ToString();
                 case ObjectType.Integer64:
-                case ObjectType.DateTime:
                     return ((long)Value).ToString();
+                case ObjectType.DateTime:
+                    return ((DateTime)Value).Ticks.ToString();
                 case ObjectType.Double:
                     return ((double)Value).ToString();
                 case ObjectType.Float:
@@ -189,8 +190,9 @@ namespace LinePutScript
                 case ObjectType.Integer:
                     return (long)Value;
                 case ObjectType.Integer64:
-                case ObjectType.DateTime:
                     return (long)Value;
+                case ObjectType.DateTime:
+                    return ((DateTime)Value).Ticks;
                 case ObjectType.Double:
                 case ObjectType.Float:
                     return (long)(double)Value;
@@ -210,10 +212,11 @@ namespace LinePutScript
             switch (Type)
             {
                 case ObjectType.Integer:
-                case ObjectType.DateTime:
                     return (int)Value;
                 case ObjectType.Integer64:
                     return (int)(long)Value;
+                case ObjectType.DateTime:
+                    return (int)((DateTime)Value).Ticks;
                 case ObjectType.Double:
                 case ObjectType.Float:
                     return (int)(double)Value;
@@ -235,8 +238,9 @@ namespace LinePutScript
                 case ObjectType.Integer:
                     return (int)Value;
                 case ObjectType.Integer64:
-                case ObjectType.DateTime:
                     return (long)Value;
+                case ObjectType.DateTime:
+                    return ((DateTime)Value).Ticks;
                 case ObjectType.Double:
                 case ObjectType.Float:
                     return (double)Value;
@@ -281,8 +285,9 @@ namespace LinePutScript
             {
                 case ObjectType.Integer:
                 case ObjectType.Integer64:
-                case ObjectType.DateTime:
                     return (long)Value >= 1;
+                case ObjectType.DateTime:
+                    return ((DateTime)Value).Ticks >= 1;
                 case ObjectType.Double:
                 case ObjectType.Float:
                     return (double)Value >= 1;
