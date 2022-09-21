@@ -39,7 +39,6 @@ namespace LinePutScript
             }
         }
 
-
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>
@@ -47,10 +46,8 @@ namespace LinePutScript
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public Line(string name, string info, string text = "", params Sub[] subs)
+        public Line(string name, string info, string text = "", params Sub[] subs) : base(name, info)
         {
-            Name = name;
-            Info = info;
             Text = text;
             Subs.AddRange(subs);
         }
@@ -61,7 +58,7 @@ namespace LinePutScript
         public Line(Line line)
         {
             Name = line.Name;
-            info = line.info;
+            info = (SetObject)line.info.Clone();
 
             text = line.text;
             Subs = line.Subs.ToList();
@@ -73,7 +70,7 @@ namespace LinePutScript
         public void Set(Line line)
         {
             Name = line.Name;
-            info = line.info;
+            info = (SetObject)line.info.Clone();
 
             text = line.text;
             Subs = line.Subs.ToList();
@@ -320,10 +317,10 @@ namespace LinePutScript
         public Sub[] FindAll(string subName, string subinfo)
         {
             List<Sub> subs = new List<Sub>();
-            if (Name == subName && info == subinfo)
+            if (Name == subName && info.Equals(subinfo))
                 subs.Add(this);
             foreach (Sub su in Subs)
-                if (su.Name == subName && su.info == subinfo)
+                if (su.Name == subName && su.info.Equals(subinfo))
                     subs.Add(su);
             return subs.ToArray();
         }
@@ -335,10 +332,10 @@ namespace LinePutScript
         public Sub[] FindAllInfo(string subinfo)
         {
             List<Sub> subs = new List<Sub>();
-            if (info == subinfo)
+            if (info.Equals(subinfo))
                 subs.Add(this);
             foreach (Sub su in Subs)
-                if (su.info == subinfo)
+                if (su.info.Equals(subinfo))
                     subs.Add(su);
             return subs.ToArray();
         }
@@ -361,7 +358,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
         public Sub? Find(string subName, string subinfo)
         {
-            return Subs.FirstOrDefault(x => x.Name == subName && x.info == subinfo);
+            return Subs.FirstOrDefault(x => x.Name == subName && x.info.Equals(subinfo));
         }
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
@@ -370,7 +367,7 @@ namespace LinePutScript
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
         public Sub? FindInfo(string subinfo)
         {
-            return Subs.FirstOrDefault(x => x.info == subinfo);
+            return Subs.FirstOrDefault(x => x.info.Equals(subinfo));
         }
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
@@ -396,7 +393,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
         public Sub[] SeachALL(string value)
         {
@@ -411,7 +408,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索字段是否出现在Line名称,并返回整个Subs中的第一个匹配元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
         public Sub? Seach(string value)
         {
@@ -429,12 +426,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string subName)
         {
-            for (int i = 0; i < Subs.Count; i++)
-            {
-                if (Subs[i].Name == subName)
-                    return i;
-            }
-            return -1;
+            return Subs.FindIndex(x => x.Name == subName);
         }
         /// <summary>
         /// 搜索相同名称的Sub,并返回整个Sub中全部匹配的sub从零开始的索引
@@ -459,9 +451,10 @@ namespace LinePutScript
         /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
         public new string ToString()//不能继承
         {
-            StringBuilder str = new StringBuilder(TextReplace(Name));
-            if (info != "")
-                str.Append('#' + info);
+            StringBuilder str = new StringBuilder(Name);
+            var infostorestr = info.GetStoreString();
+            if (infostorestr != "")
+                str.Append('#' + infostorestr);
             if (str.Length != 0)
                 str.Append(":|");
             foreach (Sub su in Subs)
@@ -474,6 +467,29 @@ namespace LinePutScript
             }
             return str.ToString();
         }
+        /// <summary>
+        /// 将当前Line转换成文本格式 (info已经被转义/去除关键字) 将输出储存到StringBuilder
+        /// </summary>
+        /// <param name="str">储存到的 StringBuilder</param>
+        /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
+        public void ToString(StringBuilder str)//不能继承
+        {
+            str.Append('\n' + Name);
+            var infostorestr = info.GetStoreString();
+            if (infostorestr != "")
+                str.Append('#' + infostorestr);
+            if (str.Length != 0)
+                str.Append(":|");
+            foreach (Sub su in Subs)
+                str.Append(su.ToString());
+            str.Append(text);
+            if (Comments != "")
+            {
+                str.Append("///");
+                str.Append(Comments);
+            }
+        }
+
         /// <summary>
         /// 获得该Line的长哈希代码
         /// </summary>
@@ -530,15 +546,7 @@ namespace LinePutScript
                 return null;
             return Subs[Subs.Count - 1];
         }
-        ////暂时应该不需要判断类型
-        ///// <summary>
-        ///// 获取当前标签的类型
-        ///// </summary>
-        ///// <returns>类型</returns>
-        //public override string GetType()
-        //{
-        //    return "line";
-        //}
+
         #region GETER
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
@@ -561,21 +569,23 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub,则为True; 否则为false</returns>
-        public bool GetBool(string subName) => Find(subName) != null;
+        public bool GetBool(string subName)
+        {
+            var sub = Find(subName);
+            if (sub == null)
+                return false;
+            return sub.info.GetBoolean();
+        }
         /// <summary>
         /// 设置bool属性的sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">
-        /// 如果为ture,则在没有相同name为subName的sub时候添加新的sub
-        /// 如果为false,则删除所有name为subName的sub
+        /// 值
         /// </param>
         public void SetBool(string subName, bool value)
         {
-            if (value)
-                FindorAdd(subName);
-            else
-                RemoveAll(subName);
+            FindorAdd(subName).info = value;
         }
         /// <summary>
         /// 获得int属性的sub
@@ -637,14 +647,14 @@ namespace LinePutScript
             Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
-            return sub.InfoToInt64 / 1000000000.0;
+            return info.GetDouble();
         }
         /// <summary>
         /// 设置double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double(long)值</param>
-        public void SetFloat(string subName, double value) => FindorAdd(subName).InfoToInt64 = (long)(value * 1000000000);
+        public void SetFloat(string subName, double value) => FindorAdd(subName).info.SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的sub
@@ -660,14 +670,14 @@ namespace LinePutScript
             Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
-            return new DateTime(sub.InfoToInt64);
+            return sub.info.GetDateTime();
         }
         /// <summary>
         /// 设置DateTime属性的sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的DateTime值</param>
-        public void SetDateTime(string subName, DateTime value) => FindorAdd(subName).InfoToInt64 = value.Ticks;
+        public void SetDateTime(string subName, DateTime value) => FindorAdd(subName).info = value;
 
         /// <summary>
         /// 获得String属性的sub

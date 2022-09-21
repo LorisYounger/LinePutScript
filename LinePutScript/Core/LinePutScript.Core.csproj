@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ImplicitUsings>disable</ImplicitUsings>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>LinePutScript</Title>
@@ -21,5 +21,6 @@
     <Compile Include="..\Line.cs" />
     <Compile Include="..\LpsDocument.cs" />
     <Compile Include="..\StringStructure.cs" />
+    <Compile Include="..\SetObject.cs" />
   </ItemGroup>
 </Project>

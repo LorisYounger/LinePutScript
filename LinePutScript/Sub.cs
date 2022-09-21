@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 #nullable enable
 namespace LinePutScript
@@ -17,6 +18,7 @@ namespace LinePutScript
         public Sub()
         {
             Name = "";
+            info = "";
         }
         /// <summary>
         /// 通过lpsSub文本创建一个子类
@@ -28,6 +30,8 @@ namespace LinePutScript
             Name = st[0];
             if (st.Length > 1)
                 info = st[1];
+            else
+                info = "";
         }
         /// <summary>
         /// 通过名字和信息创建新的Sub
@@ -37,7 +41,7 @@ namespace LinePutScript
         public Sub(string name, string info)
         {
             Name = name;
-            Info = info;
+            this.info = TextReplace(info);
         }
         /// <summary>
         /// 通过名字和信息创建新的Sub
@@ -63,7 +67,7 @@ namespace LinePutScript
         public Sub(Sub sub)
         {
             Name = sub.Name;
-            info = sub.info;
+            info = (SetObject)sub.info.Clone();
         }
         /// <summary>
         /// 将其他Sub内容拷贝到本Sub
@@ -72,7 +76,7 @@ namespace LinePutScript
         public void Set(Sub sub)
         {
             Name = sub.Name;
-            info = sub.info;
+            info = (SetObject)sub.info.Clone();
         }
 
         /// <summary>
@@ -100,7 +104,7 @@ namespace LinePutScript
         /// <summary>
         /// 信息 (去除关键字的文本)
         /// </summary>
-        public string info = "";
+        public SetObject info;
         /// <summary>
         /// 信息 (正常)
         /// </summary>
@@ -119,7 +123,7 @@ namespace LinePutScript
         {
             get
             {
-                infos ??= new StringStructure((x) => info = x, () => info);
+                infos ??= new StringStructure((x) => info = x, () => (string)info);
                 return infos;
             }
         }
@@ -130,14 +134,10 @@ namespace LinePutScript
         /// </summary>
         public int InfoToInt
         {
-            get
-            {
-                int.TryParse(info, out int i);
-                return i;
-            }
+            get => (int)info;
             set
             {
-                info = value.ToString();
+                info.SetInteger(value);
             }
         }
         /// <summary>
@@ -145,14 +145,10 @@ namespace LinePutScript
         /// </summary>
         public long InfoToInt64
         {
-            get
-            {
-                long.TryParse(info, out long i);
-                return i;
-            }
+            get => (long)info;
             set
             {
-                info = value.ToString();
+                info.SetInteger64(value);
             }
         }
         /// <summary>
@@ -162,12 +158,11 @@ namespace LinePutScript
         {
             get
             {
-                double.TryParse(info, out double i);
-                return i;
+                return (double)info;
             }
             set
             {
-                info = value.ToString();
+                info.SetDouble(value);
             }
         }
         /// <summary>
@@ -215,7 +210,7 @@ namespace LinePutScript
         /// <returns>info的转义文本集合 (正常显示)</returns>
         public string[] GetInfos()
         {
-            string[] sts = info.Split(',');
+            string[] sts = info.GetString().Split(',').Where(x => !string.IsNullOrEmpty(x)).ToArray();
             for (int i = 0; i < sts.Length; i++)
                 sts[i] = TextDeReplace(sts[i]);
             return sts;
@@ -227,9 +222,10 @@ namespace LinePutScript
         /// <returns>Sub的文本格式 (info已经被转义/去除关键字)</returns>
         public new string ToString()//不能继承
         {
-            if (info == "")
-                return TextReplace(Name) + ":|";
-            return TextReplace(Name) + '#' + info + ":|";
+            var infostorestring = info.GetStoreString();
+            if (infostorestring == "")
+                return Name + ":|";
+            return Name + '#' + infostorestring + ":|";
         }
 
         #region Interface

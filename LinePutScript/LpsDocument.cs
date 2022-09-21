@@ -240,7 +240,7 @@ namespace LinePutScript
         {
             List<Line> lines = new List<Line>();
             foreach (Line li in Assemblage)
-                if (li.Name == lineName && li.info == lineinfo)
+                if (li.Name == lineName && li.info.Equals(lineinfo))
                     lines.Add(li);
             return lines.ToArray();
         }
@@ -253,7 +253,7 @@ namespace LinePutScript
         {
             List<Line> lines = new List<Line>();
             foreach (Line li in Assemblage)
-                if (li.info == lineinfo)
+                if (li.info.Equals(lineinfo))
                     lines.Add(li);
             return lines.ToArray();
         }
@@ -274,7 +274,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
         public Line? FindLine(string lineName, string lineinfo)
         {
-            return Assemblage.FirstOrDefault(x => x.Name == lineName && x.info == lineinfo);
+            return Assemblage.FirstOrDefault(x => x.Name == lineName && x.info.Equals(lineinfo));
         }
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
@@ -283,7 +283,7 @@ namespace LinePutScript
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
         public Line? FindLineInfo(string lineinfo)
         {
-            return Assemblage.FirstOrDefault(x => x.info == lineinfo);
+            return Assemblage.FirstOrDefault(x => x.info.Equals(lineinfo));
         }
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line
@@ -403,7 +403,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索全部相似名称的Line的所有元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为数组; 否则为一个空的Array</returns>
         public Line[] SearchAllLine(string value)
         {
@@ -416,7 +416,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索字段是否出现在Line名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
         public Line? SearchLine(string value)
         {
@@ -425,7 +425,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为该数组; 否则为一个空的Array</returns>
         public Sub[] SearchAllSub(string value)
         {
@@ -439,7 +439,7 @@ namespace LinePutScript
         /// <summary>
         /// 搜索字段是否出现在Sub名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
-        /// <param name="value">字段</param>
+        /// <param name="value">%字段%</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
         public Sub? SearchSub(string value)
         {
@@ -662,7 +662,7 @@ namespace LinePutScript
         {
             StringBuilder sb = new StringBuilder();
             foreach (Line li in Assemblage)
-                sb.Append(li.ToString() + "\n");
+                li.ToString(sb);
             return sb.ToString().Trim('\n');
         }
         /// <summary>
@@ -703,10 +703,10 @@ namespace LinePutScript
                 int l = 3;
                 foreach (Line li in Assemblage)
                 {
-                    l += li.Name.Length + li.info.Length + li.Text.Length + 6;
+                    l += li.Name.Length + li.info.GetStoreString().Length + li.Text.Length + 6;
                     foreach (Sub sb in li)
                     {
-                        l += sb.Name.Length + sb.info.Length + 3;
+                        l += sb.Name.Length + sb.info.GetStoreString().Length + 3;
                     }
                 }
 
@@ -732,7 +732,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的line,则为True; 否则为false</returns>
-        public bool GetBool(string lineName) => FindLine(lineName) != null;
+        public bool GetBool(string lineName) => FindLine(lineName)?.info.GetBoolean() ?? false;
         /// <summary>
         /// 设置bool属性的line
         /// </summary>
@@ -743,10 +743,7 @@ namespace LinePutScript
         /// </param>
         public void SetBool(string lineName, bool value)
         {
-            if (value)
-                FindorAddLine(lineName);
-            else
-                RemoveAll(lineName);
+            FindorAddLine(lineName).info = value;
         }
         /// <summary>
         /// 获得int属性的line
@@ -838,7 +835,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double值</param>
-        public void SetDouble(string lineName, double value) => FindorAddLine(lineName).InfoToDouble = value;
+        public void SetDouble(string lineName, double value) => FindorAddLine(lineName).info.SetDouble(value);
 
 
         /// <summary>
@@ -855,14 +852,14 @@ namespace LinePutScript
             Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
-            return line.InfoToInt64 / 1000000000.0;
+            return line.InfoToDouble;
         }
         /// <summary>
         /// 设置double(long)属性的line 通过转换long获得更精确的小数,小数位最大保留9位
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double(long)值</param>
-        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).InfoToInt64 = (long)(value * 1000000000);
+        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).info.SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的line
@@ -878,14 +875,14 @@ namespace LinePutScript
             Line? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
-            return new DateTime(line.InfoToInt64);
+            return line.info.GetDateTime();
         }
         /// <summary>
         /// 设置DateTime属性的line
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的DateTime值</param>
-        public void SetDateTime(string lineName, DateTime value) => FindorAddLine(lineName).InfoToInt64 = value.Ticks;
+        public void SetDateTime(string lineName, DateTime value) => FindorAddLine(lineName).info = value;
 
         #endregion
 

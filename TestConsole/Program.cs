@@ -67,6 +67,12 @@ namespace TestConsole
 
             lps["str2"].Texts["crlf"] = "ab\nabc\nc";
             Console.WriteLine("SS测试7:" + lps["str2"].Texts["crlf"].Equals("ab\nabc\nc"));
+
+            lps["str2"].Texts[(gint)"gint1"] = 114514;
+            Console.WriteLine("SS测试8:" + lps["str2"].Texts[(gint)"gint1"].Equals(114514));
+            lps["str2"].Texts[(gint)"gint2"] = 1145141919;
+            Console.WriteLine("SS测试9:" + lps["str2"].Texts[(gint)"gint2"].Equals(1145141919));
+            Console.WriteLine(lps.ToString());
         }
     }
 }
