@@ -647,7 +647,7 @@ namespace LinePutScript
             Sub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
-            return info.GetFloat();
+            return sub.info.GetFloat();
         }
         /// <summary>
         /// 设置double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位

@@ -125,4 +125,10 @@ computer:|name#我的电脑:|</value>
     <value>str#abc=abc:|
 str2#abc=abc/nflt=114514191980000/n:|abc=abc/nflt=114514191980000/n</value>
   </data>
+  <data name="test3" xml:space="preserve">
+    <value>money#10500:|
+computer:|name#我的电脑:|
+flt#3141592600:|
+now#637994530277341822:|</value>
+  </data>
 </root>

@@ -79,5 +79,17 @@ namespace TestConsole.Properties {
                 return ResourceManager.GetString("test2", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 money#10500:|
+        ///computer:|name#我的电脑:|
+        ///flt#3141592600:|
+        ///now#637994530277341822:| 的本地化字符串。
+        /// </summary>
+        internal static string test3 {
+            get {
+                return ResourceManager.GetString("test3", resourceCulture);
+            }
+        }
     }
 }
