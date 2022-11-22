@@ -51,9 +51,9 @@ namespace TestConsole
             Console.WriteLine("升级测试3:\t" + lps[(gdat)"now"].Equals(now));
 
             lps = new LpsDocument(Properties.Resources.test3);
-            Console.WriteLine("读取测试1:\t" + lps["flt"][(gflt)"flt"].Equals(3.1415926));
+            Console.WriteLine($"读取测试1:\t" + lps["flt"][(gflt)"flt"].Equals(0));
             Console.WriteLine("读取测试2:\t" + lps[(gflt)"flt"].Equals(3.1415926));
-          
+            Console.WriteLine("输出测试:\t" + lps.ToString().Equals(Properties.Resources.test3.Replace("\r", "")));
 
             lps = new LpsDocument();
             lps[(gstr)"str"] = "abc=abc";
@@ -75,6 +75,7 @@ namespace TestConsole
             
             lps = new LpsDocument(Properties.Resources.test2);
             Console.WriteLine("SS读取测试:\t" + lps["str2"].Texts[(gflt)"flt"].Equals(114514.191980));
+            Console.WriteLine("SS输出测试:\t" + lps.ToString().Equals(Properties.Resources.test2.Replace("\r", "")));
 
 
             lps["str2"].Texts["crlf"] = "ab\nabc\nc";

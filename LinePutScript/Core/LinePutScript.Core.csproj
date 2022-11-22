@@ -17,10 +17,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\gobj.cs" />
-    <Compile Include="..\Sub.cs" />
+    <Compile Include="..\Interface\IGetOBJ.cs" Link="Interface\IGetOBJ.cs" />
+    <Compile Include="..\Interface\ILine.cs" Link="Interface\ILine.cs" />
+    <Compile Include="..\Interface\ILPS.cs" Link="Interface\ILPS.cs" />
+    <Compile Include="..\Interface\ISetObject.cs" Link="Interface\ISetObject.cs" />
+    <Compile Include="..\Interface\ISub.cs" Link="Interface\ISub.cs" />
     <Compile Include="..\Line.cs" />
     <Compile Include="..\LpsDocument.cs" />
-    <Compile Include="..\StringStructure.cs" />
     <Compile Include="..\SetObject.cs" />
+    <Compile Include="..\StringStructure.cs" />
+    <Compile Include="..\Generics\Sub.cs" Link="Generics\Sub.cs" />
+    <Compile Include="..\Generics\Line.cs" Link="Generics\Line.cs" />
+    <Compile Include="..\Generics\LPS.cs" Link="Generics\LPS.cs" />
+    <Compile Include="..\Sub.cs" />
+    <Compile Include="..\Dictionary\Line.cs" Link="Dictionary\Line.cs" />
+    <Compile Include="..\Dictionary\LPS.cs" Link="Dictionary\LPS.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\" />
+    <Folder Include="Generics\" />
+    <Folder Include="Dictionary\" />
   </ItemGroup>
 </Project>

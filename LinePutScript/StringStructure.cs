@@ -9,7 +9,7 @@ namespace LinePutScript
     /// <summary>
     /// String 结构 通过String实时修改具体参数,为LineputScript提供第四层结构
     /// </summary>
-    public class StringStructure : IEnumerable<KeyValuePair<string, string>>, IComparable<string>, IDictionary<string, string>, IEnumerable, IComparable<StringStructure>
+    public class StringStructure : IEnumerable<KeyValuePair<string, string>>, IComparable<string>, IDictionary<string, string>, IEnumerable, IComparable<StringStructure>, IGetOBJ<string>
     {
         protected private Action<string> setstr;
         protected private Func<string> getstr;
@@ -121,6 +121,15 @@ namespace LinePutScript
             }
             else
                 return defaultvalue;
+        }
+        /// <summary>
+        /// 获得bool属性的项目
+        /// </summary>
+        /// <param name="key">项目名称</param>
+        /// <returns>如果找到项目则返回项目中的值,若未找到则返回false</returns>
+        public bool GetBool(string key)
+        {
+            return GetBool(key, false);
         }
         /// <summary>
         /// 设置bool属性的项目

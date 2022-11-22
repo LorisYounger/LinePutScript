@@ -56,13 +56,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dictionary\Line.cs" />
+    <Compile Include="Dictionary\LPS.cs" />
     <Compile Include="gobj.cs" />
-    <Compile Include="SetObject.cs" />
-    <Compile Include="StringStructure.cs" />
-    <Compile Include="Sub.cs" />
+    <Compile Include="Interface\IGetOBJ.cs" />
+    <Compile Include="Interface\ILine.cs" />
+    <Compile Include="Interface\ILPS.cs" />
+    <Compile Include="Interface\ISetObject.cs" />
+    <Compile Include="Interface\ISub.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LpsDocument.cs" />
+    <Compile Include="SetObject.cs" />
+    <Compile Include="StringStructure.cs" />
+    <Compile Include="Generics\Sub.cs" />
+    <Compile Include="Generics\Line.cs" />
+    <Compile Include="Generics\LPS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sub.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

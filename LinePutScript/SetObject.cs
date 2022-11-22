@@ -10,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// Set Object 可以储存任何类型的值 对性能进行优化
     /// </summary>
-    public class SetObject : IComparable<SetObject>, IComparable, IEquatable<SetObject>, ICloneable, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
+    public class SetObject : ISetObject, IComparable, IEquatable<SetObject>, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
     {
         /// <summary>
         /// 储存Object的类型
@@ -50,16 +50,24 @@ namespace LinePutScript
         /// 类型
         /// </summary>
         public ObjectType Type;
-        private object[] objectvalue = new object[7];
+        private dynamic[] objectvalue = new dynamic[7];
         /// <summary>
         /// 储存的数据
         /// </summary>
-        public object Value
+        public dynamic Value
         {
             get => objectvalue[(int)Type];
             set => objectvalue[(int)Type] = value;
         }
         #region 构造函数
+        /// <summary>
+        /// 新建 SetObject: string
+        /// </summary>
+        public SetObject()
+        {
+            Type = ObjectType.String;
+            this.Value = "";
+        }
         /// <summary>
         /// 新建 SetObject: string
         /// </summary>
@@ -471,7 +479,7 @@ namespace LinePutScript
         /// <summary>
         /// 比较两个 SetObject 对象差距
         /// </summary>
-        public int CompareTo(SetObject? other)
+        public int CompareTo(ISetObject? other)
         {
             if (other == null)
                 return int.MinValue;
@@ -514,6 +522,38 @@ namespace LinePutScript
             else if (typeof(IComparable).IsAssignableFrom(obj.GetType()))
                 return ((IComparable)Value).CompareTo(obj);
             else return int.MaxValue;
+        }
+        /// <summary>
+        /// 判断是否相等
+        /// </summary>
+        /// <param name="other">其他参数</param>
+        /// <returns></returns>
+        public override bool Equals(object other)
+        {
+            switch (other.GetType().Name)
+            {
+                case "String":
+                    return GetString() == (string)other;
+                case "Int32":
+                    return GetInteger() == (int)other;
+                case "Int64":
+                    return GetInteger64() == (long)other;
+                case "Double":
+                    return GetDouble() == (double)other;
+                case "Boolean":
+                    return GetBoolean() == (bool)other;
+                case "DateTime":
+                    return GetDateTime() == (DateTime)other;
+                default:
+                    return false;
+            }
+        }
+        /// <summary>
+        /// 比较两个 SetObject 对象是否相等
+        /// </summary>
+        public bool Equals(ISetObject? other)
+        {
+            return CompareTo(other) == 0;
         }
         /// <summary>
         /// 比较两个 SetObject 对象是否相等
@@ -589,6 +629,14 @@ namespace LinePutScript
         public bool Equals(bool other)
         {
             return GetBoolean().Equals(other);
+        }
+        /// <summary>
+        /// 获取 SetObject 的 HashCode
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return (int)Sub.GetHashCode(ToString());
         }
     }
 
