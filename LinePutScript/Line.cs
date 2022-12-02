@@ -35,5 +35,22 @@ namespace LinePutScript
         /// </summary>
         /// <param name="line">其他line</param>
         public Line(Line line) : base(line) { }
+
+        /// <summary>
+        /// 克隆一个Line
+        /// </summary>
+        /// <returns>相同的Line</returns>
+        public new object Clone()
+        {
+            return new Line(this);
+        }
+        /// <summary>
+        /// 返回一个新List,包含所有Subs
+        /// </summary>
+        /// <returns>所有储存的Subs</returns>
+        public new List<Sub> ToList()
+        {
+            return Subs.ToList();
+        }
     }
 }

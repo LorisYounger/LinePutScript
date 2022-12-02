@@ -110,7 +110,7 @@ namespace LinePutScript
         /// <returns>HashCode</returns>
         public static long GetHashCode(string text)
         {
-            using (MD5 md5 = MD5CryptoServiceProvider.Create())
+            using (MD5 md5 = MD5.Create())
             {
                 return BitConverter.ToInt64(md5.ComputeHash(Encoding.UTF8.GetBytes(text)), 0);
             }

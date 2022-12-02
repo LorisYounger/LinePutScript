@@ -11,8 +11,8 @@ namespace LinePutScript
     /// <summary>
     /// 行 包含多个子类 继承自子类
     /// </summary>
-    public class Line<TSUB, V> : Sub<V>, ILine<TSUB, V>, IReadOnlyList<TSUB>, IReadOnlyCollection<TSUB>, IComparable<Line<TSUB, V>>, IEquatable<Line<TSUB, V>>
-        where TSUB : ISub<V>, new() 
+    public class Line<TSub, V> : Sub<V>, ILine<TSub, V>, IReadOnlyList<TSub>, IReadOnlyCollection<TSub>, IComparable<Line<TSub, V>>, IEquatable<Line<TSub, V>>
+        where TSub : ISub<V>, new() 
         where V : ISetObject, new()
     {
         /// <summary>
@@ -47,7 +47,9 @@ namespace LinePutScript
 
             for (int i = 1; i < sts.Length - 1; i++)
             {
-                TSUB t = new TSUB();
+                if (sts[i] == "")
+                    continue;//
+                TSub t = new TSub();
                 t.Load(sts[i]);
                 Subs.Add(t);
             }
@@ -59,7 +61,7 @@ namespace LinePutScript
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public Line(string name, string info, string text = "", params TSUB[] subs) : base(name, info)
+        public Line(string name, string info, string text = "", params TSub[] subs) : base(name, info)
         {
             Text = text;
             Subs.AddRange(subs);
@@ -71,7 +73,7 @@ namespace LinePutScript
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public void Load(string name, string info, string text = "", params TSUB[] subs)
+        public void Load(string name, string info, string text = "", params TSub[] subs)
         {
             Load(name, info);
             Text = text;
@@ -81,7 +83,7 @@ namespace LinePutScript
         /// 通过其他Line创建新的Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public Line(ILine<TSUB, V> line)
+        public Line(ILine<TSub, V> line)
         {
             Name = line.Name;
             info = (V)line.info.Clone();
@@ -92,7 +94,7 @@ namespace LinePutScript
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine<TSUB, V> line)
+        public void Set(ILine<TSub, V> line)
         {
             Name = line.Name;
             info = (V)line.info.Clone();
@@ -190,14 +192,14 @@ namespace LinePutScript
         /// <summary>
         /// 子项目
         /// </summary>
-        public List<TSUB> Subs { get; set; } = new List<TSUB>();
+        public List<TSub> Subs { get; set; } = new List<TSub>();
 
         #region List操作
         /// <summary>
         /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddSub(TSUB newSub)
+        public void AddSub(TSub newSub)
         {
             Subs.Add(newSub);
         }
@@ -206,9 +208,9 @@ namespace LinePutScript
         /// 若有,则替换成要添加的Sub
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddorReplaceSub(TSUB newSub)
+        public void AddorReplaceSub(TSub newSub)
         {
-            TSUB oldsub = Find(newSub.Name);
+            TSub oldsub = Find(newSub.Name);
             if (oldsub != null)
             {
                 oldsub.Set(newSub);
@@ -220,7 +222,7 @@ namespace LinePutScript
         /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params TSUB[] newSubs)
+        public void AddRange(params TSub[] newSubs)
         {
             Subs.AddRange(newSubs);
         }
@@ -230,7 +232,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSub">要添加的Sub</param>
-        public void InsertSub(int index, TSUB newSub)
+        public void InsertSub(int index, TSub newSub)
         {
             Subs.Insert(index, newSub);
         }
@@ -239,7 +241,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void InsertRange(int index, params TSUB[] newSubs)
+        public void InsertRange(int index, params TSub[] newSubs)
         {
             Subs.InsertRange(index, newSubs);
         }
@@ -248,7 +250,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="Sub">要从Subs中删除的Sub</param>
         /// <returns>如果成功移除了Sub,则为 true; 否则为 false</returns>
-        public bool Remove(TSUB Sub)
+        public bool Remove(TSub Sub)
         {
             return Subs.Remove(Sub);
         }
@@ -288,7 +290,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="sub">要在Line集合中定位的Sub</param>
         /// <returns>如果在Line集合中找到sub,则为True; 否则为false</returns>
-        public bool Contains(TSUB sub)
+        public bool Contains(TSub sub)
         {
             return Subs.Contains(sub);
         }
@@ -307,10 +309,10 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSUB[] FindAll(string subName)
+        public TSub[] FindAll(string subName)
         {
-            List<TSUB> subs = new List<TSUB>();
-            foreach (TSUB su in Subs)
+            List<TSub> subs = new List<TSub>();
+            foreach (TSub su in Subs)
                 if (su.Name == subName)
                     subs.Add(su);
             return subs.ToArray();
@@ -321,10 +323,10 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSUB[] FindAll(string subName, string subinfo)
+        public TSub[] FindAll(string subName, string subinfo)
         {
-            List<TSUB> subs = new List<TSUB>();
-            foreach (TSUB su in Subs)
+            List<TSub> subs = new List<TSub>();
+            foreach (TSub su in Subs)
                 if (su.Name == subName && su.info.Equals(subinfo))
                     subs.Add(su);
             return subs.ToArray();
@@ -334,10 +336,10 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSUB[] FindAllInfo(string subinfo)
+        public TSub[] FindAllInfo(string subinfo)
         {
-            List<TSUB> subs = new List<TSUB>();
-            foreach (TSUB su in Subs)
+            List<TSub> subs = new List<TSub>();
+            foreach (TSub su in Subs)
                 if (su.info.Equals(subinfo))
                     subs.Add(su);
             return subs.ToArray();
@@ -347,7 +349,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public TSUB Find(string subName)
+        public TSub Find(string subName)
         {
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
@@ -357,7 +359,7 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSUB Find(string subName, string subinfo)
+        public TSub Find(string subName, string subinfo)
         {
             return Subs.FirstOrDefault(x => x.Name == subName && x.info.Equals(subinfo));
         }
@@ -366,7 +368,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSUB FindInfo(string subinfo)
+        public TSub FindInfo(string subinfo)
         {
             return Subs.FirstOrDefault(x => x.info.Equals(subinfo));
         }
@@ -375,12 +377,12 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public TSUB FindorAdd(string subName)
+        public TSub FindorAdd(string subName)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
             {
-                sub = new TSUB();
+                sub = new TSub();
                 sub.Name = subName;
                 AddSub(sub);
                 return sub;
@@ -397,10 +399,10 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
-        public TSUB[] SeachALL(string value)
+        public TSub[] SeachALL(string value)
         {
-            List<TSUB> subs = new List<TSUB>();
-            foreach (TSUB su in Subs)
+            List<TSub> subs = new List<TSub>();
+            foreach (TSub su in Subs)
                 if (su.Name.Contains(value))
                     subs.Add(su);
             return subs.ToArray();
@@ -410,7 +412,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public TSUB Seach(string value)
+        public TSub Seach(string value)
         {
             return Subs.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -452,7 +454,7 @@ namespace LinePutScript
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
                 str.Append(":|");
-            foreach (TSUB su in Subs)
+            foreach (TSub su in Subs)
                 str.Append(su.ToString());
             str.Append(text);
             if (Comments != "")
@@ -475,7 +477,7 @@ namespace LinePutScript
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
                 str.Append(":|");
-            foreach (TSUB su in Subs)
+            foreach (TSub su in Subs)
                 str.Append(su.ToString());
             str.Append(text);
             if (Comments != "")
@@ -493,7 +495,7 @@ namespace LinePutScript
         {
             int id = 5;
             long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
-            foreach (TSUB su in Subs)
+            foreach (TSub su in Subs)
             {
                 hash += su.GetHashCode() * id++;
             }
@@ -509,7 +511,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="obj">Subs</param>
         /// <returns></returns>
-        public bool Equals(Line<TSUB, V>? obj)
+        public bool Equals(Line<TSub, V>? obj)
         {
             return obj?.GetLongHashCode() == GetLongHashCode();
         }
@@ -517,7 +519,7 @@ namespace LinePutScript
         /// 返回循环访问 Subs 的枚举数。
         /// </summary>
         /// <returns>用于 Subs 的枚举数</returns>
-        public new IEnumerator<TSUB> GetEnumerator()
+        public new IEnumerator<TSub> GetEnumerator()
         {
             return Subs.GetEnumerator();
         }
@@ -525,7 +527,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new TSUB First()
+        public new TSub First()
         {
             if (Subs.Count == 0)
                 return default;
@@ -535,7 +537,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new TSUB Last()
+        public new TSub Last()
         {
             if (Subs.Count == 0)
                 return default;
@@ -548,7 +550,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public TSUB this[string subName]
+        public TSub this[string subName]
         {
             get
             {
@@ -593,7 +595,7 @@ namespace LinePutScript
         /// </returns>
         public int GetInt(string subName, int defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt;
@@ -616,7 +618,7 @@ namespace LinePutScript
         /// </returns>
         public long GetInt64(string subName, long defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64;
@@ -639,7 +641,7 @@ namespace LinePutScript
         /// </returns>
         public double GetFloat(string subName, double defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.info.GetFloat();
@@ -662,7 +664,7 @@ namespace LinePutScript
         /// </returns>
         public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.info.GetDateTime();
@@ -685,7 +687,7 @@ namespace LinePutScript
         /// </returns>
         public string? GetString(string subName, string? defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.Info;
@@ -708,7 +710,7 @@ namespace LinePutScript
         /// </returns>
         public double GetDouble(string subName, double defaultvalue = default)
         {
-            TSUB sub = Find(subName);
+            TSub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToDouble;
@@ -809,25 +811,25 @@ namespace LinePutScript
         /// <summary>
         /// 是否只读
         /// </summary>
-        public bool IsReadOnly => ((ICollection<TSUB>)Subs).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<TSub>)Subs).IsReadOnly;
         /// <summary>
         /// 通过引索修改Line中Sub内容
         /// </summary>
         /// <param name="index">要获得或设置的引索</param>
         /// <returns>引索指定的Sub</returns>
-        public TSUB this[int index] { get => Subs[index]; set => Subs[index] = value; }
+        public TSub this[int index] { get => Subs[index]; set => Subs[index] = value; }
         /// <summary>
         /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的Sub从零开始的索引
         /// </summary>
         /// <param name="sub">用于定义匹配的Sub</param>
         /// <returns>如果找到相同名称的Sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        public int IndexOf(TSUB sub) => Subs.FindIndex(x => x.Equals(sub));
+        public int IndexOf(TSub sub) => Subs.FindIndex(x => x.Equals(sub));
         /// <summary>
         /// 将指定的Sub添加到指定索引处
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSub">要添加的Sub</param>
-        public void Insert(int index, TSUB newSub) => InsertSub(index, newSub);
+        public void Insert(int index, TSub newSub) => Subs.Insert(index, newSub);
         /// <summary>
         /// 从Subs中移除特定引索的Sub
         /// </summary>
@@ -837,7 +839,7 @@ namespace LinePutScript
         /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void Add(TSUB newSub) => AddSub(newSub);
+        public void Add(TSub newSub) => AddSub(newSub);
         /// <summary>
         /// 移除Line中所有的Sub
         /// </summary>
@@ -847,7 +849,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="array">复制到Subs的Sub列表</param>
         /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
-        public void CopyTo(TSUB[] array, int arrayIndex) => Subs.CopyTo(array, arrayIndex);
+        public void CopyTo(TSub[] array, int arrayIndex) => Subs.CopyTo(array, arrayIndex);
 
 
 
@@ -856,7 +858,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="other">另一个line</param>
         /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
-        public int CompareTo(Line<TSUB, V>? other)
+        public int CompareTo(Line<TSub, V>? other)
         {
             if (other == null)
                 return int.MaxValue;
@@ -875,13 +877,13 @@ namespace LinePutScript
         /// <returns>相同的Line</returns>
         public new object Clone()
         {
-            return new Line<TSUB, V>(this);
+            return new Line<TSub, V>(this);
         }
         /// <summary>
         /// 返回一个新List,包含所有Subs
         /// </summary>
         /// <returns>所有储存的Subs</returns>
-        public List<TSUB> ToList()
+        public List<TSub> ToList()
         {
             return Subs.ToList();
         }

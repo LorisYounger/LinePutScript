@@ -638,6 +638,13 @@ namespace LinePutScript
         {
             return (int)Sub.GetHashCode(ToString());
         }
+        /// <summary>
+        /// 转换成文本形式
+        /// </summary>
+        public override string ToString()
+        {
+            return GetString();
+        }
     }
 
 }
