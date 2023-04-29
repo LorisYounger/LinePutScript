@@ -799,7 +799,6 @@ namespace LinePutScript.Dictionary
             get => GetDateTime((string)subName);
             set => SetDateTime((string)subName, value);
         }
-        #endregion
-
+        #endregion        
     }
 }
