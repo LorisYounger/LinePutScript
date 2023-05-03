@@ -1,4 +1,6 @@
 ﻿using LinePutScript;
+using System.Collections.Generic;
+
 namespace TestConsole
 {
     internal class Program
@@ -72,7 +74,7 @@ namespace TestConsole
             Console.WriteLine("SS测试6:\t" + lps["str2"].Texts[(gflt)"flt"].Equals(114514.191980));
 
             Console.WriteLine("SS测试\t:\t" + lps.ToString().Equals(Properties.Resources.test2.Replace("\r", "")));
-            
+
             lps = new LpsDocument(Properties.Resources.test2);
             Console.WriteLine("SS读取测试:\t" + lps["str2"].Texts[(gflt)"flt"].Equals(114514.191980));
             Console.WriteLine("SS输出测试:\t" + lps.ToString().Equals(Properties.Resources.test2.Replace("\r", "")));
@@ -85,7 +87,6 @@ namespace TestConsole
             Console.WriteLine("SS测试8:\t" + lps["str2"].Texts[(gint)"gint1"].Equals(114514));
             lps["str2"].Texts[(gint)"gint2"] = 1145141919;
             Console.WriteLine("SS测试9:\t" + lps["str2"].Texts[(gint)"gint2"].Equals(1145141919));
-           
         }
     }
 }

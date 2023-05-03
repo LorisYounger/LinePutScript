@@ -10,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// 子类接口 LinePutScript最基础的类的最基础的接口
     /// </summary>
-    public interface ISub<V>
+    public interface ISub : ISetObject
     {
         /// <summary>
         /// 加载 通过lps文本创建一个子类
@@ -27,7 +27,7 @@ namespace LinePutScript
         /// 将其他Sub内容拷贝到本Sub
         /// </summary>
         /// <param name="sub">其他Sub</param>
-        void Set(ISub<V> sub);
+        void Set(ISub sub);
 
         /// <summary>
         /// 名称 没有唯一性
@@ -35,9 +35,13 @@ namespace LinePutScript
         string Name { get; set; }
 
         /// <summary>
-        /// 信息 (去除关键字的文本)
+        /// 信息 (去除关键字的文本) (可复制)
         /// </summary>
-        V info { get; set; }
+        ICloneable infoCloneable { get; set; }
+        /// <summary>
+        /// 信息 (去除关键字的文本) (可比较)
+        /// </summary>
+        IComparable infoComparable { get; set; }
         /// <summary>
         /// 信息 (正常)
         /// </summary>
@@ -54,6 +58,10 @@ namespace LinePutScript
         /// 信息 (double)
         /// </summary>
         double InfoToDouble { get; set; }
+        /// <summary>
+        /// 信息 (bool)
+        /// </summary>
+        bool InfoToBoolean { get; set; }
         /// <summary>
         /// 返回一个 Info集合 的第一个string。
         /// </summary>
@@ -90,5 +98,9 @@ namespace LinePutScript
         /// </summary>
         /// <returns>64位哈希代码</returns>
         long GetLongHashCode();
+        /// <summary>
+        /// 获得Info的String结构
+        /// </summary>
+        public StringStructure Infos { get; }
     }
 }

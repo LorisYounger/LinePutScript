@@ -26,16 +26,13 @@
     <Compile Include="..\LpsDocument.cs" />
     <Compile Include="..\SetObject.cs" />
     <Compile Include="..\StringStructure.cs" />
-    <Compile Include="..\Generics\Sub.cs" Link="Generics\Sub.cs" />
-    <Compile Include="..\Generics\Line.cs" Link="Generics\Line.cs" />
-    <Compile Include="..\Generics\LPS.cs" Link="Generics\LPS.cs" />
     <Compile Include="..\Sub.cs" />
-    <Compile Include="..\Dictionary\Line.cs" Link="Dictionary\Line.cs" />
-    <Compile Include="..\Dictionary\LPS.cs" Link="Dictionary\LPS.cs" />
+    <Compile Include="..\Dictionary\Line_D.cs" Link="Dictionary\Line_D.cs" />
+    <Compile Include="..\Dictionary\LPS_D.cs" Link="Dictionary\LPS_D.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interface\" />
-    <Folder Include="Generics\" />
+    <Folder Include="Converter\" />
     <Folder Include="Dictionary\" />
   </ItemGroup>
 </Project>

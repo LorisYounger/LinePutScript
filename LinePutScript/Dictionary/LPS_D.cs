@@ -10,25 +10,22 @@ namespace LinePutScript.Dictionary
     /// <summary>
     /// 通过字典类型的文件 包括文件读写等一系列操作
     /// </summary>
-    public class LPS<TLine, TSub, V> : ILPS<TLine, TSub, V>, IReadOnlyList<TLine>, IReadOnlyCollection<TLine>
-        where TLine : ILine<TSub, V>, new()
-        where TSub : ISub<V>, new()
-        where V : ISetObject, new()
+    public class LPS_D : ILPS
     {
         /// <summary>
         /// 集合 全部文件的数据
         /// </summary>
-        public Dictionary<string, TLine> Assemblage { get; set; } = new Dictionary<string, TLine>();
+        public Dictionary<string, ILine> Assemblage { get; set; } = new Dictionary<string, ILine>();
 
         /// <summary>
         /// 创建一个 LpsDocument
         /// </summary>
-        public LPS() { }
+        public LPS_D() { }
         /// <summary>
         /// 从指定的字符串创建 LpsDocument
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
-        public LPS(string lps)
+        public LPS_D(string lps)
         {
             Load(lps);
         }
@@ -38,7 +35,7 @@ namespace LinePutScript.Dictionary
         /// 将指定的Line添加到Assemblage列表
         /// </summary>
         /// <param name="newLine">要添加的Line</param>
-        public void AddLine(TLine newLine)
+        public void AddLine(ILine newLine)
         {
             Assemblage[newLine.Name] = newLine;
         }
@@ -47,7 +44,7 @@ namespace LinePutScript.Dictionary
         /// 若有,则替换成要添加的Line
         /// </summary>
         /// <param name="newLine">要添加的Line</param>
-        public void AddorReplaceLine(TLine newLine)
+        public void AddorReplaceLine(ILine newLine)
         {
             Assemblage[newLine.Name] = newLine;
         }
@@ -55,7 +52,7 @@ namespace LinePutScript.Dictionary
         /// 将指定Line的元素添加到Assemblage
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
-        public void AddRange(params TLine[] newLines)
+        public void AddRange(params ILine[] newLines)
         {
             foreach (var item in newLines)
             {
@@ -66,7 +63,7 @@ namespace LinePutScript.Dictionary
         /// 将指定Line的元素添加到Assemblage
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
-        public void AddRange(IEnumerable<TLine> newLines)
+        public void AddRange(IEnumerable<ILine> newLines)
         {
             foreach (var item in newLines)
             {
@@ -78,8 +75,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Line 的从零开始的索引</param>
         /// <param name="newLine">要添加的Line</param>
-        [Obsolete]
-        public void InsertLine(int index, TLine newLine)
+        [Obsolete("失效:字典没有顺序")]
+        public void InsertLine(int index, ILine newLine)
         {
             Assemblage[newLine.Name] = newLine;
         }
@@ -88,8 +85,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Line 的从零开始的索引</param>
         /// <param name="newLines">要添加的多个Line</param>
-        [Obsolete]
-        public void InsertRange(int index, params TLine[] newLines)
+        [Obsolete("失效:字典没有顺序")]
+        public void InsertRange(int index, params ILine[] newLines)
         {
             AddRange(newLines);
         }
@@ -98,8 +95,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Line 的从零开始的索引</param>
         /// <param name="newLines">要添加的多个Line</param>
-        [Obsolete]
-        public void InsertRange(int index, IEnumerable<TLine> newLines)
+        [Obsolete("失效:字典没有顺序")]
+        public void InsertRange(int index, IEnumerable<ILine> newLines)
         {
             AddRange(newLines);
         }
@@ -108,7 +105,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="line">要从Assemblage中删除的Line的名称</param>
         /// <returns>如果成功移除了line,则为 true; 否则为 false</returns>
-        public bool Remove(TLine line)
+        public bool Remove(ILine line)
         {
             return Assemblage.Remove(line.Name);
         }
@@ -126,8 +123,8 @@ namespace LinePutScript.Dictionary
         /// 从Assemblage中移除移除与条件相匹配的所有Line (失效:字典没有顺序)
         /// </summary>
         /// <param name="line">要从Assemblage中删除的Line</param>
-        [Obsolete]
-        public void RemoveAll(TLine line)
+        [Obsolete("失效:字典没有顺序")]
+        public void RemoveAll(ILine line)
         {
             Assemblage.Remove(line.Name);
         }
@@ -135,7 +132,7 @@ namespace LinePutScript.Dictionary
         /// 从Assemblage中移除移除与名称相匹配的所有Line (失效:字典没有顺序)
         /// </summary>
         /// <param name="lineName">要从Assemblage中删除的Line的名称</param>
-        [Obsolete]
+        [Obsolete("失效:字典没有顺序")]
         public void RemoveAll(string lineName)
         {
             Assemblage.Remove(lineName);
@@ -144,7 +141,7 @@ namespace LinePutScript.Dictionary
         /// 移除Assemblage的指定索引处的Line (错误:字典没有引索)
         /// </summary>
         /// <param name="index">要移除的Line的从零开始的索引</param>
-        [Obsolete]
+        [Obsolete("错误:字典没有引索")]
         public void RemoveAt(int index)
         {
             throw new ArrayTypeMismatchException();
@@ -155,7 +152,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="line">要在Assemblage中定位的Line</param>
         /// <returns>如果在Assemblage中找到line,则为True; 否则为false </returns>
-        public bool Contains(TLine line)
+        public bool Contains(ILine line)
         {
             return Assemblage.ContainsKey(line.Name);
         }
@@ -164,9 +161,9 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="sub">要在Assemblage中定位的Sub</param>
         /// <returns>如果在Assemblage中找到line,则为True; 否则为false</returns>
-        public bool Contains(TSub sub)
+        public bool Contains(ISub sub)
         {
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
                 if (li.Contains(sub))
                     return true;
             return false;
@@ -196,14 +193,14 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TLine[] FindAllLine(string lineName)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ILine[] FindAllLine(string lineName)
         {
             var v = Assemblage[lineName];
             if (v == null)
-                return new TLine[] { };
+                return new ILine[] { };
             else
-                return new TLine[] { v };
+                return new ILine[] { v };
         }
         /// <summary>
         /// 匹配拥有相同名称和信息的Line的所有元素(注意:在字典中,信息是唯一的)
@@ -211,35 +208,35 @@ namespace LinePutScript.Dictionary
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TLine[] FindAllLine(string lineName, string lineinfo)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ILine[] FindAllLine(string lineName, string lineinfo)
         {
             var v = FindLine(lineName, lineinfo);
             if (v == null)
-                return new TLine[] { };
+                return new ILine[] { };
             else
-                return new TLine[] { v };
+                return new ILine[] { v };
         }
         /// <summary>
         /// 匹配拥有相同信息的Line的所有元素(注意:在字典中,信息是唯一的)
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TLine[] FindAllLineInfo(string lineinfo)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ILine[] FindAllLineInfo(string lineinfo)
         {
             var v = FindLineInfo(lineinfo);
             if (v == null)
-                return new TLine[] { };
+                return new ILine[] { };
             else
-                return new TLine[] { v };
+                return new ILine[] { v };
         }
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
-        public TLine FindLine(string lineName)
+        public ILine FindLine(string lineName)
         {
             return Assemblage[lineName];
         }
@@ -249,30 +246,30 @@ namespace LinePutScript.Dictionary
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public TLine FindLine(string lineName, string lineinfo)
+        public ILine FindLine(string lineName, string lineinfo)
         {
-            return Assemblage.Values.FirstOrDefault(x => x.Name == lineName && x.info.GetString().Equals(lineinfo));
+            return Assemblage.Values.FirstOrDefault(x => x.Name == lineName && x.GetString().Equals(lineinfo));
         }
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public TLine FindLineInfo(string lineinfo)
+        public ILine FindLineInfo(string lineinfo)
         {
-            return Assemblage.Values.FirstOrDefault(x => x.info.GetString().Equals(lineinfo));
+            return Assemblage.Values.FirstOrDefault(x => x.GetString().Equals(lineinfo));
         }
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
-        public TLine FindorAddLine(string lineName)
+        public ILine FindorAddLine<T>(string lineName) where T : ILine, new()
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
             {
-                line = new TLine();
+                line = new T();
                 line.Name = lineName;
                 AddLine(line);
                 return line;
@@ -283,14 +280,20 @@ namespace LinePutScript.Dictionary
             }
         }
         /// <summary>
+        /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素; 若未找到,则新建并添加相同名称的Line,并且返回这个Line
+        /// </summary>
+        /// <param name="lineName">用于定义匹配的名称</param>
+        /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
+        public ILine FindorAddLine(string lineName) => FindorAddLine<Line_D>(lineName);
+        /// <summary>
         /// 匹配拥有相同名称的Sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAllSub(string subName)
+        public ISub[] FindAllSub(string subName)
         {
-            List<TSub> lines = new List<TSub>();
-            foreach (TLine li in Assemblage.Values)
+            List<ISub> lines = new List<ISub>();
+            foreach (ILine li in Assemblage.Values)
             {
                 lines.AddRange(li.FindAll(subName));
             }
@@ -302,10 +305,10 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAllSub(string subName, string subinfo)
+        public ISub[] FindAllSub(string subName, string subinfo)
         {
-            List<TSub> lines = new List<TSub>();
-            foreach (TLine li in Assemblage.Values)
+            List<ISub> lines = new List<ISub>();
+            foreach (ILine li in Assemblage.Values)
             {
                 lines.AddRange(li.FindAll(subName, subinfo));
             }
@@ -316,10 +319,10 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAllSubInfo(string subinfo)
+        public ISub[] FindAllSubInfo(string subinfo)
         {
-            List<TSub> lines = new List<TSub>();
-            foreach (TLine li in Assemblage.Values)
+            List<ISub> lines = new List<ISub>();
+            foreach (ILine li in Assemblage.Values)
             {
                 lines.AddRange(li.FindAllInfo(subinfo));
             }
@@ -330,9 +333,9 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
-        public TSub FindSub(string subName)
+        public ISub FindSub(string subName)
         {
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
             {
                 var l = li.Find(subName);
                 if (l != null)
@@ -346,9 +349,9 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Sub,则为该Line; 否则为null</returns>
-        public TSub FindSub(string subName, string subinfo)
+        public ISub FindSub(string subName, string subinfo)
         {
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
             {
                 var l = li.Find(subName, subinfo);
                 if (l != null)
@@ -361,9 +364,9 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Sub,则为该Line; 否则为null</returns>
-        public TSub FindSubInfo(string subinfo)
+        public ISub FindSubInfo(string subinfo)
         {
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
             {
                 var l = li.FindInfo(subinfo);
                 if (l != null)
@@ -377,10 +380,10 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为数组; 否则为一个空的Array</returns>
-        public TLine[] SearchAllLine(string value)
+        public ILine[] SearchAllLine(string value)
         {
-            List<TLine> lines = new List<TLine>();
-            foreach (TLine li in Assemblage.Values)
+            List<ILine> lines = new List<ILine>();
+            foreach (ILine li in Assemblage.Values)
                 if (li.Name.Contains(value))
                     lines.Add(li);
             return lines.ToArray();
@@ -390,7 +393,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
-        public TLine SearchLine(string value)
+        public ILine SearchLine(string value)
         {
             return Assemblage.Values.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -399,10 +402,10 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] SearchAllSub(string value)
+        public ISub[] SearchAllSub(string value)
         {
-            List<TSub> lines = new List<TSub>();
-            foreach (TLine li in Assemblage.Values)
+            List<ISub> lines = new List<ISub>();
+            foreach (ILine li in Assemblage.Values)
             {
                 lines.AddRange(li.SeachALL(value));
             }
@@ -413,9 +416,9 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public TSub SearchSub(string value)
+        public ISub SearchSub(string value)
         {
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
             {
                 var l = li.Seach(value);
                 if (l != null)
@@ -429,7 +432,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        [Obsolete]
+        [Obsolete("错误:字典没有引索")]
         public int IndexOf(string lineName)
         {
             throw new ArrayTypeMismatchException();
@@ -439,7 +442,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line的元素,则为该元素的从零开始的索引组; 否则为空的Array</returns>
-        [Obsolete]
+        [Obsolete("错误:字典没有引索")]
         public int[] IndexsOf(string lineName)
         {
             throw new ArrayTypeMismatchException();
@@ -454,7 +457,7 @@ namespace LinePutScript.Dictionary
         /// 从指定的字符串加载LPS文档
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
-        public void Load(string lps)
+        public void Load<T>(string lps) where T : ILine, new()
         {
             Assemblage.Clear();//清空当前文档
             string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split('\n');
@@ -462,28 +465,33 @@ namespace LinePutScript.Dictionary
             {
                 if (str != "")
                 {
-                    TLine t = new TLine();
+                    ILine t = new T();
                     t.Load(str);
                     Add(t);
                 }
             }
         }
+        /// <summary>
+        /// 从指定的字符串加载LPS文档
+        /// </summary>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
+        public void Load(string lps) => Load<Line_D>(lps);
 
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public TLine First() => Assemblage.Values.First();
+        public ILine First() => Assemblage.Values.First();
         /// <summary>
         /// 返回一个Assemblage的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public TLine Last() => Assemblage.Values.Last();
+        public ILine Last() => Assemblage.Values.Last();
         /// <summary>
         /// 返回循环访问 Assemblage 的枚举数。
         /// </summary>
         /// <returns>用于 Assemblage 的枚举数</returns>
-        public IEnumerator<TLine> GetEnumerator()
+        public IEnumerator<ILine> GetEnumerator()
         {
             return Assemblage.Values.GetEnumerator();
         }
@@ -493,7 +501,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
-        public TLine this[string lineName]
+        public ILine this[string lineName]
         {
             get
             {
@@ -513,7 +521,7 @@ namespace LinePutScript.Dictionary
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
                 li.ToString(sb);
             return sb.ToString().Trim('\n');
         }
@@ -525,7 +533,7 @@ namespace LinePutScript.Dictionary
         {
             int id = 2;
             long hash = 0;
-            foreach (TLine li in Assemblage.Values)
+            foreach (ILine li in Assemblage.Values)
                 hash += li.GetLongHashCode() * id++;
             return hash;
         }
@@ -541,9 +549,9 @@ namespace LinePutScript.Dictionary
         /// <returns></returns>
         public override bool Equals(object? obj)
         {
-            if (obj?.GetType() != GetType())
+            if (obj == null || !obj.GetType().IsAssignableFrom(typeof(ILPS)))
                 return false;
-            return ((LPS<TLine, TSub, V>)obj).GetLongHashCode() == GetLongHashCode();
+            return ((ILPS)obj).GetLongHashCode() == GetLongHashCode();
         }
         /// <summary>
         /// 获得当前文档大小 单位:字符
@@ -553,12 +561,12 @@ namespace LinePutScript.Dictionary
             get
             {
                 int l = 3;
-                foreach (TLine li in Assemblage.Values)
+                foreach (ILine li in Assemblage.Values)
                 {
-                    l += li.Name.Length + li.info.GetStoreString().Length + li.Text.Length + 6;
-                    foreach (TSub sb in li)
+                    l += li.Name.Length + li.GetStoreString().Length + li.Text.Length + 6;
+                    foreach (ISub sb in li)
                     {
-                        l += sb.Name.Length + sb.info.GetStoreString().Length + 3;
+                        l += sb.Name.Length + sb.GetStoreString().Length + 3;
                     }
                 }
 
@@ -568,14 +576,14 @@ namespace LinePutScript.Dictionary
         /// <summary>
         /// 是否只读
         /// </summary>
-        public bool IsReadOnly => ((ICollection<TLine>)Assemblage).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<ILine>)Assemblage).IsReadOnly;
 
         /// <summary>
         /// 通过引索修改lps中Line内容 (错误:字典没有引索)
         /// </summary>
         /// <param name="index">要获得或设置的引索</param>
         /// <returns>引索指定的Line</returns>
-        [Obsolete] public TLine this[int index] { get => throw new ArrayTypeMismatchException(); set => throw new ArrayTypeMismatchException(); }
+        [Obsolete("错误:字典没有引索")] public ILine this[int index] { get => throw new ArrayTypeMismatchException(); set => throw new ArrayTypeMismatchException(); }
 
         #region GETER
 
@@ -584,7 +592,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的line,则为True; 否则为false</returns>
-        public bool GetBool(string lineName) => FindLine(lineName)?.info.GetBoolean() ?? false;
+        public bool GetBool(string lineName) => FindLine(lineName)?.GetBoolean() ?? false;
         /// <summary>
         /// 设置bool属性的line
         /// </summary>
@@ -595,7 +603,7 @@ namespace LinePutScript.Dictionary
         /// </param>
         public void SetBool(string lineName, bool value)
         {
-            FindorAddLine(lineName).info.SetBoolean(value);
+            FindorAddLine(lineName).SetBoolean(value);
         }
         /// <summary>
         /// 获得int属性的line
@@ -608,7 +616,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public int GetInt(string lineName, int defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt;
@@ -631,7 +639,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public long GetInt64(string lineName, long defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt64;
@@ -654,7 +662,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public string? GetString(string lineName, string? defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.Info;
@@ -677,7 +685,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetDouble(string lineName, double defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToDouble;
@@ -687,7 +695,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double值</param>
-        public void SetDouble(string lineName, double value) => FindorAddLine(lineName).info.SetDouble(value);
+        public void SetDouble(string lineName, double value) => FindorAddLine(lineName).SetDouble(value);
 
 
         /// <summary>
@@ -701,17 +709,17 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetFloat(string lineName, double defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
-            return line.info.GetFloat();
+            return line.GetFloat();
         }
         /// <summary>
         /// 设置double(long)属性的line 通过转换long获得更精确的小数,小数位最大保留9位
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double(long)值</param>
-        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).info.SetFloat(value);
+        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的line
@@ -724,17 +732,17 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public DateTime GetDateTime(string lineName, DateTime defaultvalue = default)
         {
-            TLine line = FindLine(lineName);
+            ILine line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
-            return line.info.GetDateTime();
+            return line.GetDateTime();
         }
         /// <summary>
         /// 设置DateTime属性的line
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的DateTime值</param>
-        public void SetDateTime(string lineName, DateTime value) => FindorAddLine(lineName).info.SetDateTime(value);
+        public void SetDateTime(string lineName, DateTime value) => FindorAddLine(lineName).SetDateTime(value);
 
         #endregion
 
@@ -823,18 +831,18 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="line">用于定义匹配的Line</param>
         /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        [Obsolete] public int IndexOf(TLine line) => throw new ArrayTypeMismatchException();
+        [Obsolete("错误:字典没有引索")] public int IndexOf(ILine line) => throw new ArrayTypeMismatchException();
         /// <summary>
         /// 将指定的Line添加到指定索引处 (失效:字典没有顺序)
         /// </summary>
         /// <param name="index">应插入 Line 的从零开始的索引</param>
         /// <param name="newLine">要添加的Line</param>
-        [Obsolete] public void Insert(int index, TLine newLine) => AddLine(newLine);
+        [Obsolete("错误:字典没有引索")] public void Insert(int index, ILine newLine) => AddLine(newLine);
         /// <summary>
         /// 将指定的Line添加到Assemblage列表
         /// </summary>
         /// <param name="newLine">要添加的Line</param>
-        public void Add(TLine newLine) => AddLine(newLine);
+        public void Add(ILine newLine) => AddLine(newLine);
         /// <summary>
         /// 移除Assemblage中所有的Line
         /// </summary>
@@ -844,7 +852,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="array">复制到Assemblage的Line列表</param>
         /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
-        public void CopyTo(TLine[] array, int arrayIndex)
+        public void CopyTo(ILine[] array, int arrayIndex)
         {
             for (int i = arrayIndex; i < array.Length; i++)
                 Assemblage[array[i].Name] = array[i];
@@ -858,7 +866,7 @@ namespace LinePutScript.Dictionary
         /// 返回一个新List,包含所有Line
         /// </summary>
         /// <returns>所有储存的Line</returns>
-        public List<TLine> ToList()
+        public List<ILine> ToList()
         {
             return Assemblage.Values.ToList();
         }

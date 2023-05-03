@@ -10,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// Set Object 可以储存任何类型的值 对性能进行优化
     /// </summary>
-    public class SetObject : ISetObject, IComparable, IEquatable<SetObject>, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
+    public class SetObject : ISetObject, IEquatable<SetObject>, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
     {
         /// <summary>
         /// 储存Object的类型
@@ -528,9 +528,9 @@ namespace LinePutScript
         /// </summary>
         /// <param name="other">其他参数</param>
         /// <returns></returns>
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
-            switch (other.GetType().Name)
+            switch (other?.GetType().Name)
             {
                 case "String":
                     return GetString() == (string)other;

@@ -10,8 +10,8 @@ namespace LinePutScript
     /// <summary>
     /// 任何类型的值均可储存的接口
     /// </summary>
-    public interface ISetObject : ICloneable, IEquatable<ISetObject>, IComparable<ISetObject>
-    {        
+    public interface ISetObject : ICloneable, IComparable, IEquatable<ISetObject>, IComparable<ISetObject>
+    {
         /// <summary>
         /// 储存的数据
         /// </summary>

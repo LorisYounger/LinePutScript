@@ -10,8 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// 行接口 包含多个子类的接口 继承自子类接口
     /// </summary>
-    public interface ILine<TSub, V> : ISub<V>, IList<TSub>, ICollection<TSub>, IEnumerable<TSub>, IEnumerable, IGetOBJ<TSub>
-        where TSub : ISub<V>
+    public interface ILine : ISub, IList<ISub>, ICollection<ISub>, IEnumerable<ISub>, IEnumerable, IGetOBJ<ISub>
     {
         /// <summary>
         /// 通过名字和信息创建新的Line
@@ -20,12 +19,12 @@ namespace LinePutScript
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public void Load(string name, string info, string text = "", params TSub[] subs);
+        public void Load(string name, string info, string text = "", params ISub[] subs);
         /// <summary>
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine<TSub, V> line);
+        public void Set(ILine line);
         /// <summary>
         /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
         /// </summary>
@@ -60,31 +59,31 @@ namespace LinePutScript
         /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddSub(TSub newSub);
+        public void AddSub(ISub newSub);
         /// <summary>
         /// 若无相同名称(Name)的Sub,则将指定的Sub添加到Subs列表的末尾
         /// 若有,则替换成要添加的Sub
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddorReplaceSub(TSub newSub);
+        public void AddorReplaceSub(ISub newSub);
         /// <summary>
         /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params TSub[] newSubs);
+        public void AddRange(params ISub[] newSubs);
 
         /// <summary>
         /// 将指定的Sub添加到指定索引处
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSub">要添加的Sub</param>
-        public void InsertSub(int index, TSub newSub);
+        public void InsertSub(int index, ISub newSub);
         /// <summary>
         /// 将指定Sub的元素添加指定索引处
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void InsertRange(int index, params TSub[] newSubs);
+        public void InsertRange(int index, params ISub[] newSubs);
         /// <summary>
         /// 从Subs中移除特定名称的第一个匹配项
         /// </summary>
@@ -108,57 +107,57 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAll(string subName);
+        public ISub[] FindAll(string subName);
         /// <summary>
         /// 匹配拥有相同名称和信息的Line或sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAll(string subName, string subinfo);
+        public ISub[] FindAll(string subName, string subinfo);
         /// <summary>
         /// 匹配拥有相同信息的Line或sub的所有元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public TSub[] FindAllInfo(string subinfo);
+        public ISub[] FindAllInfo(string subinfo);
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public TSub Find(string subName);
+        public ISub Find(string subName);
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSub Find(string subName, string subinfo);
+        public ISub Find(string subName, string subinfo);
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSub FindInfo(string subinfo);
+        public ISub FindInfo(string subinfo);
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public TSub FindorAdd(string subName);
+        public ISub FindorAdd(string subName);
         /// <summary>
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
-        public TSub[] SeachALL(string value);
+        public ISub[] SeachALL(string value);
         /// <summary>
         /// 搜索字段是否出现在Line名称,并返回整个Subs中的第一个匹配元素
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public TSub Seach(string value);
+        public ISub Seach(string value);
         /// <summary>
         /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的sub从零开始的索引
         /// </summary>
@@ -189,16 +188,20 @@ namespace LinePutScript
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new TSub First();
+        public new ISub First();
         /// <summary>
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new TSub Last();
+        public new ISub Last();
         /// <summary>
         /// 返回一个新List,包含所有Subs
         /// </summary>
         /// <returns>所有储存的Subs</returns>
-        public List<TSub> ToList();
+        public List<ISub> ToList();
+        /// <summary>
+        /// 获得Text的String结构
+        /// </summary>
+        public StringStructure Texts { get; }
     }
 }

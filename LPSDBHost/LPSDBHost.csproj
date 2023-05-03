@@ -48,7 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinePutScriptDataBase\LinePutScript.DataBase.csproj">
+    <ProjectReference Include="..\LinePutScript.DataBase\LinePutScript.DataBase.csproj">
       <Project>{bcf7e909-ac84-42f7-8afd-0f0c3cb8ebae}</Project>
       <Name>LinePutScript.DataBase</Name>
     </ProjectReference>

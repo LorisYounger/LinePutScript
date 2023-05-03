@@ -13,14 +13,12 @@ namespace LinePutScript.Dictionary
     /// <summary>
     /// 通过字典类型的行, Name不会重复
     /// </summary>
-    /// <typeparam name="TSub">Sub类型</typeparam>
-    /// <typeparam name="V">值类型</typeparam>
-    public class Line<TSub, V> : Sub<V>, ILine<TSub, V> where TSub : ISub<V>, new() where V : ISetObject, new()
+    public class Line_D : Sub, ILine
     {
         /// <summary>
         /// 子项目
         /// </summary>
-        public Dictionary<string, TSub> Subs { get; set; } = new Dictionary<string, TSub>();
+        public Dictionary<string, ISub> Subs { get; set; } = new Dictionary<string, ISub>();
         /// <summary>
         /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
         /// </summary>
@@ -36,6 +34,18 @@ namespace LinePutScript.Dictionary
                 text = TextReplace(value);
             }
         }
+        /// <summary>
+        /// 获得Text的String结构
+        /// </summary>
+        public StringStructure Texts
+        {
+            get
+            {
+                texts ??= new StringStructure((x) => text = x, () => text);
+                return texts;
+            }
+        }
+        StringStructure? texts;
         /// <summary>
         /// 文本 (int)
         /// </summary>
@@ -92,21 +102,21 @@ namespace LinePutScript.Dictionary
         /// <summary>
         /// 是否只读
         /// </summary>
-        public bool IsReadOnly => ((ICollection<TSub>)Subs).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<ISub>)Subs).IsReadOnly;
 
         /// <summary>
         /// 通过引索修改Line中Sub内容(错误:字典没有引索)
         /// </summary>
         /// <param name="index">要获得或设置的引索</param>
         /// <returns>引索指定的Sub</returns>
-        [Obsolete]
-        public TSub this[int index] { get => throw new ArrayTypeMismatchException(); set => throw new ArrayTypeMismatchException(); }
+        [Obsolete("错误:字典没有引索")]
+        public ISub this[int index] { get => throw new ArrayTypeMismatchException(); set => throw new ArrayTypeMismatchException(); }
 
         /// <summary>
         /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="item">要添加的Sub</param>
-        public void Add(TSub item)
+        public void Add(ISub item)
         {
             Subs[item.Name] = item;
         }
@@ -115,7 +125,7 @@ namespace LinePutScript.Dictionary
         /// 若有,则替换成要添加的Sub
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddorReplaceSub(TSub newSub)
+        public void AddorReplaceSub(ISub newSub)
         {
             Subs[newSub.Name] = newSub;
         }
@@ -123,9 +133,9 @@ namespace LinePutScript.Dictionary
         /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params TSub[] newSubs)
+        public void AddRange(params ISub[] newSubs)
         {
-            foreach (TSub newSub in newSubs)
+            foreach (ISub newSub in newSubs)
             {
                 Add(newSub);
             }
@@ -134,7 +144,7 @@ namespace LinePutScript.Dictionary
         /// 将指定的Sub添加到Subs列表的末尾
         /// </summary>
         /// <param name="newSub">要添加的Sub</param>
-        public void AddSub(TSub newSub)
+        public void AddSub(ISub newSub)
         {
             Subs[newSub.Name] = newSub;
         }
@@ -157,7 +167,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="item">要在Line集合中定位的Sub</param>
         /// <returns>如果在Line集合中找到sub,则为True; 否则为false</returns>
-        public bool Contains(TSub item)
+        public bool Contains(ISub item)
         {
             return Subs.ContainsKey(item.Name);
         }
@@ -167,7 +177,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="array">复制到Subs的Sub列表</param>
         /// <param name="arrayIndex">从零开始的引索,从引索处开始复制</param>
-        public void CopyTo(TSub[] array, int arrayIndex)
+        public void CopyTo(ISub[] array, int arrayIndex)
         {
             for (int i = arrayIndex; i < array.Length; i++)
                 Subs[array[i].Name] = array[i];
@@ -177,7 +187,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public TSub Find(string subName)
+        public ISub Find(string subName)
         {
             return Subs[subName];
         }
@@ -187,11 +197,11 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSub Find(string subName, string subinfo)
+        public ISub Find(string subName, string subinfo)
         {
             var v = Subs[subName];
             if (v != null)
-                if (v.info.GetString().Equals(subinfo))
+                if (v.GetString().Equals(subinfo))
                     return v;
             return default;
         }
@@ -200,14 +210,14 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TSub[] FindAll(string subName)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ISub[] FindAll(string subName)
         {
             var v = Subs[subName];
             if (v == null)
-                return new TSub[] { };
+                return new ISub[] { };
             else
-                return new TSub[] { v };
+                return new ISub[] { v };
         }
         /// <summary>
         /// 匹配拥有相同名称和信息的Line或sub的所有元素(注意:在字典中,信息是唯一的)
@@ -215,37 +225,37 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TSub[] FindAll(string subName, string subinfo)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ISub[] FindAll(string subName, string subinfo)
         {
             var v = Find(subName, subinfo);
             if (v == null)
-                return new TSub[] { };
+                return new ISub[] { };
             else
-                return new TSub[] { v };
+                return new ISub[] { v };
         }
         /// <summary>
         /// 匹配拥有相同信息的Line或sub的所有元素(注意:在字典中,信息是唯一的)
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete]
-        public TSub[] FindAllInfo(string subinfo)
+        [Obsolete("注意:在字典中,信息是唯一的")]
+        public ISub[] FindAllInfo(string subinfo)
         {
             var v = FindInfo(subinfo);
             if (v == null)
-                return new TSub[] { };
+                return new ISub[] { };
             else
-                return new TSub[] { v };
+                return new ISub[] { v };
         }
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public TSub FindInfo(string subinfo)
+        public ISub FindInfo(string subinfo)
         {
-            var v = Subs.Values.FirstOrDefault(x => x.info.GetString().Equals(subinfo));
+            var v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
             if (v == null)
                 return default;
             else
@@ -256,12 +266,12 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public TSub FindorAdd(string subName)
+        public ISub FindorAdd(string subName)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
             {
-                sub = new TSub();
+                sub = new Sub();
                 sub.Name = subName;
                 AddSub(sub);
                 return sub;
@@ -275,7 +285,7 @@ namespace LinePutScript.Dictionary
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new TSub First()
+        public new ISub First()
         {
             return Subs.Values.First();
         }
@@ -283,7 +293,7 @@ namespace LinePutScript.Dictionary
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new TSub Last()
+        public new ISub Last()
         {
             return Subs.Values.Last();
         }
@@ -293,7 +303,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public TSub this[string subName]
+        public ISub this[string subName]
         {
             get
             {
@@ -314,7 +324,7 @@ namespace LinePutScript.Dictionary
             var sub = Find(subName);
             if (sub == null)
                 return false;
-            return sub.info.GetBoolean();
+            return sub.GetBoolean();
         }
         /// <summary>
         /// 设置bool属性的sub
@@ -325,7 +335,7 @@ namespace LinePutScript.Dictionary
         /// </param>
         public void SetBool(string subName, bool value)
         {
-            FindorAdd(subName).info.SetBoolean(value);
+            FindorAdd(subName).SetBoolean(value);
         }
         /// <summary>
         /// 获得int属性的sub
@@ -338,7 +348,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public int GetInt(string subName, int defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt;
@@ -361,7 +371,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public long GetInt64(string subName, long defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64;
@@ -384,17 +394,17 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetFloat(string subName, double defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
-            return sub.info.GetFloat();
+            return sub.GetFloat();
         }
         /// <summary>
         /// 设置double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double(long)值</param>
-        public void SetFloat(string subName, double value) => FindorAdd(subName).info.SetFloat(value);
+        public void SetFloat(string subName, double value) => FindorAdd(subName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的sub
@@ -407,17 +417,17 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
-            return sub.info.GetDateTime();
+            return sub.GetDateTime();
         }
         /// <summary>
         /// 设置DateTime属性的sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的DateTime值</param>
-        public void SetDateTime(string subName, DateTime value) => FindorAdd(subName).info.SetDateTime(value);
+        public void SetDateTime(string subName, DateTime value) => FindorAdd(subName).SetDateTime(value);
 
         /// <summary>
         /// 获得String属性的sub
@@ -430,7 +440,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public string? GetString(string subName, string? defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.Info;
@@ -453,7 +463,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetDouble(string subName, double defaultvalue = default)
         {
-            TSub sub = Find(subName);
+            ISub sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToDouble;
@@ -471,7 +481,7 @@ namespace LinePutScript.Dictionary
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public void Load(string name, string info, string text = "", params TSub[] subs)
+        public void Load(string name, string info, string text = "", params ISub[] subs)
         {
             Load(name, info);
             Text = text;
@@ -481,10 +491,10 @@ namespace LinePutScript.Dictionary
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine<TSub, V> line)
+        public void Set(ILine line)
         {
             Name = line.Name;
-            info = (V)line.info.Clone();
+            info = (SetObject)line.infoCloneable.Clone();
 
             text = line.text;
             AddRange(line.ToList().ToArray());
@@ -502,8 +512,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引(失效)</param>
         /// <param name="newSub">要添加的Sub</param>
-        [Obsolete]
-        public void InsertSub(int index, TSub newSub)
+        [Obsolete("失效:字典没有顺序")]
+        public void InsertSub(int index, ISub newSub)
         {
             Add(newSub);
         }
@@ -512,8 +522,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
-        [Obsolete]
-        public void InsertRange(int index, params TSub[] newSubs)
+        [Obsolete("失效:字典没有顺序")]
+        public void InsertRange(int index, params ISub[] newSubs)
         {
             AddRange(newSubs);
         }
@@ -530,7 +540,7 @@ namespace LinePutScript.Dictionary
         /// 从Subs中移除特定名称的所有元素(失效:字典为单一性)
         /// </summary>
         /// <param name="SubName">要从Subs中删除的Sub的名称</param>
-        [Obsolete]
+        [Obsolete("失效:字典没有顺序")]
         public void RemoveAll(string SubName)
         {
             Subs.Remove(SubName);
@@ -540,10 +550,10 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
-        public TSub[] SeachALL(string value)
+        public ISub[] SeachALL(string value)
         {
-            List<TSub> subs = new List<TSub>();
-            foreach (TSub su in Subs.Values)
+            List<ISub> subs = new List<ISub>();
+            foreach (ISub su in Subs.Values)
                 if (su.Name.Contains(value))
                     subs.Add(su);
             return subs.ToArray();
@@ -553,7 +563,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public TSub Seach(string value)
+        public ISub Seach(string value)
         {
             return Subs.Values.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -562,7 +572,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        [Obsolete]
+        [Obsolete("错误:字典没有引索")]
         public int IndexOf(string subName)
         {
             throw new ArrayTypeMismatchException();
@@ -572,8 +582,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="item">用于定义匹配的Sub</param>
         /// <returns>如果找到相同名称的Sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        [Obsolete]
-        public int IndexOf(TSub item)
+        [Obsolete("错误:字典没有引索")]
+        public int IndexOf(ISub item)
         {
             throw new ArrayTypeMismatchException();
         }
@@ -582,7 +592,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub的元素,则为该元素的从零开始的索引组; 否则为空的Array</returns>
-        [Obsolete]
+        [Obsolete("错误:字典没有引索")]
         public int[] IndexsOf(string subName)
         {
             throw new ArrayTypeMismatchException();
@@ -599,7 +609,7 @@ namespace LinePutScript.Dictionary
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
                 str.Append(":|");
-            foreach (TSub su in Subs.Values)
+            foreach (ISub su in Subs.Values)
                 str.Append(su.ToString());
             str.Append(text);
             if (Comments != "")
@@ -620,7 +630,7 @@ namespace LinePutScript.Dictionary
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
                 str.Append(":|");
-            foreach (TSub su in Subs.Values)
+            foreach (ISub su in Subs.Values)
                 str.Append(su.ToString());
             str.Append(text);
             if (Comments != "")
@@ -634,7 +644,7 @@ namespace LinePutScript.Dictionary
         /// 返回一个新List,包含所有Subs
         /// </summary>
         /// <returns>所有储存的Subs</returns>
-        public List<TSub> ToList()
+        public List<ISub> ToList()
         {
             return Subs.Values.ToList();
         }
@@ -650,7 +660,7 @@ namespace LinePutScript.Dictionary
             sts = Split(sts[0], ":|").ToArray();
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
-            info = new V();
+            info = new SetObject();
             if (st.Length > 1)
                 info.SetString(st[1]);//lpstext都是转义后(无关键字)
 
@@ -658,9 +668,7 @@ namespace LinePutScript.Dictionary
 
             for (int i = 1; i < sts.Length - 1; i++)
             {
-                TSub t = new TSub();
-                t.Load(sts[i]);
-                Add(t);
+                Add(new Sub(sts[i]));
             }
         }
 
@@ -672,7 +680,7 @@ namespace LinePutScript.Dictionary
         {
             int id = 5;
             long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
-            foreach (TSub su in Subs.Values)
+            foreach (ISub su in Subs.Values)
             {
                 hash += su.GetHashCode() * id++;
             }
@@ -690,8 +698,8 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引(失效)</param>
         /// <param name="item">要添加的Sub</param>
-        [Obsolete]
-        public void Insert(int index, TSub item)
+        [Obsolete("失效:字典没有顺序")]
+        public void Insert(int index, ISub item)
         {
             Add(item);
         }
@@ -699,7 +707,7 @@ namespace LinePutScript.Dictionary
         /// 从Subs中移除特定引索的Sub (错误:字典没有顺序)
         /// </summary>
         /// <param name="index">要删除Sub的引索</param>
-        [Obsolete]
+        [Obsolete("错误:字典没有顺序")]
         public void RemoveAt(int index)
         {
             throw new ArrayTypeMismatchException();
@@ -709,7 +717,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="item">要从Subs中删除的Sub</param>
         /// <returns>如果成功移除了Sub,则为 true; 否则为 false</returns>
-        public bool Remove(TSub item)
+        public bool Remove(ISub item)
         {
             return Subs.Remove(item.Name);
         }
@@ -717,7 +725,7 @@ namespace LinePutScript.Dictionary
         /// 返回循环访问 Subs 的枚举数。
         /// </summary>
         /// <returns>用于 Subs 的枚举数</returns>
-        public new IEnumerator<TSub> GetEnumerator()
+        public new IEnumerator<ISub> GetEnumerator()
         {
             return Subs.Values.GetEnumerator();
         }
