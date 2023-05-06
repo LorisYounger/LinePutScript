@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converter\LineAttribute.cs" />
     <Compile Include="Converter\LPSConvert.cs" />
     <Compile Include="Dictionary\Line_D.cs" />
     <Compile Include="Dictionary\LPS_D.cs" />

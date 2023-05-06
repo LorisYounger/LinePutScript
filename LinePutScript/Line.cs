@@ -75,7 +75,7 @@ namespace LinePutScript
         /// <param name="subs">子类集合</param>
         public void Load(string name, string info, string text = "", params ISub[] subs)
         {
-            Load(name, info);
+            base.Load(name, info);
             Text = text;
             Subs.AddRange(subs);
         }

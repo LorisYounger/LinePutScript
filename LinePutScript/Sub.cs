@@ -130,9 +130,9 @@ namespace LinePutScript
         /// 信息 (去除关键字的文本)
         /// </summary>
         public SetObject info { get; set; }
-
-        ICloneable ISub.infoCloneable { get => info; set => info = (SetObject)value; }
-        IComparable ISub.infoComparable { get => info; set => info = (SetObject)value; }
+        string ISub.info { get => info; set => info = value; }
+        ICloneable ISub.infoCloneable { get => info; }
+        IComparable ISub.infoComparable { get => info;}
 
         /// <summary>
         /// 信息 (正常)
@@ -321,6 +321,7 @@ namespace LinePutScript
         #region IGetOBject
         /// <inheritdoc/>
         dynamic ISetObject.Value { get => info.Value; set => info.Value = info; }
+
         /// <inheritdoc/>
         public string GetStoreString() => info.GetStoreString();
         /// <inheritdoc/>

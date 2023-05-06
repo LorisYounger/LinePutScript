@@ -35,13 +35,17 @@ namespace LinePutScript
         string Name { get; set; }
 
         /// <summary>
+        /// 信息 (去除关键字的文本) (string)
+        /// </summary>
+        string info { get; set; }
+        /// <summary>
         /// 信息 (去除关键字的文本) (可复制)
         /// </summary>
-        ICloneable infoCloneable { get; set; }
+        ICloneable infoCloneable { get;  }
         /// <summary>
         /// 信息 (去除关键字的文本) (可比较)
         /// </summary>
-        IComparable infoComparable { get; set; }
+        IComparable infoComparable { get; }
         /// <summary>
         /// 信息 (正常)
         /// </summary>

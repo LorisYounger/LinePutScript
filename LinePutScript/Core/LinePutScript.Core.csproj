@@ -29,6 +29,8 @@
     <Compile Include="..\Sub.cs" />
     <Compile Include="..\Dictionary\Line_D.cs" Link="Dictionary\Line_D.cs" />
     <Compile Include="..\Dictionary\LPS_D.cs" Link="Dictionary\LPS_D.cs" />
+    <Compile Include="..\Converter\LineAttribute.cs" Link="Converter\LineAttribute.cs" />
+    <Compile Include="..\Converter\LPSConvert.cs" Link="Converter\LPSConvert.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interface\" />
