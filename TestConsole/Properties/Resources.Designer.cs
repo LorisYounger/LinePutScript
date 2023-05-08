@@ -91,5 +91,23 @@ namespace TestConsole.Properties {
                 return ResourceManager.GetString("test3", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 getsetint#10:|
+        ///getsetDateTime#693937152000000000:|
+        ///intlistgetset#20,40,60,80,100:|
+        ///stringlistgetset#a:/!|a,b/idb,c/!|/!|c:|
+        ///auto#test:|
+        ///pubstr#pubtest:|
+        ///tc:|getsetint#0:|getsetDateTime#694039104000000000:|intlistgetset#11,45,14,19,19:|stringlistgetset:|auto#test:|pubstr#substring:|tc:|pubint#0:|intlist:|intdict#1=2/n3=4/n5=6:|
+        ///pubint#20:|
+        ///intlist#10,20,30,40,50:|
+        ///intdict:|1#2:|3#4:|5#6:| 的本地化字符串。
+        /// </summary>
+        internal static string test4 {
+            get {
+                return ResourceManager.GetString("test4", resourceCulture);
+            }
+        }
     }
 }

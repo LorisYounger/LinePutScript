@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+#nullable enable
 namespace LinePutScript
 {
     /// <summary>
@@ -320,7 +320,7 @@ namespace LinePutScript
 
         #region IGetOBject
         /// <inheritdoc/>
-        dynamic ISetObject.Value { get => info.Value; set => info.Value = info; }
+        dynamic ISetObject.Value { get => info.Value; set => info.Value = value; }
 
         /// <inheritdoc/>
         public string GetStoreString() => info.GetStoreString();

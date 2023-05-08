@@ -93,10 +93,9 @@ namespace TestConsole
             lps["str2"].Texts[(gint)"gint2"] = 1145141919;
             Console.WriteLine("SS测试9:\t" + lps["str2"].Texts[(gint)"gint2"].Equals(1145141919));
 
-            Console.WriteLine("Converter 测试输出:");
             var tc = new testclass()
             {
-                getsetDateTime = DateTime.Now,
+                getsetDateTime = new DateTime(2200, 1, 1),
                 intlistgetset = new int[] { 20, 40, 60, 80, 100 },
                 intlist = new List<int>() { 10, 20, 30, 40, 50 },
                 pubstr = "pubtest",
@@ -106,19 +105,33 @@ namespace TestConsole
                 intdict = new Dictionary<int, int>() { { 1, 2 }, { 3, 4 }, { 5, 6 } },
                 tc = new testclass()
                 {
-                    getsetDateTime = DateTime.Now,
+                    getsetDateTime = new DateTime(2200, 4, 29),
                     intlistgetset = new int[] { 11, 45, 14, 19, 19 },
                     pubstr = "substring",
                     intdict = new Dictionary<int, int>() { { 1, 2 }, { 3, 4 }, { 5, 6 } },
                 }
             };
-            Console.WriteLine(LPSConvert.SerializeObject(tc));
+            Console.WriteLine("CV测试1:\t" + LPSConvert.SerializeObject(tc).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
+
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
+            Console.WriteLine("CV测试2:\t" + LPSConvert.SerializeObject(
+                LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
+                ).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
+                              //Console.WriteLine(LPSConvert.SerializeObject(
+                              //    LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
+                              //    ).ToString());
+                              //Console.WriteLine();
+                              //tc.tc.tc = new testclass() {
+                              //    pubstr = "intc",
+                              //};
+                              //Console.WriteLine(LPSConvert.SerializeObject(tc));
         }
         public class testconvert : ConvertFunction
         {
             public override string Convert(dynamic value)
             {
-                return "test" + value.ToString();
+                return "test";
             }
 
             public override dynamic ConvertBack(string info)
@@ -149,5 +162,7 @@ namespace TestConsole
             [Line]
             public Dictionary<int, int>? intdict;
         }
+
+
     }
 }

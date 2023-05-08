@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
+#nullable enable
 namespace LinePutScript.Converter
 {
     /// <summary>
@@ -290,7 +287,7 @@ namespace LinePutScript.Converter
         /// <param name="type">转换方法,默认自动判断</param>
         /// <param name="att">附加参数,若有</param>
         /// <returns>退回序列化的String</returns>
-        public static string GetObjectString(object value, ConvertType type = ConvertType.Default, LineAttribute? att = null)
+        public static string GetObjectString(object? value, ConvertType type = ConvertType.Default, LineAttribute? att = null)
         {
             //如果为null储存空
             if (value == null)
@@ -301,14 +298,14 @@ namespace LinePutScript.Converter
             if (Type == ConvertType.Class)
             {
                 if (att?.ILineType == null)
-                    return SerializeObject(value, "deflinename").ToString();
+                    return Sub.TextReplace(SerializeObject(value, att?.Name ?? "deflinename").ToString());
                 Type ex = typeof(LPSConvert);
 #pragma warning disable CS8600
                 MethodInfo mi = ex.GetMethod("SerializeObjectToLine");
 #pragma warning disable CS8602
                 MethodInfo miConstructed = mi.MakeGenericMethod(att.ILineType);
-                object[] args = { value, "deflinename" };
-                return ((ILine)miConstructed.Invoke(null, args)).ToString();
+                object[] args = { value, att?.Name ?? "deflinename" };
+                return Sub.TextReplace(((ILine)miConstructed.Invoke(null, args)).ToString());
 #pragma warning restore CS8600
 #pragma warning restore CS8602
             }
@@ -346,9 +343,9 @@ namespace LinePutScript.Converter
                         sb.Append(Sub.TextReplace(GetObjectString(obj.Key)));
                         sb.Append('=');
                         sb.Append(obj.Value == null ? "" : Sub.TextReplace(GetObjectString(obj.Value)));
-                        sb.Append(',');
+                        sb.Append("/n");
                     }
-                    return sb.ToString().TrimEnd(',');
+                    return sb.ToString().TrimEnd('/', 'n');
 
                 default:
                     return value.ToString() ?? "";
@@ -363,7 +360,7 @@ namespace LinePutScript.Converter
         /// <param name="att">附加参数,若有</param>
         /// <param name="linename">行名字</param>
         /// <returns></returns>
-        public static TLine GetObjectLine<TLine>(object value, string linename, ConvertType type = ConvertType.Default, LineAttribute? att = null) where TLine : ILine, new()
+        public static TLine GetObjectLine<TLine>(object? value, string linename, ConvertType type = ConvertType.Default, LineAttribute? att = null) where TLine : ILine, new()
         {
             var name = att?.Name == null ? linename : att.Name;
             TLine t = new TLine();
@@ -432,9 +429,194 @@ namespace LinePutScript.Converter
             return t;
         }
 
-        //public static T DeserializeObject<T>(ILPS value)
-        //{
-        //    throw new TypeUnloadedException();
-        //}
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+#pragma warning disable CS8602 // 解引用可能出现空引用。
+        /// <summary>
+        /// 将String转换为指定Type的Object
+        /// </summary>
+        /// <param name="value">String值</param>
+        /// <param name="type">要转换的Type</param>
+        /// <param name="convtype">转换方法,默认自动判断</param>
+        /// <param name="att">附加参数,若有</param>
+        /// <returns>指定Type的Object</returns>
+        public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null)
+        {
+            if (value == "")
+            {
+                if (type.IsValueType)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                return null;
+            }
+            ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
+            switch (ct)
+            {
+                case ConvertType.ToList:
+                    IList list = (IList)Activator.CreateInstance(type);//type.GetConstructor(Array.Empty<Type>()).Invoke(null, null);
+                    var subtype = type.GetGenericArguments().First();
+                    foreach (string str in value.Split(','))
+                    {
+                        list.Add(GetStringObject(Sub.TextDeReplace(str), subtype));
+                    }
+                    return list;
+                case ConvertType.ToArray:
+                    var strs = value.Split(',');
+                    subtype = type.GetElementType();
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
+                    Array arr = Array.CreateInstance(subtype, strs.Length);
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
+                    for (int i = 0; i < strs.Length; i++)
+                    {
+                        arr.SetValue(GetStringObject(Sub.TextDeReplace(strs[i]), subtype), i);
+                    }
+                    return arr;
+                case ConvertType.ToDictionary:
+                    var subtypes = type.GetGenericArguments();
+                    IDictionary dict = (IDictionary)Activator.CreateInstance(type);
+                    foreach (string str in value.Replace("/n", "\n").Split('\n'))
+                    {
+                        strs = str.Split('=');
+                        var k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0]);
+                        if (k != null)
+                            dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1]));
+                    }
+                    return dict;
+                case ConvertType.ToDateTime:
+                    if (long.TryParse(value, out long l))
+                    {
+                        return new DateTime(l);
+                    }
+                    return Convert.ToDateTime(Sub.TextDeReplace(value));
+                case ConvertType.ToFloat:
+                    return double.Parse(value) / 1000000000;
+                case ConvertType.Converter:
+                    if (att?.Converter != null)
+                        return ConvertFunction.ConvertBack(att.Converter, Sub.TextDeReplace(value));
+                    else
+                        return Convert.ChangeType(Sub.TextDeReplace(value), type);
+                case ConvertType.ToEnum:
+                    return Enum.Parse(type, value);
+                default:
+                case ConvertType.ToString:
+                    return Convert.ChangeType(Sub.TextDeReplace(value), type);
+                case ConvertType.Class:
+                    Line line = new Line(Sub.TextDeReplace(value));
+                    object obj = Activator.CreateInstance(type);
+                    foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    {
+                        var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        if (latt != null && latt is LineAttribute la)
+                        {
+                            var name = la.Name ?? mi.Name;
+                            var s = line.Find(name);
+                            if (s != null)
+                                mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
+                        }
+                    }
+                    foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    {
+                        var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        if (latt != null && latt is LineAttribute la)
+                        {
+                            var name = la.Name ?? mi.Name;
+                            var s = line.Find(name);
+                            if (s != null)
+                                mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
+                        }
+                    }
+                    return obj;
+            }
+        }
+        /// <summary>
+        /// 将ISub转换为指定Type的Object
+        /// </summary>
+        /// <param name="sub">ISub</param>
+        /// <param name="type">要转换的Type</param>
+        /// <param name="convtype">转换方法,默认自动判断</param>
+        /// <param name="att">附加参数,若有</param>
+        /// <returns>指定Type的Object</returns>
+        public static object? GetSubObject(ISub sub, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null)
+        {
+            ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
+            if (sub is ILine line)
+                switch (ct)
+                {
+                    case ConvertType.ToDictionary:
+                        var subtypes = type.GetGenericArguments();
+                        IDictionary dict = (IDictionary)Activator.CreateInstance(type);
+                        foreach (Sub s in line)
+                        {
+                            var k = GetStringObject(s.Name, subtypes[0]);
+                            if (k != null)
+                                dict.Add(k, GetStringObject(s.info, subtypes[1]));
+                        }
+                        return dict;
+                    case ConvertType.Class:
+                        object obj = Activator.CreateInstance(type);
+                        foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        {
+                            var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                            if (latt != null && latt is LineAttribute la)
+                            {
+                                var name = la.Name ?? mi.Name;
+                                var s = line.Find(name);
+                                if (s != null)
+                                    mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
+                            }
+                        }
+                        foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        {
+                            var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                            if (latt != null && latt is LineAttribute la)
+                            {
+                                var name = la.Name ?? mi.Name;
+                                var s = line.Find(name);
+                                if (s != null)
+                                    mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
+                            }
+                        }
+                        return obj;
+                    default:
+                        return GetStringObject(sub.info, type, ct, att);
+                }
+            else
+                return GetStringObject(sub.info, type, ct, att);
+        }
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+#pragma warning restore CS8602 // 解引用可能出现空引用。
+        /// <summary>
+        /// 将指定的LPS反序列化为T对象
+        /// </summary>
+        /// <typeparam name="T">想要获得的类型</typeparam>
+        /// <param name="lps">ILPS</param>
+        /// <returns>生成的对象</returns>
+        public static T? DeserializeObject<T>(ILPS lps) where T : new()
+        {
+            return DeserializeObject<T>(lps.ToArray());
+        }
+        /// <summary>
+        /// 将指定的ISub/ILine反序列化为T对象
+        /// </summary>
+        /// <typeparam name="T">想要获得的类型</typeparam>
+        /// <param name="value">ISub/ILine</param>
+        /// <returns>生成的对象</returns>
+        public static T? DeserializeObject<T>(ISub value) where T : new()
+        {
+            object? o = GetSubObject(value, typeof(T));
+            return o == null ? default : (T)o;
+        }
+        /// <summary>
+        /// 将指定的ILine列表反序列化为T对象
+        /// </summary>
+        /// <typeparam name="T">想要获得的类型</typeparam>
+        /// <param name="value">ILine列表</param>
+        /// <returns>生成的对象</returns>
+        public static T? DeserializeObject<T>(ILine[] value) where T : new()
+        {
+            var l = new Line();
+            l.AddRange(value);
+            return DeserializeObject<T>(l);
+        }
     }
 }

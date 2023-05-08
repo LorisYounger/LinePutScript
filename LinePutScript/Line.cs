@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static LinePutScript.Sub;
-
+#nullable enable
 namespace LinePutScript
 {
     /// <summary>
