@@ -22,27 +22,6 @@ LinePutScript是一种数据交换格式定义行读取结构和描述其内容�
 
 *'LinePutScript.Core'* 为.net Core版本
 
-### LinePutScript.SQLHelper
-
-一个操作数据库的帮助类 获得LPS结构的数据而非xml
-
-*LinePutScript.SQLHelper.Core* 为.net Core版本
-
-### LinePutScript.Lineput
-
-LinePut是使用LinePutScript描述富文本的一种格式
-
-这个类帮助转换LinePut为XAML FlowDocument
-
-### LinePutScript.DataBase*
-
-一个数据库构造类 通过映射LPS类型内容到内存, 从而实现基于LPS的快速数据库
-
-### LPSDBHost*
-
-一个简单的内存数据库通过使用LinePutScript.DataBase类实现
-**\*注: 有内存无法正确回收的bug,可能需要重启解决**
-
 ## 如何使用:
 
 ### 安装
@@ -53,22 +32,10 @@ LinePutScript
 ```
 Install-Package LinePutScript
 ```
-LinePutScript.SQLHelper
-```
-Install-Package LinePutScript.SQLHelper
-```
-LinePutScript.LinePut
-```
-Install-Package LinePutScript.LinePut
-```
 
 2. 通过nuget.org
 
    [LinePutScript](https://www.nuget.org/packages/LinePutScript/)
-
-   [LinePutScript.SQLHelper](https://www.nuget.org/packages/LinePutScript.SQLHelper/)
-
-   [LinePutScript.LinePut](https://www.nuget.org/packages/LinePutScript.LinePut)
 
 3. 下载nuget包
 
@@ -213,6 +180,27 @@ Save[(gint)"money"] = 10000; //设置 money 行 值(int)为10000
 Save["computer"][(gstr)"name"] = "我的电脑";
 
 Save[(gint)"money"] += 500;
+```
+
+*方法6 (lps1.8) -- 最新版本lps 无需操作*
+
+```C#
+//储存数据的类
+public class SaveData{
+    [Line]
+    public int money = 10000;//设置 money 值(int)为10000
+    public class Computer{
+        [Line]
+        public string name = "电脑默认名字";
+    }
+    [Line]
+    public Computer computer = new Computer(){name = "我的电脑"};
+}
+//读取游戏数据
+SaveData data = LPSConvert.DeserializeObject<SaveData>(Save);
+data.money += 500;
+//储存游戏数据
+Save = LPSConvert.SerializeObject(data);
 ```
 
 ##### 储存LPS文件
