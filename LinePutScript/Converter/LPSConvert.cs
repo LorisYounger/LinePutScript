@@ -39,15 +39,11 @@ namespace LinePutScript.Converter
             /// <param name="type">ConvertFunction</param>
             /// <param name="value">要转换的值</param>
             /// <returns>String:Info</returns>
-            public static string Convert(Type type, dynamic value)
+            public static string Convert(Type type, dynamic? value)
             {
-#pragma warning disable CS8600
                 var mi = type.GetMethod("Convert");
-#pragma warning disable CS8602
-                object[] args = { value };
-                return (string)mi.Invoke(Activator.CreateInstance(type), args);
-#pragma warning restore CS8600
-#pragma warning restore CS8602
+                object?[] args = { value };
+                return (string)(mi?.Invoke(Activator.CreateInstance(type), args) ?? "");
             }
             /// <summary>
             /// 通过Type获取转换方法
@@ -55,15 +51,89 @@ namespace LinePutScript.Converter
             /// <param name="type">ConvertFunction</param>
             /// <param name="info">储存的Info</param>
             /// <returns>要转换的值</returns>
-            public static dynamic ConvertBack(Type type, string info)
+            public static dynamic? ConvertBack(Type type, string info)
             {
-#pragma warning disable CS8600
                 var mi = type.GetMethod("ConvertBack");
-#pragma warning disable CS8602
                 object[] args = { info };
-                return mi.Invoke(Activator.CreateInstance(type), args);
-#pragma warning restore CS8600
-#pragma warning restore CS8602
+                return mi?.Invoke(Activator.CreateInstance(type), args);
+            }
+            /// <summary>
+            /// LPS储存转换器
+            /// </summary>
+            public class CF_LPS<T> : ConvertFunction where T : ILPS, new()
+            {
+                /// <summary>
+                /// 指定转换方法
+                /// </summary>
+                /// <param name="value">要转换的值</param>
+                /// <returns>String:Info</returns>
+                public override string Convert(dynamic value)
+                {
+                    return Sub.TextReplace(((T)value).ToString() ?? "");
+                }
+                /// <summary>
+                /// 指定反转方法
+                /// </summary>
+                /// <param name="info">储存的Info</param>
+                /// <returns>要转换的值</returns>
+                public override dynamic ConvertBack(string info)
+                {
+                    T t = new T();
+                    t.Load(info);
+                    return t;
+                }
+            }
+            /// <summary>
+            /// Line储存转换器
+            /// </summary>
+            public class CF_Line<T> : ConvertFunction where T : ILine, new()
+            {
+                /// <summary>
+                /// 指定转换方法
+                /// </summary>
+                /// <param name="value">要转换的值</param>
+                /// <returns>String:Info</returns>
+                public override string Convert(dynamic value)
+                {
+                    return Sub.TextReplace(((T)value).ToString() ?? "");
+                }
+                /// <summary>
+                /// 指定反转方法
+                /// </summary>
+                /// <param name="info">储存的Info</param>
+                /// <returns>要转换的值</returns>
+                public override dynamic ConvertBack(string info)
+                {
+                    T t = new T();
+                    t.Load(info);
+                    return t;
+                }
+            }
+            /// <summary>
+            /// Sub储存转换器
+            /// </summary>
+            public class CF_Sub<T> : ConvertFunction where T : ISub, new()
+            {
+                /// <summary>
+                /// 指定转换方法
+                /// </summary>
+                /// <param name="value">要转换的值</param>
+                /// <returns>String:Info</returns>
+                public override string Convert(dynamic value)
+                {
+                    return Sub.TextReplace(((T)value).ToString() ?? "");
+                }
+                /// <summary>
+                /// 指定反转方法
+                /// </summary>
+                /// <param name="info">储存的Info</param>
+                /// <returns>要转换的值</returns>
+                public override dynamic ConvertBack(string info)
+                {
+                    T t = new T();
+                    t.Load(info);
+                    return t;
+                }
             }
         }
         /// <summary>
@@ -380,7 +450,9 @@ namespace LinePutScript.Converter
 #pragma warning disable CS8602
                     MethodInfo miConstructed = mi.MakeGenericMethod(att.ILineType);
                     object[] args = { value, linename };
+#pragma warning disable CS8603 // 可能返回 null 引用。
                     return (TLine)miConstructed.Invoke(null, args);
+#pragma warning restore CS8603 // 可能返回 null 引用。
 #pragma warning restore CS8600
 #pragma warning restore CS8602
                 case ConvertType.Converter:
@@ -545,7 +617,7 @@ namespace LinePutScript.Converter
                     case ConvertType.ToDictionary:
                         var subtypes = type.GetGenericArguments();
                         IDictionary dict = (IDictionary)Activator.CreateInstance(type);
-                        foreach (Sub s in line)
+                        foreach (ISub s in line)
                         {
                             var k = GetStringObject(s.Name, subtypes[0]);
                             if (k != null)

@@ -16,6 +16,29 @@ namespace LinePutScript.Dictionary
     public class Line_D : Sub, ILine
     {
         /// <summary>
+        /// 创建一行
+        /// </summary>
+        public Line_D() { }
+        /// <summary>
+        /// 通过lpsLine文本创建一行
+        /// </summary>
+        /// <param name="lpsLine">lpsSub文本</param>
+        public Line_D(string lpsLine)
+        {
+            Load(lpsLine);
+        }
+        /// <summary>
+        /// 通过其他Line创建新的Line
+        /// </summary>
+        /// <param name="line">其他line</param>
+        public Line_D(ILine line)
+        {
+            Name = line.Name;
+            Info = (SetObject)line.Info;
+            text = line.text;
+            AddRange(line.ToList().ToArray());
+        }
+        /// <summary>
         /// 子项目
         /// </summary>
         public Dictionary<string, ISub> Subs { get; set; } = new Dictionary<string, ISub>();
@@ -53,8 +76,10 @@ namespace LinePutScript.Dictionary
         {
             get
             {
-                int.TryParse(text, out int i);
-                return i;
+                if (int.TryParse(text, out int i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -68,8 +93,10 @@ namespace LinePutScript.Dictionary
         {
             get
             {
-                long.TryParse(text, out long i);
-                return i;
+                if (long.TryParse(text, out long i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -83,8 +110,10 @@ namespace LinePutScript.Dictionary
         {
             get
             {
-                double.TryParse(text, out double i);
-                return i;
+                if (double.TryParse(text, out double i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -187,9 +216,11 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public ISub Find(string subName)
+        public ISub? Find(string subName)
         {
-            return Subs[subName];
+            if (Subs.TryGetValue(subName, out var sub))
+                return sub;
+            return default;
         }
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
@@ -197,10 +228,9 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub Find(string subName, string subinfo)
+        public ISub? Find(string subName, string subinfo)
         {
-            var v = Subs[subName];
-            if (v != null)
+            if (Subs.TryGetValue(subName, out var v))
                 if (v.GetString().Equals(subinfo))
                     return v;
             return default;
@@ -213,9 +243,8 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ISub[] FindAll(string subName)
         {
-            var v = Subs[subName];
-            if (v == null)
-                return new ISub[] { };
+            if (!Subs.TryGetValue(subName, out var v))
+                return Array.Empty<ISub>();
             else
                 return new ISub[] { v };
         }
@@ -230,7 +259,7 @@ namespace LinePutScript.Dictionary
         {
             var v = Find(subName, subinfo);
             if (v == null)
-                return new ISub[] { };
+                return Array.Empty<ISub>();
             else
                 return new ISub[] { v };
         }
@@ -244,7 +273,7 @@ namespace LinePutScript.Dictionary
         {
             var v = FindInfo(subinfo);
             if (v == null)
-                return new ISub[] { };
+                return Array.Empty<ISub>();
             else
                 return new ISub[] { v };
         }
@@ -253,7 +282,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub FindInfo(string subinfo)
+        public ISub? FindInfo(string subinfo)
         {
             var v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
             if (v == null)
@@ -268,7 +297,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
         public ISub FindorAdd(string subName)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
             {
                 sub = new Sub();
@@ -348,7 +377,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public int GetInt(string subName, int defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt;
@@ -371,7 +400,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public long GetInt64(string subName, long defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64;
@@ -394,7 +423,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetFloat(string subName, double defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.GetFloat();
@@ -417,7 +446,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.GetDateTime();
@@ -440,7 +469,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public string? GetString(string subName, string? defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.Info;
@@ -463,7 +492,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetDouble(string subName, double defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToDouble;
@@ -491,7 +520,7 @@ namespace LinePutScript.Dictionary
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine line)
+        public void Load(ILine line)
         {
             Name = line.Name;
             info = (SetObject)line.infoCloneable.Clone();
@@ -563,7 +592,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public ISub Seach(string value)
+        public ISub? Seach(string value)
         {
             return Subs.Values.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -652,7 +681,7 @@ namespace LinePutScript.Dictionary
         /// 加载 通过lps文本创建一个子类
         /// </summary>
         /// <param name="lps">lps文本</param>
-        public new void Load(string lps)
+        public override void Load(string lps)
         {
             string[] sts = Split(lps, "///", 2).ToArray();
             if (sts.Length == 2)
@@ -676,7 +705,7 @@ namespace LinePutScript.Dictionary
         /// 获得该Line的长哈希代码
         /// </summary>
         /// <returns>64位哈希代码</returns>
-        public new long GetLongHashCode()
+        public override long GetLongHashCode()
         {
             int id = 5;
             long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LinePutScript
 {
     /// <summary>
-    /// Set Object 可以储存任何类型的值 对性能进行优化
+    /// Load Object 可以储存任何类型的值 对性能进行优化
     /// </summary>
     public class SetObject : ISetObject, IEquatable<SetObject>, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
     {

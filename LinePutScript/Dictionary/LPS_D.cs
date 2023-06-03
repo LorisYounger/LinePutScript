@@ -13,12 +13,28 @@ namespace LinePutScript.Dictionary
     public class LPS_D : ILPS
     {
         /// <summary>
+        /// 从指定行创建 LPS_D
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LPS_D(params ILine[] lines)
+        {
+            Load(lines);
+        }
+        /// <summary>
+        /// 从另一个LPS文件创建该LPS
+        /// </summary>
+        /// <param name="lps"></param>
+        public LPS_D(ILPS lps)
+        {
+            Load(lps.ToArray());
+        }
+        /// <summary>
         /// 集合 全部文件的数据
         /// </summary>
         public Dictionary<string, ILine> Assemblage { get; set; } = new Dictionary<string, ILine>();
 
         /// <summary>
-        /// 创建一个 LpsDocument
+        /// 创建一个 空的 LPS_D
         /// </summary>
         public LPS_D() { }
         /// <summary>
@@ -196,9 +212,8 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ILine[] FindAllLine(string lineName)
         {
-            var v = Assemblage[lineName];
-            if (v == null)
-                return new ILine[] { };
+            if (!Assemblage.TryGetValue(lineName, out var v))
+                return Array.Empty<ILine>();
             else
                 return new ILine[] { v };
         }
@@ -213,7 +228,7 @@ namespace LinePutScript.Dictionary
         {
             var v = FindLine(lineName, lineinfo);
             if (v == null)
-                return new ILine[] { };
+                return Array.Empty<ILine>();
             else
                 return new ILine[] { v };
         }
@@ -227,7 +242,7 @@ namespace LinePutScript.Dictionary
         {
             var v = FindLineInfo(lineinfo);
             if (v == null)
-                return new ILine[] { };
+                return Array.Empty<ILine>();
             else
                 return new ILine[] { v };
         }
@@ -236,9 +251,11 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLine(string lineName)
+        public ILine? FindLine(string lineName)
         {
-            return Assemblage[lineName];
+            if (Assemblage.TryGetValue(lineName, out var line))
+                return line;
+            return default;
         }
         /// <summary>
         /// 搜索与指定名称和信息,并返回整个Assemblage中的第一个匹配元素
@@ -246,7 +263,7 @@ namespace LinePutScript.Dictionary
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLine(string lineName, string lineinfo)
+        public ILine? FindLine(string lineName, string lineinfo)
         {
             return Assemblage.Values.FirstOrDefault(x => x.Name == lineName && x.GetString().Equals(lineinfo));
         }
@@ -255,7 +272,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLineInfo(string lineinfo)
+        public ILine? FindLineInfo(string lineinfo)
         {
             return Assemblage.Values.FirstOrDefault(x => x.GetString().Equals(lineinfo));
         }
@@ -266,7 +283,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
         public ILine FindorAddLine<T>(string lineName) where T : ILine, new()
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
             {
                 line = new T();
@@ -333,7 +350,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSub(string subName)
+        public ISub? FindSub(string subName)
         {
             foreach (ILine li in Assemblage.Values)
             {
@@ -349,7 +366,7 @@ namespace LinePutScript.Dictionary
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSub(string subName, string subinfo)
+        public ISub? FindSub(string subName, string subinfo)
         {
             foreach (ILine li in Assemblage.Values)
             {
@@ -364,7 +381,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSubInfo(string subinfo)
+        public ISub? FindSubInfo(string subinfo)
         {
             foreach (ILine li in Assemblage.Values)
             {
@@ -393,7 +410,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
-        public ILine SearchLine(string value)
+        public ILine? SearchLine(string value)
         {
             return Assemblage.Values.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -416,7 +433,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public ISub SearchSub(string value)
+        public ISub? SearchSub(string value)
         {
             foreach (ILine li in Assemblage.Values)
             {
@@ -476,6 +493,16 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
         public void Load(string lps) => Load<Line_D>(lps);
+        /// <summary>
+        /// 从指定行加载LPS文档
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public void Load(params ILine[] lines)
+        {
+            Assemblage.Clear();//清空当前文档
+            foreach(ILine line in lines)
+                Assemblage[line.Name] = line;
+        }
 
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
@@ -616,7 +643,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public int GetInt(string lineName, int defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt;
@@ -639,7 +666,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public long GetInt64(string lineName, long defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt64;
@@ -662,7 +689,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public string? GetString(string lineName, string? defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.Info;
@@ -685,7 +712,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetDouble(string lineName, double defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToDouble;
@@ -709,7 +736,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public double GetFloat(string lineName, double defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.GetFloat();
@@ -732,7 +759,7 @@ namespace LinePutScript.Dictionary
         /// </returns>
         public DateTime GetDateTime(string lineName, DateTime defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.GetDateTime();

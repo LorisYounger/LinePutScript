@@ -24,7 +24,7 @@ namespace LinePutScript
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine line);
+        public void Load(ILine line);
         /// <summary>
         /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
         /// </summary>
@@ -126,26 +126,26 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public ISub Find(string subName);
+        public ISub? Find(string subName);
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub Find(string subName, string subinfo);
+        public ISub? Find(string subName, string subinfo);
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub FindInfo(string subinfo);
+        public ISub? FindInfo(string subinfo);
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
-        public ISub FindorAdd(string subName);
+        public ISub? FindorAdd(string subName);
         /// <summary>
         /// 搜索全部相似名称的Sub的所有元素
         /// </summary>
@@ -157,7 +157,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public ISub Seach(string value);
+        public ISub? Seach(string value);
         /// <summary>
         /// 搜索相同名称的Sub,并返回整个Subs中第一个匹配的sub从零开始的索引
         /// </summary>
@@ -173,11 +173,6 @@ namespace LinePutScript
         #endregion
 
         /// <summary>
-        /// 将当前Line转换成文本格式 (info已经被转义/去除关键字)
-        /// </summary>
-        /// <returns>Line的文本格式 (info已经被转义/去除关键字)</returns>
-        public new string ToString();
-        /// <summary>
         /// 将当前Line转换成文本格式 (info已经被转义/去除关键字) 将输出储存到StringBuilder
         /// </summary>
         /// <param name="str">储存到的 StringBuilder</param>
@@ -188,12 +183,12 @@ namespace LinePutScript
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new ISub First();
+        public new ISub? First();
         /// <summary>
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new ISub Last();
+        public new ISub? Last();
         /// <summary>
         /// 返回一个新List,包含所有Subs
         /// </summary>

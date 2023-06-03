@@ -28,10 +28,33 @@ namespace LinePutScript
             Load(lpsLine);
         }
         /// <summary>
+        /// 通过其他Line创建新的Line
+        /// </summary>
+        /// <param name="line">其他line</param>
+        public Line(ILine line)
+        {
+            Name = line.Name;
+            Info = (SetObject)line.Info;
+            text = line.text;
+            Subs = line.ToList();
+        }
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line(string name, string info, string text = "", params ISub[] subs) : base(name, info)
+        {
+            Text = text;
+            Subs.AddRange(subs);
+        }
+        /// <summary>
         /// 加载 通过lps文本创建一个子类
         /// </summary>
         /// <param name="lps">lps文本</param>
-        public new void Load(string lps)
+        public override void Load(string lps)
         {
             string[] sts = Split(lps, "///", 2).ToArray();
             if (sts.Length == 2)
@@ -54,18 +77,7 @@ namespace LinePutScript
                 Subs.Add(t);
             }
         }
-        /// <summary>
-        /// 通过名字和信息创建新的Line
-        /// </summary>
-        /// <param name="name">名称</param>
-        /// <param name="info">信息 (正常)</param>
-        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
-        /// <param name="subs">子类集合</param>
-        public Line(string name, string info, string text = "", params ISub[] subs) : base(name, info)
-        {
-            Text = text;
-            Subs.AddRange(subs);
-        }
+
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>
@@ -80,21 +92,10 @@ namespace LinePutScript
             Subs.AddRange(subs);
         }
         /// <summary>
-        /// 通过其他Line创建新的Line
-        /// </summary>
-        /// <param name="line">其他line</param>
-        public Line(ILine line)
-        {
-            Name = line.Name;
-            Info = (SetObject)line.Info;
-            text = line.text;
-            Subs = line.ToList();
-        }
-        /// <summary>
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
-        public void Set(ILine line)
+        public void Load(ILine line)
         {
             Name = line.Name;
             Info = (SetObject)line.Info;
@@ -143,8 +144,10 @@ namespace LinePutScript
         {
             get
             {
-                int.TryParse(text, out int i);
-                return i;
+                if (int.TryParse(text, out int i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -158,8 +161,10 @@ namespace LinePutScript
         {
             get
             {
-                long.TryParse(text, out long i);
-                return i;
+                if (long.TryParse(text, out long i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -173,8 +178,10 @@ namespace LinePutScript
         {
             get
             {
-                double.TryParse(text, out double i);
-                return i;
+                if (double.TryParse(text, out double i))
+                    return i;
+                else
+                    return 0;
             }
             set
             {
@@ -210,7 +217,7 @@ namespace LinePutScript
         /// <param name="newSub">要添加的Sub</param>
         public void AddorReplaceSub(ISub newSub)
         {
-            ISub oldsub = Find(newSub.Name);
+            ISub? oldsub = Find(newSub.Name);
             if (oldsub != null)
             {
                 oldsub.Set(newSub);
@@ -349,7 +356,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
-        public ISub Find(string subName)
+        public ISub? Find(string subName)
         {
             return Subs.FirstOrDefault(x => x.Name == subName);
         }
@@ -359,7 +366,7 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub Find(string subName, string subinfo)
+        public ISub? Find(string subName, string subinfo)
         {
             return Subs.FirstOrDefault(x => x.Name == subName && x.infoComparable.Equals(subinfo));
         }
@@ -368,7 +375,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub FindInfo(string subinfo)
+        public ISub? FindInfo(string subinfo)
         {
             return Subs.FirstOrDefault(x => x.infoComparable.Equals(subinfo));
         }
@@ -379,7 +386,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为新建的相同名称sub</returns>
         public ISub FindorAdd(string subName)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
             {
                 sub = new Sub();
@@ -412,7 +419,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public ISub Seach(string value)
+        public ISub? Seach(string value)
         {
             return Subs.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -491,7 +498,7 @@ namespace LinePutScript
         /// 获得该Line的长哈希代码
         /// </summary>
         /// <returns>64位哈希代码</returns>
-        public new long GetLongHashCode()
+        public override long GetLongHashCode()
         {
             int id = 5;
             long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
@@ -527,7 +534,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public new ISub First()
+        public new ISub? First()
         {
             if (Subs.Count == 0)
                 return default;
@@ -537,7 +544,7 @@ namespace LinePutScript
         /// 返回一个 Subs 的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public new ISub Last()
+        public new ISub? Last()
         {
             if (Subs.Count == 0)
                 return default;
@@ -595,7 +602,7 @@ namespace LinePutScript
         /// </returns>
         public int GetInt(string subName, int defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt;
@@ -618,7 +625,7 @@ namespace LinePutScript
         /// </returns>
         public long GetInt64(string subName, long defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToInt64;
@@ -641,7 +648,7 @@ namespace LinePutScript
         /// </returns>
         public double GetFloat(string subName, double defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.GetFloat();
@@ -664,7 +671,7 @@ namespace LinePutScript
         /// </returns>
         public DateTime GetDateTime(string subName, DateTime defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.GetDateTime();
@@ -687,7 +694,7 @@ namespace LinePutScript
         /// </returns>
         public string? GetString(string subName, string? defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.Info;
@@ -710,7 +717,7 @@ namespace LinePutScript
         /// </returns>
         public double GetDouble(string subName, double defaultvalue = default)
         {
-            ISub sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return defaultvalue;
             return sub.InfoToDouble;
@@ -875,7 +882,7 @@ namespace LinePutScript
         /// 克隆一个Line
         /// </summary>
         /// <returns>相同的Line</returns>
-        public new object Clone()
+        public override object Clone()
         {
             return new Line(this);
         }

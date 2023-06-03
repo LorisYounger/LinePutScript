@@ -1,5 +1,6 @@
 ﻿using LinePutScript;
 using LinePutScript.Converter;
+using LinePutScript.Dictionary;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -118,14 +119,30 @@ namespace TestConsole
                 LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
                 ).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
-                              //Console.WriteLine(LPSConvert.SerializeObject(
-                              //    LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
-                              //    ).ToString());
-                              //Console.WriteLine();
-                              //tc.tc.tc = new testclass() {
-                              //    pubstr = "intc",
-                              //};
-                              //Console.WriteLine(LPSConvert.SerializeObject(tc));
+            //Console.WriteLine(LPSConvert.SerializeObject(
+            //    LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
+            //    ).ToString());
+            //Console.WriteLine();
+            //tc.tc.tc = new testclass() {
+            //    pubstr = "intc",
+            //};
+            //Console.WriteLine(LPSConvert.SerializeObject(tc));
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
+#pragma warning disable CS8602 // 解引用可能出现空引用。
+            var tlpscv = LPSConvert.DeserializeObject<testlpsconv>(LPSConvert.SerializeObject(new testlpsconv(lps,lps.First(), lps.Last().First())));
+
+            if (tlpscv == null)
+            {
+                Console.WriteLine("CV测试3:\t" + false);
+            }
+            else
+            {
+                Console.WriteLine("CV测试3.1:\t" + tlpscv.TestLps.ToString().Equals(lps.ToString()));
+                Console.WriteLine("CV测试3.2:\t" + tlpscv.TestLine.ToString().Equals(lps.First().ToString()));
+                Console.WriteLine("CV测试3.3:\t" + (tlpscv.TestSub == (lps.Last().First())).ToString());
+            }
+#pragma warning restore CS8602 // 解引用可能出现空引用。
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
         }
         public class testconvert : ConvertFunction
         {
@@ -163,6 +180,24 @@ namespace TestConsole
             public Dictionary<int, int>? intdict;
         }
 
+        public class testlpsconv
+        {
+            [Line(converter: typeof(LPSConvert.ConvertFunction.CF_LPS<LpsDocument>), type: ConvertType.Converter)]
+            public LpsDocument TestLps = new LpsDocument();
+            [Line(converter: typeof(LPSConvert.ConvertFunction.CF_Sub<Line_D>), type: ConvertType.Converter)]
+            public Line_D TestLine = new Line_D();
+            [Line(converter: typeof(LPSConvert.ConvertFunction.CF_Sub<Sub>), type: ConvertType.Converter)]
+            public ISub TestSub = new Sub();
+            public testlpsconv(LpsDocument testlps, ILine line, ISub sub)
+            {
+                this.TestLps = testlps;
+                this.TestLine = new Line_D(line);
+                this.TestSub = sub;
+            }
+            public testlpsconv()
+            {
+            }
+        }
 
     }
 }

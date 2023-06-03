@@ -12,7 +12,7 @@ namespace LinePutScript.Converter
 
 
         /// <summary>
-        /// 将改内容转换成Line
+        /// 将该内容转换成Line
         /// </summary>
         public LineAttribute()
         {

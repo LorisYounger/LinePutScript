@@ -37,7 +37,7 @@ namespace LinePutScript
         /// 加载 通过lps文本创建一个子类
         /// </summary>
         /// <param name="lpsSub">lps文本</param>
-        public void Load(string lpsSub)
+        public virtual void Load(string lpsSub)
         {
             string[] st = lpsSub.Split(new char[1] { '#' }, 2);
             Name = st[0];
@@ -284,7 +284,7 @@ namespace LinePutScript
         /// 获得该Sub的长哈希代码
         /// </summary>
         /// <returns>64位哈希代码</returns>
-        public long GetLongHashCode() => Sub.GetHashCode(Name) * 2 + Sub.GetHashCode(info.GetString()) * 3;
+        public virtual long GetLongHashCode() => Sub.GetHashCode(Name) * 2 + Sub.GetHashCode(info.GetString()) * 3;
         /// <summary>
         /// 确认对象是否等于当前对象
         /// </summary>
@@ -312,7 +312,7 @@ namespace LinePutScript
         /// 克隆一个Sub
         /// </summary>
         /// <returns>相同的sub</returns>
-        public object Clone()
+        public virtual object Clone()
         {
             return new Sub(this);
         }

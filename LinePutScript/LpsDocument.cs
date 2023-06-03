@@ -19,7 +19,7 @@ namespace LinePutScript
         public List<ILine> Assemblage { get; set; } = new List<ILine>();
 
         /// <summary>
-        /// 创建一个 LpsDocument
+        /// 创建一个 空的LpsDocument
         /// </summary>
         public LpsDocument() { }
         /// <summary>
@@ -29,6 +29,22 @@ namespace LinePutScript
         public LpsDocument(string lps)
         {
             Load(lps);
+        }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LpsDocument(params ILine[] lines)
+        {
+            Assemblage.AddRange(lines);
+        }
+        /// <summary>
+        /// 从另一个LPS文件创建该LPS
+        /// </summary>
+        /// <param name="lps"></param>
+        public LpsDocument(ILPS lps)
+        {
+            Assemblage.AddRange(lps);
         }
 
         #region List操作
@@ -47,10 +63,10 @@ namespace LinePutScript
         /// <param name="newLine">要添加的Line</param>
         public void AddorReplaceLine(ILine newLine)
         {
-            ILine oldline = FindLine(newLine.Name);
+            ILine? oldline = FindLine(newLine.Name);
             if (oldline != null)
             {
-                oldline.Set(newLine);
+                oldline.Load(newLine);
             }
             else
                 Assemblage.Add(newLine);
@@ -243,7 +259,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLine(string lineName)
+        public ILine? FindLine(string lineName)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName);
         }
@@ -253,7 +269,7 @@ namespace LinePutScript
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLine(string lineName, string lineinfo)
+        public ILine? FindLine(string lineName, string lineinfo)
         {
             return Assemblage.FirstOrDefault(x => x.Name == lineName && x.infoComparable.Equals(lineinfo));
         }
@@ -262,7 +278,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ILine FindLineInfo(string lineinfo)
+        public ILine? FindLineInfo(string lineinfo)
         {
             return Assemblage.FirstOrDefault(x => x.infoComparable.Equals(lineinfo));
         }
@@ -273,7 +289,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
         public ILine FindorAddLine<T>(string lineName) where T : ILine, new()
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
             {
                 line = new T();
@@ -340,7 +356,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSub(string subName)
+        public ISub? FindSub(string subName)
         {
             foreach (ILine li in Assemblage)
             {
@@ -356,7 +372,7 @@ namespace LinePutScript
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSub(string subName, string subinfo)
+        public ISub? FindSub(string subName, string subinfo)
         {
             foreach (ILine li in Assemblage)
             {
@@ -371,7 +387,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Sub,则为该Line; 否则为null</returns>
-        public ISub FindSubInfo(string subinfo)
+        public ISub? FindSubInfo(string subinfo)
         {
             foreach (ILine li in Assemblage)
             {
@@ -400,7 +416,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的第一个Line,则为该Line; 否则为null</returns>
-        public ILine SearchLine(string value)
+        public ILine? SearchLine(string value)
         {
             return Assemblage.FirstOrDefault(x => x.Name.Contains(value));
         }
@@ -423,7 +439,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相同名称的第一个Sub,则为该Sub; 否则为null</returns>
-        public ISub SearchSub(string value)
+        public ISub? SearchSub(string value)
         {
             foreach (ILine li in Assemblage)
             {
@@ -492,12 +508,20 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
         public void Load(string lps) => Load<Line>(lps);
-
+        /// <summary>
+        /// 从指定行加载LPS文档
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public void Load(params ILine[] lines)
+        {
+            Assemblage.Clear();//清空当前文档
+            Assemblage.AddRange(lines);
+        }
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
         /// </summary>
         /// <returns>要返回的第一个元素</returns>
-        public ILine First()
+        public ILine? First()
         {
             if (Assemblage.Count == 0)
                 return default;
@@ -507,7 +531,7 @@ namespace LinePutScript
         /// 返回一个Assemblage的最后一个元素。
         /// </summary>
         /// <returns>要返回的最后一个元素</returns>
-        public ILine Last()
+        public ILine? Last()
         {
             if (Assemblage.Count == 0)
                 return default;
@@ -642,7 +666,7 @@ namespace LinePutScript
         /// </returns>
         public int GetInt(string lineName, int defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt;
@@ -665,7 +689,7 @@ namespace LinePutScript
         /// </returns>
         public long GetInt64(string lineName, long defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToInt64;
@@ -688,7 +712,7 @@ namespace LinePutScript
         /// </returns>
         public string? GetString(string lineName, string? defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.Info;
@@ -711,7 +735,7 @@ namespace LinePutScript
         /// </returns>
         public double GetDouble(string lineName, double defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.InfoToDouble;
@@ -735,7 +759,7 @@ namespace LinePutScript
         /// </returns>
         public double GetFloat(string lineName, double defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.GetFloat();
@@ -758,7 +782,7 @@ namespace LinePutScript
         /// </returns>
         public DateTime GetDateTime(string lineName, DateTime defaultvalue = default)
         {
-            ILine line = FindLine(lineName);
+            ILine? line = FindLine(lineName);
             if (line == null)
                 return defaultvalue;
             return line.GetDateTime();
@@ -919,7 +943,7 @@ namespace LinePutScript
         /// 读取读取进度当前Line 并且自动切换到下一Line
         /// </summary>
         /// <returns>如何有则返回当前Line,如果没有则返回null</returns>
-        public ILine ReadNext()
+        public ILine? ReadNext()
         {
             if (LineNode == Assemblage.Count)
                 return default;
@@ -929,7 +953,7 @@ namespace LinePutScript
         /// 获取读取进度当前Line
         /// </summary>
         /// <returns>如何有则返回当前Line,如果没有则返回null</returns>
-        public ILine Read()
+        public ILine? Read()
         {
             if (LineNode == Assemblage.Count)
                 return default;
