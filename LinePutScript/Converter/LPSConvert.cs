@@ -632,7 +632,14 @@ namespace LinePutScript.Converter
                             if (latt != null && latt is LineAttribute la)
                             {
                                 var name = la.Name ?? mi.Name;
-                                var s = line.Find(name);
+                                ISub? s;
+                                if (la.IgnoreCase)
+                                {
+                                    name = name.ToLower();
+                                    s = line.FirstOrDefault(s => s.Name.ToLower() == name);
+                                }
+                                else
+                                    s = line.Find(name);
                                 if (s != null)
                                     mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
                             }
@@ -643,7 +650,14 @@ namespace LinePutScript.Converter
                             if (latt != null && latt is LineAttribute la)
                             {
                                 var name = la.Name ?? mi.Name;
-                                var s = line.Find(name);
+                                ISub? s;
+                                if (la.IgnoreCase)
+                                {
+                                    name = name.ToLower();
+                                    s = line.FirstOrDefault(s => s.Name.ToLower() == name);
+                                }
+                                else
+                                    s = line.Find(name);
                                 if (s != null)
                                     mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
                             }

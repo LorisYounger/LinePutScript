@@ -14,9 +14,7 @@ namespace LinePutScript.Converter
         /// <summary>
         /// 将该内容转换成Line
         /// </summary>
-        public LineAttribute()
-        {
-        }
+        public LineAttribute() { }
         /// <summary>
         /// 将改内容转换成Line
         /// </summary>
@@ -25,13 +23,14 @@ namespace LinePutScript.Converter
         /// <param name="name">指定名称</param>
         /// <param name="iLineType">如果为类,指定转换ILine的类型,默认为T</param>
         /// <param name="fourceToString">强制转换内容为String (多用于当前类为Sub)</param>
-        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null, bool fourceToString = false)
+        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null, bool fourceToString = false, bool ignoreCase = false)
         {
             Type = type;
             Converter = converter;
             Name = name;
             ILineType = iLineType;
             FourceToString = fourceToString;
+            IgnoreCase = ignoreCase;
         }
         /// <summary>
         /// 自定义转换方法
@@ -71,8 +70,7 @@ namespace LinePutScript.Converter
         /// <returns>转换结果</returns>
         public T ConvertToLine<T>(string name, object? value, bool fourceToString = false) where T : ILine, new()
         {
-
-            string ln = Name == null ? name : Name;
+            string ln = Name ?? name;           
             //如果为null储存空
             if (value == null)
             {
@@ -94,5 +92,9 @@ namespace LinePutScript.Converter
                 return LPSConvert.GetObjectLine<T>(value, ln, Type, this);
             }
         }
+        /// <summary>
+        /// 忽略大小写
+        /// </summary>
+        public bool IgnoreCase { get; set; } = false;
     }
 }
