@@ -325,7 +325,7 @@ namespace LinePutScript
         /// <inheritdoc/>
         public string GetStoreString() => info.GetStoreString();
         /// <inheritdoc/>
-        public string GetString() => info.GetString();
+        public string GetString() => Info;
         /// <inheritdoc/>
         public long GetInteger64() => info.GetInteger64();
         /// <inheritdoc/>
@@ -339,7 +339,7 @@ namespace LinePutScript
         /// <inheritdoc/>
         public bool GetBoolean() => info.GetBoolean();
         /// <inheritdoc/>
-        public void SetString(string value) => info.SetString(value);
+        public void SetString(string value) => Info = value;
         /// <inheritdoc/>
         public void SetInteger(int value) => info.SetInteger(value);
         /// <inheritdoc/>

@@ -205,7 +205,10 @@ namespace LinePutScript
                 case ObjectType.Float:
                     return (long)(double)Value;
                 case ObjectType.String:
-                    return long.Parse((string)Value);
+                    if (long.TryParse((string)Value, out long result))                    
+                        return result;                    
+                    else                    
+                        return 0;                    
                 case ObjectType.Boolean:
                     return (bool)Value ? 1 : 0;
                 default:
@@ -229,7 +232,10 @@ namespace LinePutScript
                 case ObjectType.Float:
                     return (int)(double)Value;
                 case ObjectType.String:
-                    return int.Parse((string)Value);
+                    if (int.TryParse((string)Value, out var result))
+                        return result;
+                    else
+                        return 0;
                 case ObjectType.Boolean:
                     return (bool)Value ? 1 : 0;
                 default:
@@ -253,7 +259,10 @@ namespace LinePutScript
                 case ObjectType.Float:
                     return (double)Value;
                 case ObjectType.String:
-                    return double.Parse((string)Value);
+                    if (double.TryParse((string)Value, out var result))
+                        return result;
+                    else
+                        return 0;
                 case ObjectType.Boolean:
                     return (bool)Value ? 1 : 0;
                 default:

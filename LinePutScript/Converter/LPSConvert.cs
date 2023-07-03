@@ -628,12 +628,12 @@ namespace LinePutScript.Converter
                         object obj = Activator.CreateInstance(type);
                         foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
-                            if (latt != null && latt is LineAttribute la)
+                            var latt = mi.GetCustomAttribute<LineAttribute>();
+                            if (latt != null)
                             {
-                                var name = la.Name ?? mi.Name;
+                                var name = latt.Name ?? mi.Name;
                                 ISub? s;
-                                if (la.IgnoreCase)
+                                if (latt.IgnoreCase)
                                 {
                                     name = name.ToLower();
                                     s = line.FirstOrDefault(s => s.Name.ToLower() == name);
@@ -641,17 +641,17 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
+                                    mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: latt));
                             }
                         }
                         foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
-                            if (latt != null && latt is LineAttribute la)
+                            var latt = mi.GetCustomAttribute<LineAttribute>();
+                            if (latt != null)
                             {
-                                var name = la.Name ?? mi.Name;
+                                var name = latt.Name ?? mi.Name;
                                 ISub? s;
-                                if (la.IgnoreCase)
+                                if (latt.IgnoreCase)
                                 {
                                     name = name.ToLower();
                                     s = line.FirstOrDefault(s => s.Name.ToLower() == name);
@@ -659,7 +659,7 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
+                                    mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: latt));
                             }
                         }
                         return obj;

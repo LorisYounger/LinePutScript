@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using static LinePutScript.Converter.LPSConvert;
 
 namespace TestConsole
@@ -129,7 +130,7 @@ namespace TestConsole
             //Console.WriteLine(LPSConvert.SerializeObject(tc));
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
-            var tlpscv = LPSConvert.DeserializeObject<testlpsconv>(LPSConvert.SerializeObject(new testlpsconv(lps,lps.First(), lps.Last().First())));
+            var tlpscv = LPSConvert.DeserializeObject<testlpsconv>(LPSConvert.SerializeObject(new testlpsconv(lps, lps.First(), lps.Last().First())));
 
             if (tlpscv == null)
             {
@@ -141,9 +142,15 @@ namespace TestConsole
                 Console.WriteLine("CV测试3.2:\t" + tlpscv.TestLine.ToString().Equals(lps.First().ToString()));
                 Console.WriteLine("CV测试3.3:\t" + (tlpscv.TestSub == (lps.Last().First())).ToString());
             }
+            var l = new Line("food:|type#Drink:|name#ab钙奶:|price#6.5:|desc#健康美味，经济实惠:|Exp#5:|Strength#5:|StrengthDrink#4:|StrengthFood#5:|Health#1:|Feeling#1:|");
+            Console.WriteLine("CV测试3.4:\t" + (LPSConvert.DeserializeObject<testigcase>(l).StrengthDrink == 4));
+
+            lps["ABC"].info = "a\\nb,c";
+            lps["ABC"].Info = lps["ABC"].Info.Replace(@"\n", "\n").Replace(@"\r", "\r"); ;
+            Console.WriteLine("BS测试:\t" + lps["ABC"].GetString());
+        }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
-        }
         public class testconvert : ConvertFunction
         {
             public override string Convert(dynamic value)
@@ -199,5 +206,85 @@ namespace TestConsole
             }
         }
 
+        public class testigcase
+        {
+            /// <summary>
+            /// 食物类型
+            /// </summary>
+            public enum FoodType
+            {
+                /// <summary>
+                /// 食物 (默认)
+                /// </summary>
+                Food,
+                /// <summary>
+                /// 收藏 (自定义)
+                /// </summary>
+                Star,
+                /// <summary>
+                /// 正餐
+                /// </summary>
+                Meal,
+                /// <summary>
+                /// 零食
+                /// </summary>
+                Snack,
+                /// <summary>
+                /// 饮料
+                /// </summary>
+                Drink,
+                /// <summary>
+                /// 功能性
+                /// </summary>
+                Functional,
+                /// <summary>
+                /// 药品
+                /// </summary>
+                Drug,
+            }
+            /// <summary>
+            /// 食物类型
+            /// </summary>
+            [Line(type: ConvertType.ToEnum, ignoreCase: true)]
+            public FoodType Type { get; set; } = FoodType.Food;
+            /// <summary>
+            /// 食物名字
+            /// </summary>
+            [Line(name: "name")]
+            public string? Name { get; set; }
+            [Line(ignoreCase: true)]
+            public int Exp { get; set; }
+            [Line(ignoreCase: true)]
+            public double Strength { get; set; }
+            [Line(ignoreCase: true)]
+            public double StrengthFood { get; set; }
+            [Line(ignoreCase: true)]
+            public double StrengthDrink { get; set; }
+            [Line(ignoreCase: true)]
+            public double Feeling { get; set; }
+            [Line(ignoreCase: true)]
+            public double Health { get; set; }
+            [Line(ignoreCase: true)]
+            public double Likability { get; set; }
+            /// <summary>
+            /// 食物价格
+            /// </summary>
+            [Line(ignoreCase: true)]
+            public double Price { get; set; }
+            /// <summary>
+            /// 描述
+            /// </summary>
+            [Line(ignoreCase: true)]
+            public string? Desc { get; set; }
+            /// <summary>
+            /// 是否已收藏
+            /// </summary>
+            public bool Star { get; set; }
+            /// <summary>
+            /// 物品图片
+            /// </summary>
+            [Line(ignoreCase: true)]
+            public string Image;
+        }
     }
 }
