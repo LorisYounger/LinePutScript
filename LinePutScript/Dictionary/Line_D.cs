@@ -39,7 +39,7 @@ namespace LinePutScript.Dictionary
             text = line.text;
             AddRange(line.ToList().ToArray());
         }
-              
+
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>
@@ -191,17 +191,6 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
         public void AddRange(IEnumerable<ISub> newSubs)
-        {
-            foreach (ISub newSub in newSubs)
-            {
-                Add(newSub);
-            }
-        }
-        /// <summary>
-        /// 将指定Sub的元素添加到Subs的末尾
-        /// </summary>
-        /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params ISub[] newSubs)
         {
             foreach (ISub newSub in newSubs)
             {
@@ -556,6 +545,19 @@ namespace LinePutScript.Dictionary
             AddRange(subs);
         }
         /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public void Load(string name, string info, IEnumerable<ISub> subs, string text = "")
+        {
+            Load(name, info);
+            Text = text;
+            AddRange(subs);
+        }
+        /// <summary>
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
@@ -591,7 +593,7 @@ namespace LinePutScript.Dictionary
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
         [Obsolete("失效:字典没有顺序")]
-        public void InsertRange(int index, params ISub[] newSubs)
+        public void InsertRange(int index, IEnumerable<ISub> newSubs)
         {
             AddRange(newSubs);
         }
@@ -935,9 +937,11 @@ namespace LinePutScript.Dictionary
         /// <param name="info">信息 (正常)</param>
         /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
         /// <param name="subs">子类集合</param>
-        public Line_D(string name, string info, string text = "", params ISub[] subs) : base(name,info,text,subs)
+        public Line_D(string name, string info, string text = "", params ISub[] subs) : base(name, info, text, subs)
         {
         }
+
+
 
         /// <summary>
         /// 通过名字和信息创建新的Line

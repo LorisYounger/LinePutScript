@@ -100,7 +100,22 @@ namespace LinePutScript
                 Subs.Add(t);
             }
         }
-
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public void Load(string name, string info, IEnumerable<ISub> subs, string text = "")
+        {
+            base.Load(name, info);
+            Text = text;
+            foreach (var sub in subs)
+            {
+                Subs.Add(sub);
+            }
+        }
         /// <summary>
         /// 通过名字和信息创建新的Line
         /// </summary>
@@ -265,17 +280,6 @@ namespace LinePutScript
                 Subs.Add(sub);
             }
         }
-        /// <summary>
-        /// 将指定Sub的元素添加到Subs的末尾
-        /// </summary>
-        /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params ISub[] newSubs)
-        {
-            foreach (var sub in newSubs)
-            {
-                Subs.Add(sub);
-            }
-        }
 
         /// <summary>
         /// 将指定的Sub添加到指定索引处
@@ -291,7 +295,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void InsertRange(int index, params ISub[] newSubs)
+        public void InsertRange(int index, IEnumerable<ISub> newSubs)
         {
             foreach (var sub in newSubs)
             {

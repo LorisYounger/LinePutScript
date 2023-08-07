@@ -15,11 +15,13 @@ namespace LinePutScript.Dictionary
         /// <summary>
         /// 从指定行创建 LPS_D
         /// </summary>
+        /// <param name="line">多个行</param>
         /// <param name="lines">多个行</param>
-        public LPS_D(params ILine[] lines)
+        public LPS_D(ILine line, params ILine[] lines)
         {
-            foreach (ILine line in lines)
-                Assemblage[line.Name] = line;
+            Assemblage[line.Name] = line;
+            foreach (ILine l in lines)
+                Assemblage[l.Name] = l;
         }
         /// <summary>
         /// 从另一个LPS文件创建该LPS
@@ -72,18 +74,7 @@ namespace LinePutScript.Dictionary
         public void AddorReplaceLine(ILine newLine)
         {
             Assemblage[newLine.Name] = newLine;
-        }
-        /// <summary>
-        /// 将指定Line的元素添加到Assemblage
-        /// </summary>
-        /// <param name="newLines">要添加的多个Line</param>
-        public void AddRange(params ILine[] newLines)
-        {
-            foreach (var item in newLines)
-            {
-                Assemblage[item.Name] = item;
-            }
-        }
+        }       
         /// <summary>
         /// 将指定Line的元素添加到Assemblage
         /// </summary>
@@ -104,16 +95,6 @@ namespace LinePutScript.Dictionary
         public void InsertLine(int index, ILine newLine)
         {
             Assemblage[newLine.Name] = newLine;
-        }
-        /// <summary>
-        /// 将指定Line的元素添加指定索引处(失效:字典没有顺序)
-        /// </summary>
-        /// <param name="index">应插入 Line 的从零开始的索引</param>
-        /// <param name="newLines">要添加的多个Line</param>
-        [Obsolete("失效:字典没有顺序")]
-        public void InsertRange(int index, params ILine[] newLines)
-        {
-            AddRange(newLines);
         }
         /// <summary>
         /// 将指定Line的元素添加指定索引处(失效:字典没有顺序)
@@ -506,7 +487,7 @@ namespace LinePutScript.Dictionary
         /// 从指定行加载LPS文档
         /// </summary>
         /// <param name="lines">多个行</param>
-        public void Load(params ILine[] lines)
+        public void Load(IEnumerable<ILine> lines)
         {
             Assemblage.Clear();//清空当前文档
             foreach (ILine line in lines)
@@ -924,7 +905,9 @@ namespace LinePutScript.Dictionary
         /// <summary>
         /// 从指定行创建 LPS_D
         /// </summary>
-        public LPS_D(params ILine[] lines) : base(lines)
+        /// <param name="line">多个行</param>
+        /// <param name="lines">多个行</param>
+        public LPS_D(ILine line, params ILine[] lines) : base(line, lines)
         {
         }
         /// <summary>

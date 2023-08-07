@@ -21,6 +21,14 @@ namespace LinePutScript
         /// <param name="subs">子类集合</param>
         public void Load(string name, string info, string text = "", params ISub[] subs);
         /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public void Load(string name, string info, IEnumerable<ISub> subs, string text = "");
+        /// <summary>
         /// 将其他Line内容拷贝到本Line
         /// </summary>
         /// <param name="line">其他line</param>
@@ -70,7 +78,7 @@ namespace LinePutScript
         /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void AddRange(params ISub[] newSubs);
+        public void AddRange(IEnumerable<ISub> newSubs);
 
         /// <summary>
         /// 将指定的Sub添加到指定索引处
@@ -83,7 +91,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="index">应插入 Sub 的从零开始的索引</param>
         /// <param name="newSubs">要添加的多个Sub</param>
-        public void InsertRange(int index, params ISub[] newSubs);
+        public void InsertRange(int index, IEnumerable<ISub> newSubs);
         /// <summary>
         /// 从Subs中移除特定名称的第一个匹配项
         /// </summary>

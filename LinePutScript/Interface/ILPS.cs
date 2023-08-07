@@ -33,11 +33,6 @@ namespace LinePutScript
         /// 将指定Line的元素添加到Assemblage的末尾
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
-        public void AddRange(params ILine[] newLines);
-        /// <summary>
-        /// 将指定Line的元素添加到Assemblage的末尾
-        /// </summary>
-        /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(IEnumerable<ILine> newLines);
         /// <summary>
         /// 将指定的Line添加到指定索引处
@@ -45,12 +40,6 @@ namespace LinePutScript
         /// <param name="index">应插入 Line 的从零开始的索引</param>
         /// <param name="newLine">要添加的Line</param>
         public void InsertLine(int index, ILine newLine);
-        /// <summary>
-        /// 将指定Line的元素添加指定索引处
-        /// </summary>
-        /// <param name="index">应插入 Line 的从零开始的索引</param>
-        /// <param name="newLines">要添加的多个Line</param>
-        public void InsertRange(int index, params ILine[] newLines);
         /// <summary>
         /// 将指定Line的元素添加指定索引处
         /// </summary>
@@ -222,7 +211,7 @@ namespace LinePutScript
         /// 从指定行加载LPS文档
         /// </summary>
         /// <param name="lines">多个行</param>
-        public void Load(params ILine[] lines);
+        public void Load(IEnumerable<ILine> lines);
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
         /// </summary>

@@ -33,9 +33,11 @@ namespace LinePutScript
         /// <summary>
         /// 从指定行创建 LpsDocument
         /// </summary>
+        /// <param name="line">多个行</param>
         /// <param name="lines">多个行</param>
-        public LpsDocument(params ILine[] lines)
+        public LpsDocument(ILine line, params ILine[] lines)
         {
+            AddLine(line);
             AddRange(lines);
         }
         /// <summary>
@@ -83,17 +85,6 @@ namespace LinePutScript
         /// 将指定Line的元素添加到Assemblage的末尾
         /// </summary>
         /// <param name="newLines">要添加的多个Line</param>
-        public void AddRange(params ILine[] newLines)
-        {
-            foreach (var item in newLines)
-            {
-                AddLine(item);
-            }
-        }
-        /// <summary>
-        /// 将指定Line的元素添加到Assemblage的末尾
-        /// </summary>
-        /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(IEnumerable<ILine> newLines)
         {
             foreach (var item in newLines)
@@ -109,19 +100,6 @@ namespace LinePutScript
         public void InsertLine(int index, ILine newLine)
         {
             Assemblage.Insert(index, newLine);
-        }
-        /// <summary>
-        /// 将指定Line的元素添加指定索引处
-        /// </summary>
-        /// <param name="index">应插入 Line 的从零开始的索引</param>
-        /// <param name="newLines">要添加的多个Line</param>
-        public void InsertRange(int index, params ILine[] newLines)
-        {
-            foreach (var item in newLines)
-            {
-                InsertLine(index, item);
-                index++;
-            }
         }
         /// <summary>
         /// 将指定Line的元素添加指定索引处
@@ -533,7 +511,7 @@ namespace LinePutScript
         /// 从指定行加载LPS文档
         /// </summary>
         /// <param name="lines">多个行</param>
-        public void Load(params ILine[] lines)
+        public void Load(IEnumerable<ILine> lines)
         {
             Assemblage.Clear();//清空当前文档
             AddRange(lines);
@@ -956,8 +934,9 @@ namespace LinePutScript
         /// <summary>
         /// 从指定行创建 LpsDocument
         /// </summary>
+        /// <param name="line">多个行</param>
         /// <param name="lines">多个行</param>
-        public LpsDocument(params ILine[] lines) : base(lines) { }
+        public LpsDocument(ILine line, params ILine[] lines) : base(line, lines) { }
         /// <summary>
         /// 从指定行创建 LpsDocument
         /// </summary>
@@ -1092,8 +1071,9 @@ namespace LinePutScript
         /// <summary>
         /// 从指定行创建 LpsDocument
         /// </summary>
+        /// <param name="line">多个行</param>
         /// <param name="lines">多个行</param>
-        public LPS(params ILine[] lines) : base(lines) { }
+        public LPS(ILine line, params ILine[] lines) : base(line, lines) { }
         /// <summary>
         /// 从指定行创建 LpsDocument
         /// </summary>
