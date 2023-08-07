@@ -60,6 +60,16 @@ namespace LinePutScript
         /// 通过名字和信息创建新的Sub
         /// </summary>
         /// <param name="name">名称</param>
+        /// <param name="info">信息 (SetObject)</param>
+        public Sub(string name, SetObject info)
+        {
+            Name = name;
+            this.info = info;
+        }
+        /// <summary>
+        /// 通过名字和信息创建新的Sub
+        /// </summary>
+        /// <param name="name">名称</param>
         /// <param name="info">信息 (正常版本)</param>
         public void Load(string name, string info)
         {
@@ -118,7 +128,7 @@ namespace LinePutScript
             {
                 if (long.TryParse(Name, out long i))
                     return i;
-                return Name.GetHashCode();
+                return GetHashCode(Name);
             }
             set
             {
@@ -284,7 +294,7 @@ namespace LinePutScript
         /// 获得该Sub的长哈希代码
         /// </summary>
         /// <returns>64位哈希代码</returns>
-        public virtual long GetLongHashCode() => Sub.GetHashCode(Name) * 2 + Sub.GetHashCode(info.GetString()) * 3;
+        public virtual long GetLongHashCode() => GetHashCode(Name) * 2 + GetHashCode(info.GetStoreString()) * 3;
         /// <summary>
         /// 确认对象是否等于当前对象
         /// </summary>

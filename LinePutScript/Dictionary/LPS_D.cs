@@ -10,7 +10,7 @@ namespace LinePutScript.Dictionary
     /// <summary>
     /// 通过字典类型的文件 包括文件读写等一系列操作
     /// </summary>
-    public class LPS_D : ILPS
+    public class LPS_D<T> : ILPS where T : IDictionary<string, ILine>, new()
     {
         /// <summary>
         /// 从指定行创建 LPS_D
@@ -18,7 +18,8 @@ namespace LinePutScript.Dictionary
         /// <param name="lines">多个行</param>
         public LPS_D(params ILine[] lines)
         {
-            Load(lines);
+            foreach (ILine line in lines)
+                Assemblage[line.Name] = line;
         }
         /// <summary>
         /// 从另一个LPS文件创建该LPS
@@ -31,7 +32,7 @@ namespace LinePutScript.Dictionary
         /// <summary>
         /// 集合 全部文件的数据
         /// </summary>
-        public Dictionary<string, ILine> Assemblage { get; set; } = new Dictionary<string, ILine>();
+        public T Assemblage { get; set; } = new T();
 
         /// <summary>
         /// 创建一个 空的 LPS_D
@@ -45,7 +46,15 @@ namespace LinePutScript.Dictionary
         {
             Load(lps);
         }
-
+        /// <summary>
+        /// 从指定行创建 LPS_D
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LPS_D(IEnumerable<ILine> lines)
+        {
+            foreach (ILine line in lines)
+                Assemblage[line.Name] = line;
+        }
         #region List操作
         /// <summary>
         /// 将指定的Line添加到Assemblage列表
@@ -281,12 +290,12 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
-        public ILine FindorAddLine<T>(string lineName) where T : ILine, new()
+        public ILine FindorAddLine<Y>(string lineName) where Y : ILine, new()
         {
             ILine? line = FindLine(lineName);
             if (line == null)
             {
-                line = new T();
+                line = new Y();
                 line.Name = lineName;
                 AddLine(line);
                 return line;
@@ -474,7 +483,7 @@ namespace LinePutScript.Dictionary
         /// 从指定的字符串加载LPS文档
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
-        public void Load<T>(string lps) where T : ILine, new()
+        public void Load<Y>(string lps) where Y : ILine, new()
         {
             Assemblage.Clear();//清空当前文档
             string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split('\n');
@@ -482,7 +491,7 @@ namespace LinePutScript.Dictionary
             {
                 if (str != "")
                 {
-                    ILine t = new T();
+                    ILine t = new Y();
                     t.Load(str);
                     Add(t);
                 }
@@ -500,7 +509,7 @@ namespace LinePutScript.Dictionary
         public void Load(params ILine[] lines)
         {
             Assemblage.Clear();//清空当前文档
-            foreach(ILine line in lines)
+            foreach (ILine line in lines)
                 Assemblage[line.Name] = line;
         }
 
@@ -899,6 +908,47 @@ namespace LinePutScript.Dictionary
         }
 
         #endregion
+    }
+    /// <summary>
+    /// 通过字典类型的文件 包括文件读写等一系列操作
+    /// </summary>
+    public class LPS_D : LPS_D<Dictionary<string, ILine>>
+    {
+        /// <summary>
+        /// 创建一个 空的 LPS_D
+        /// </summary>
+        public LPS_D()
+        {
+        }
+
+        /// <summary>
+        /// 从指定行创建 LPS_D
+        /// </summary>
+        public LPS_D(params ILine[] lines) : base(lines)
+        {
+        }
+        /// <summary>
+        /// 从另一个LPS文件创建该LPS
+        /// </summary>
+        /// <param name="lps"></param>
+        public LPS_D(ILPS lps) : base(lps)
+        {
+        }
+
+        /// <summary>
+        /// 从指定的字符串创建 LpsDocument
+        /// </summary>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
+        public LPS_D(string lps) : base(lps)
+        {
+        }
+        /// <summary>
+        /// 从指定行创建 LPS_D
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LPS_D(IEnumerable<ILine> lines) : base(lines)
+        {
+        }
     }
 }
 

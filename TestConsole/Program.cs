@@ -147,7 +147,23 @@ namespace TestConsole
 
             lps["ABC"].info = "a\\nb,c";
             lps["ABC"].Info = lps["ABC"].Info.Replace(@"\n", "\n").Replace(@"\r", "\r"); ;
-            Console.WriteLine("BS测试:\t" + lps["ABC"].GetString());
+            Console.WriteLine("BS测试1:\t" + (lps["ABC"].GetString() == "a\nb,c"));
+            Console.WriteLine("BS测试2:\t" + (new Line_D("test").GetInt("tt", 60) == 60));
+
+            int hs = lps.GetHashCode();
+            int hs2 = lps.GetHashCode();
+            Console.WriteLine("HS测试1:\t" + (hs == hs2)); // + lps.ToString());
+            Line_D tmr = new Line_D(lps["str"]);
+            lps.Remove("str");
+            int hs3 = lps.GetHashCode();
+            Console.WriteLine("HS测试2:\t" + (hs != hs3));
+            lps.Insert(0,tmr);
+            int hs4 = lps.GetHashCode();
+            Console.WriteLine("HS测试3:\t" + (hs == hs4)); //+ lps.ToString());
+            lps.Remove(tmr);
+            int hs5 = lps.GetHashCode();
+            Console.WriteLine("HS测试4:\t" + (hs != hs5));
+            Console.WriteLine("HS测试5:\t" + (hs5 == hs3));
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。

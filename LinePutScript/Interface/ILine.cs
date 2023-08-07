@@ -10,7 +10,7 @@ namespace LinePutScript
     /// <summary>
     /// 行接口 包含多个子类的接口 继承自子类接口
     /// </summary>
-    public interface ILine : ISub, IList<ISub>, ICollection<ISub>, IEnumerable<ISub>, IEnumerable, IGetOBJ<ISub>
+    public interface ILine : ISub, IList<ISub>, ICollection<ISub>, IEnumerable<ISub>, IEnumerable, IGetOBJ<ISub>, IComparable<ILine>, IEquatable<ILine>
     {
         /// <summary>
         /// 通过名字和信息创建新的Line

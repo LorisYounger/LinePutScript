@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Security.Cryptography.X509Certificates;
@@ -13,7 +14,7 @@ namespace LinePutScript.Dictionary
     /// <summary>
     /// 通过字典类型的行, Name不会重复
     /// </summary>
-    public class Line_D : Sub, ILine
+    public class Line_D<T> : Sub, ILine where T : IDictionary<string, ISub>, new()
     {
         /// <summary>
         /// 创建一行
@@ -38,10 +39,37 @@ namespace LinePutScript.Dictionary
             text = line.text;
             AddRange(line.ToList().ToArray());
         }
+              
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line_D(string name, string info, string text = "", params ISub[] subs) : base(name, info)
+        {
+            Text = text;
+            AddRange(subs);
+        }
+
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line_D(string name, string info, IEnumerable<ISub> subs, string text = "") : base(name, info)
+        {
+            Text = text;
+            AddRange(subs);
+        }
+
         /// <summary>
         /// 子项目
         /// </summary>
-        public Dictionary<string, ISub> Subs { get; set; } = new Dictionary<string, ISub>();
+        public T Subs { get; set; } = new T();
         /// <summary>
         /// 文本 在末尾没有结束行号的文本 (去除关键字的文本)
         /// </summary>
@@ -157,6 +185,17 @@ namespace LinePutScript.Dictionary
         public void AddorReplaceSub(ISub newSub)
         {
             Subs[newSub.Name] = newSub;
+        }
+        /// <summary>
+        /// 将指定Sub的元素添加到Subs的末尾
+        /// </summary>
+        /// <param name="newSubs">要添加的多个Sub</param>
+        public void AddRange(IEnumerable<ISub> newSubs)
+        {
+            foreach (ISub newSub in newSubs)
+            {
+                Add(newSub);
+            }
         }
         /// <summary>
         /// 将指定Sub的元素添加到Subs的末尾
@@ -708,10 +747,10 @@ namespace LinePutScript.Dictionary
         public override long GetLongHashCode()
         {
             int id = 5;
-            long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
+            long hash = GetHashCode(Name) * 2 + GetHashCode(info) * 3 + GetHashCode(text) * 4;
             foreach (ISub su in Subs.Values)
             {
-                hash += su.GetHashCode() * id++;
+                hash += su.GetLongHashCode() * id++;
             }
             return hash;
         }
@@ -758,6 +797,31 @@ namespace LinePutScript.Dictionary
         {
             return Subs.Values.GetEnumerator();
         }
+
+        /// <summary>
+        /// 将当前line与另一个line进行比较,并退回一个整数指示在排序位置中是位于另一个对象之前之后还是相同位置
+        /// </summary>
+        /// <param name="other">另一个line</param>
+        /// <returns>值小于零时排在 other 之前 值等于零时出现在相同排序位置 值大于零则排在 other 之后</returns>
+        public int CompareTo(ILine? other)
+        {
+            if (other == null)
+                return int.MaxValue;
+            int comp = Name.CompareTo(other.Name);
+            if (comp != 0)
+                return comp;
+            comp = other.infoComparable.CompareTo(info);
+            if (comp != 0)
+                return comp;
+            return ToString().CompareTo(other?.ToString());
+        }
+        /// <summary>
+        /// 将当前line与另一个line进行比较, 判断是否内容相同
+        /// </summary>
+        /// <param name="other">另一个line</param>
+        /// <returns>如果为True则内容相同</returns>
+        public bool Equals(ILine? other) => CompareTo(other) == 0;
+
         #endregion
         #region GOBJ
 
@@ -837,5 +901,53 @@ namespace LinePutScript.Dictionary
             set => SetDateTime((string)subName, value);
         }
         #endregion        
+    }
+    /// <summary>
+    /// 通过字典类型的行, Name不会重复 
+    /// </summary>
+    public class Line_D : Line_D<Dictionary<string, ISub>>
+    {
+        /// <summary>
+        /// 创建一行
+        /// </summary>
+        public Line_D()
+        {
+        }
+        /// <summary>
+        /// 通过lpsLine文本创建一行
+        /// </summary>
+        /// <param name="lpsLine">lpsSub文本</param>
+        public Line_D(string lpsLine) : base(lpsLine)
+        {
+        }
+        /// <summary>
+        /// 通过其他Line创建新的Line
+        /// </summary>
+        /// <param name="line">其他line</param>
+        public Line_D(ILine line) : base(line)
+        {
+        }
+
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line_D(string name, string info, string text = "", params ISub[] subs) : base(name,info,text,subs)
+        {
+        }
+
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line_D(string name, string info, IEnumerable<ISub> subs, string text = "") : base(name, info, subs, text)
+        {
+        }
     }
 }

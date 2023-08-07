@@ -13,7 +13,7 @@ namespace LinePutScript
     /// <summary>
     /// 行 包含多个子类 继承自子类
     /// </summary>
-    public class Line : Sub, ILine, IReadOnlyList<ISub>, IReadOnlyCollection<ISub>, IComparable<ILine>, IEquatable<ILine>
+    public class Line<T> : Sub, ILine, IReadOnlyList<ISub>, IReadOnlyCollection<ISub> where T : IList<ISub>, new()
     {
         /// <summary>
         /// 创建一行
@@ -36,7 +36,10 @@ namespace LinePutScript
             Name = line.Name;
             Info = (SetObject)line.Info;
             text = line.text;
-            Subs = line.ToList();
+            foreach (var sub in line.ToList())
+            {
+                Subs.Add(sub);
+            }
         }
         /// <summary>
         /// 通过名字和信息创建新的Line
@@ -48,8 +51,28 @@ namespace LinePutScript
         public Line(string name, string info, string text = "", params ISub[] subs) : base(name, info)
         {
             Text = text;
-            Subs.AddRange(subs);
+            foreach (var sub in subs)
+            {
+                Subs.Add(sub);
+            }
         }
+
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line(string name, string info, IEnumerable<ISub> subs, string text = "") : base(name, info)
+        {
+            Text = text;
+            foreach (var sub in subs)
+            {
+                Subs.Add(sub);
+            }
+        }
+
         /// <summary>
         /// 加载 通过lps文本创建一个子类
         /// </summary>
@@ -89,7 +112,10 @@ namespace LinePutScript
         {
             base.Load(name, info);
             Text = text;
-            Subs.AddRange(subs);
+            foreach (var sub in subs)
+            {
+                Subs.Add(sub);
+            }
         }
         /// <summary>
         /// 将其他Line内容拷贝到本Line
@@ -101,7 +127,10 @@ namespace LinePutScript
             Info = (SetObject)line.Info;
 
             text = line.text;
-            Subs = line.ToList();
+            foreach (var sub in line.ToList())
+            {
+                Subs.Add(sub);
+            }
         }
 
 
@@ -199,7 +228,7 @@ namespace LinePutScript
         /// <summary>
         /// 子项目
         /// </summary>
-        public List<ISub> Subs { get; set; } = new List<ISub>();
+        public T Subs { get; set; } = new T();
 
         #region List操作
         /// <summary>
@@ -229,9 +258,23 @@ namespace LinePutScript
         /// 将指定Sub的元素添加到Subs的末尾
         /// </summary>
         /// <param name="newSubs">要添加的多个Sub</param>
+        public void AddRange(IEnumerable<ISub> newSubs)
+        {
+            foreach (var sub in newSubs)
+            {
+                Subs.Add(sub);
+            }
+        }
+        /// <summary>
+        /// 将指定Sub的元素添加到Subs的末尾
+        /// </summary>
+        /// <param name="newSubs">要添加的多个Sub</param>
         public void AddRange(params ISub[] newSubs)
         {
-            Subs.AddRange(newSubs);
+            foreach (var sub in newSubs)
+            {
+                Subs.Add(sub);
+            }
         }
 
         /// <summary>
@@ -250,7 +293,11 @@ namespace LinePutScript
         /// <param name="newSubs">要添加的多个Sub</param>
         public void InsertRange(int index, params ISub[] newSubs)
         {
-            Subs.InsertRange(index, newSubs);
+            foreach (var sub in newSubs)
+            {
+                Subs.Insert(index, sub);
+                index++;
+            }
         }
         /// <summary>
         /// 从Subs中移除特定对象的第一个匹配项
@@ -430,7 +477,15 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string subName)
         {
-            return Subs.FindIndex(x => x.Name == subName);
+            var sub = Subs.FirstOrDefault(x => x.Name == subName);
+            if (sub == null)
+            {
+                return -1;
+            }
+            else
+            {
+                return Subs.IndexOf(sub);
+            }
         }
         /// <summary>
         /// 搜索相同名称的Sub,并返回整个Sub中全部匹配的sub从零开始的索引
@@ -501,10 +556,10 @@ namespace LinePutScript
         public override long GetLongHashCode()
         {
             int id = 5;
-            long hash = Name.GetHashCode() * 2 + info.GetHashCode() * 3 + text.GetHashCode() * 4;
+            long hash = GetHashCode(Name) * 2 + GetHashCode(info) * 3 + GetHashCode(text) * 4;
             foreach (ISub su in Subs)
             {
-                hash += su.GetHashCode() * id++;
+                hash += su.GetLongHashCode() * id++;
             }
             return hash;
         }
@@ -513,15 +568,6 @@ namespace LinePutScript
         /// </summary>
         /// <returns>32位哈希代码</returns>
         public override int GetHashCode() => (int)GetLongHashCode();
-        /// <summary>
-        /// 确认对象是否等于当前对象
-        /// </summary>
-        /// <param name="obj">Subs</param>
-        /// <returns></returns>
-        public bool Equals(ILine? obj)
-        {
-            return obj?.GetLongHashCode() == GetLongHashCode();
-        }
         /// <summary>
         /// 返回循环访问 Subs 的枚举数。
         /// </summary>
@@ -830,7 +876,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="sub">用于定义匹配的Sub</param>
         /// <returns>如果找到相同名称的Sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        public int IndexOf(ISub sub) => Subs.FindIndex(x => x.Equals(sub));
+        public int IndexOf(ISub sub) => Subs.IndexOf(sub);
         /// <summary>
         /// 将指定的Sub添加到指定索引处
         /// </summary>
@@ -877,14 +923,19 @@ namespace LinePutScript
                 return comp;
             return ToString().CompareTo(other?.ToString());
         }
-
+        /// <summary>
+        /// 将当前line与另一个line进行比较, 判断是否内容相同
+        /// </summary>
+        /// <param name="other">另一个line</param>
+        /// <returns>如果为True则内容相同</returns>
+        public bool Equals(ILine? other) => CompareTo(other) == 0;
         /// <summary>
         /// 克隆一个Line
         /// </summary>
         /// <returns>相同的Line</returns>
         public override object Clone()
         {
-            return new Line(this);
+            return new Line<T>(this);
         }
         /// <summary>
         /// 返回一个新List,包含所有Subs
@@ -895,5 +946,42 @@ namespace LinePutScript
             return Subs.ToList();
         }
         #endregion
+    }
+    /// <summary>
+    /// 行 包含多个子类 继承自子类
+    /// </summary>
+    public class Line : Line<List<ISub>>
+    {
+        /// <summary>
+        /// 创建一行
+        /// </summary>
+        public Line() { }
+        /// <summary>
+        /// 通过lpsLine文本创建一行
+        /// </summary>
+        /// <param name="lpsLine">lpsSub文本</param>
+        public Line(string lpsLine) : base(lpsLine) { }
+        /// <summary>
+        /// 通过其他Line创建新的Line
+        /// </summary>
+        /// <param name="line">其他line</param>
+        public Line(ILine line) : base(line) { }
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line(string name, string info, string text = "", params ISub[] subs) : base(name, info, text, subs) { }
+
+        /// <summary>
+        /// 通过名字和信息创建新的Line
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="info">信息 (正常)</param>
+        /// <param name="text">文本 在末尾没有结束行号的文本 (正常)</param>
+        /// <param name="subs">子类集合</param>
+        public Line(string name, string info, IEnumerable<ISub> subs, string text = "") : base(name, info, subs, text) { }
     }
 }

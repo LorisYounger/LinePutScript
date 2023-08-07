@@ -11,12 +11,12 @@ namespace LinePutScript
     /// <summary>
     /// 文件 包括文件读写等一系列操作
     /// </summary>
-    public class LpsDocument : ILPS, IReadOnlyList<ILine>, IReadOnlyCollection<ILine>
+    public class LpsDocument<T> : ILPS, IReadOnlyList<ILine>, IReadOnlyCollection<ILine> where T : IList<ILine>, new()
     {
         /// <summary>
         /// 集合 全部文件的数据
         /// </summary>
-        public List<ILine> Assemblage { get; set; } = new List<ILine>();
+        public T Assemblage { get; set; } = new T();
 
         /// <summary>
         /// 创建一个 空的LpsDocument
@@ -36,7 +36,15 @@ namespace LinePutScript
         /// <param name="lines">多个行</param>
         public LpsDocument(params ILine[] lines)
         {
-            Assemblage.AddRange(lines);
+            AddRange(lines);
+        }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LpsDocument(IEnumerable<ILine> lines)
+        {
+            AddRange(lines);
         }
         /// <summary>
         /// 从另一个LPS文件创建该LPS
@@ -44,7 +52,7 @@ namespace LinePutScript
         /// <param name="lps"></param>
         public LpsDocument(ILPS lps)
         {
-            Assemblage.AddRange(lps);
+            AddRange(lps);
         }
 
         #region List操作
@@ -77,7 +85,10 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(params ILine[] newLines)
         {
-            Assemblage.AddRange(newLines);
+            foreach (var item in newLines)
+            {
+                AddLine(item);
+            }
         }
         /// <summary>
         /// 将指定Line的元素添加到Assemblage的末尾
@@ -85,7 +96,10 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(IEnumerable<ILine> newLines)
         {
-            Assemblage.AddRange(newLines);
+            foreach (var item in newLines)
+            {
+                AddLine(item);
+            }
         }
         /// <summary>
         /// 将指定的Line添加到指定索引处
@@ -103,7 +117,11 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void InsertRange(int index, params ILine[] newLines)
         {
-            Assemblage.InsertRange(index, newLines);
+            foreach (var item in newLines)
+            {
+                InsertLine(index, item);
+                index++;
+            }
         }
         /// <summary>
         /// 将指定Line的元素添加指定索引处
@@ -112,7 +130,11 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void InsertRange(int index, IEnumerable<ILine> newLines)
         {
-            Assemblage.InsertRange(index, newLines);
+            foreach (var item in newLines)
+            {
+                InsertLine(index, item);
+                index++;
+            }
         }
         /// <summary>
         /// 从Assemblage中移除特定对象的第一个匹配项
@@ -210,7 +232,6 @@ namespace LinePutScript
         public bool ContainsSub(string value)
         {
             return Assemblage.FirstOrDefault(x => x.Contains(value)) != null;
-
         }
 
 
@@ -287,12 +308,12 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为新建的相同名称Line</returns>
-        public ILine FindorAddLine<T>(string lineName) where T : ILine, new()
+        public ILine FindorAddLine<Y>(string lineName) where Y : ILine, new()
         {
             ILine? line = FindLine(lineName);
             if (line == null)
             {
-                line = new T();
+                line = new Y();
                 line.Name = lineName;
                 AddLine(line);
                 return line;
@@ -489,7 +510,7 @@ namespace LinePutScript
         /// 从指定的字符串加载LPS文档
         /// </summary>
         /// <param name="lps">包含要加载的LPS文档的字符串</param>
-        public void Load<T>(string lps) where T : ILine, new()
+        public void Load<Y>(string lps) where Y : ILine, new()
         {
             Assemblage.Clear();//清空当前文档
             string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split('\n');
@@ -497,7 +518,7 @@ namespace LinePutScript
             {
                 if (str != "")
                 {
-                    ILine t = new T();
+                    ILine t = new Y();
                     t.Load(str);
                     Assemblage.Add(t);
                 }
@@ -515,7 +536,7 @@ namespace LinePutScript
         public void Load(params ILine[] lines)
         {
             Assemblage.Clear();//清空当前文档
-            Assemblage.AddRange(lines);
+            AddRange(lines);
         }
         /// <summary>
         /// 返回一个Assemblage的第一个元素。
@@ -881,7 +902,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="line">用于定义匹配的Line</param>
         /// <returns>如果找到相同名称的Line的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
-        public int IndexOf(ILine line) => Assemblage.FindIndex(x => x.Equals(line));
+        public int IndexOf(ILine line) => Assemblage.IndexOf(line);
         /// <summary>
         /// 将指定的Line添加到指定索引处
         /// </summary>
@@ -916,9 +937,37 @@ namespace LinePutScript
         {
             return Assemblage.ToList();
         }
-
         #endregion
-
+    }
+    /// <summary>
+    /// 文件 包括文件读写等一系列操作 旧版: 兼容行操作和LineNode等
+    /// </summary>
+    public class LpsDocument : LpsDocument<List<ILine>>
+    {
+        /// <summary>
+        /// 创建一个 空的LpsDocument
+        /// </summary>
+        public LpsDocument() { }
+        /// <summary>
+        /// 从指定的字符串创建 LpsDocument
+        /// </summary>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
+        public LpsDocument(string lps) : base(lps) { }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LpsDocument(params ILine[] lines) : base(lines) { }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LpsDocument(IEnumerable<ILine> lines) : base(lines) { }
+        /// <summary>
+        /// 从另一个LPS文件创建该LPS
+        /// </summary>
+        /// <param name="lps"></param>
+        public LpsDocument(ILPS lps) : base(lps) { }
 
         //就是行操作
         #region LPT操作
@@ -1025,5 +1074,35 @@ namespace LinePutScript
             return LineNode != Assemblage.Count;
         }
         #endregion
+    }
+    /// <summary>
+    /// 文件 包括文件读写等一系列操作 (更纯净,不包含行操作)
+    /// </summary>
+    public class LPS : LpsDocument<List<ILine>>
+    {
+        /// <summary>
+        /// 创建一个 空的LpsDocument
+        /// </summary>
+        public LPS() { }
+        /// <summary>
+        /// 从指定的字符串创建 LpsDocument
+        /// </summary>
+        /// <param name="lps">包含要加载的LPS文档的字符串</param>
+        public LPS(string lps) : base(lps) { }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LPS(params ILine[] lines) : base(lines) { }
+        /// <summary>
+        /// 从指定行创建 LpsDocument
+        /// </summary>
+        /// <param name="lines">多个行</param>
+        public LPS(IEnumerable<ILine> lines) : base(lines) { }
+        /// <summary>
+        /// 从另一个LPS文件创建该LPS
+        /// </summary>
+        /// <param name="lps"></param>
+        public LPS(ILPS lps) : base(lps) { }
     }
 }
