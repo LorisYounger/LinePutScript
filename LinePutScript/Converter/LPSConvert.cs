@@ -376,8 +376,7 @@ namespace LinePutScript.Converter
                 MethodInfo miConstructed = mi.MakeGenericMethod(att.ILineType);
                 object[] args = { value, att?.Name ?? "deflinename" };
                 return Sub.TextReplace(((ILine)miConstructed.Invoke(null, args)).ToString());
-#pragma warning restore CS8600
-#pragma warning restore CS8602
+
             }
             switch (Type)
             {
@@ -406,8 +405,11 @@ namespace LinePutScript.Converter
                         sb.Append(',');
                     }
                     return sb.ToString().TrimEnd(',');
+#pragma warning restore CS8600
+#pragma warning restore CS8602
                 case ConvertType.ToDictionary:
                     sb = new StringBuilder();
+#pragma warning disable CS8605 // 取消装箱可能为 null 的值。
                     foreach (DictionaryEntry obj in (IDictionary)value)
                     {
                         sb.Append(Sub.TextReplace(GetObjectString(obj.Key)));
@@ -415,6 +417,7 @@ namespace LinePutScript.Converter
                         sb.Append(obj.Value == null ? "" : Sub.TextReplace(GetObjectString(obj.Value)));
                         sb.Append("/n");
                     }
+#pragma warning restore CS8605 // 取消装箱可能为 null 的值。
                     return sb.ToString().TrimEnd('/', 'n');
 
                 default:
@@ -452,9 +455,7 @@ namespace LinePutScript.Converter
                     object[] args = { value, linename };
 #pragma warning disable CS8603 // 可能返回 null 引用。
                     return (TLine)miConstructed.Invoke(null, args);
-#pragma warning restore CS8603 // 可能返回 null 引用。
-#pragma warning restore CS8600
-#pragma warning restore CS8602
+
                 case ConvertType.Converter:
                     if (att?.Converter != null)
                         t.Info = ConvertFunction.Convert(att.Converter, value);
@@ -485,7 +486,11 @@ namespace LinePutScript.Converter
                     }
                     t.info = sb.ToString().TrimEnd(',');
                     break;
+#pragma warning restore CS8603 // 可能返回 null 引用。
+#pragma warning restore CS8600
+#pragma warning restore CS8602
                 case ConvertType.ToDictionary:
+#pragma warning disable CS8605 // 取消装箱可能为 null 的值。
                     foreach (DictionaryEntry obj in (IDictionary)value)
                     {
                         TLine newt = new TLine();
@@ -493,6 +498,7 @@ namespace LinePutScript.Converter
                         newt.info = obj.Value == null ? "" : Sub.TextReplace(GetObjectString(obj.Value));
                         t.Add(newt);
                     }
+#pragma warning restore CS8605 // 取消装箱可能为 null 的值。
                     break;
                 default:
                     t.Info = value.ToString() ?? "";

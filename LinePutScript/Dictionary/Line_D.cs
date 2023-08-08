@@ -748,11 +748,10 @@ namespace LinePutScript.Dictionary
         /// <returns>64位哈希代码</returns>
         public override long GetLongHashCode()
         {
-            int id = 5;
             long hash = GetHashCode(Name) * 2 + GetHashCode(info) * 3 + GetHashCode(text) * 4;
             foreach (ISub su in Subs.Values)
             {
-                hash += su.GetLongHashCode() * id++;
+                hash += su.GetLongHashCode();
             }
             return hash;
         }

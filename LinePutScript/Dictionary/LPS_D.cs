@@ -548,10 +548,9 @@ namespace LinePutScript.Dictionary
         /// <returns>64位哈希代码</returns>
         public long GetLongHashCode()
         {
-            int id = 2;
             long hash = 0;
             foreach (ILine li in Assemblage.Values)
-                hash += li.GetLongHashCode() * id++;
+                hash += li.GetLongHashCode();
             return hash;
         }
         /// <summary>
