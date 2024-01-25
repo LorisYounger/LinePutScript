@@ -441,15 +441,21 @@ namespace LinePutScript
             return Reptex;
         }
         /// <summary>
-        /// 获取String的HashCode(MD5)
+        /// 获取String的HashCode(SHA512)
         /// </summary>
         /// <param name="text">String</param>
         /// <returns>HashCode</returns>
         public static long GetHashCode(string text)
         {
-            using (MD5 md5 = MD5.Create())
+            using (SHA512 sha512 = SHA512.Create())
             {
-                return BitConverter.ToInt64(md5.ComputeHash(Encoding.UTF8.GetBytes(text)), 0);
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
+                byte[] hashBytes = sha512.ComputeHash(bytes);
+
+                // Take the first 8 bytes of the hash for the long value.
+                long hashValue = BitConverter.ToInt64(hashBytes, 0);
+
+                return hashValue;
             }
         }
 
