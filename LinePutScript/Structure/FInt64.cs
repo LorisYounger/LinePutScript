@@ -2,14 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
-using System.Buffers.Binary;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using fint64 = LinePutScript.Structure.FInt64;
 
 namespace LinePutScript.Structure
@@ -331,7 +326,7 @@ namespace LinePutScript.Structure
 
         // True if obj is another FInt64 with the same value as the current instance.  This is
         // a method of object equality, that only returns true if obj is also a fint64.
-        public override bool Equals([NotNullWhen(true)] object? obj)
+        public override bool Equals(object? obj)
         {
             if (obj is fint64 other)
             {
@@ -398,21 +393,11 @@ namespace LinePutScript.Structure
             return ToDouble().ToString(format, provider);
         }
 
-        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
-        {
-            return ToDouble().TryFormat(destination, out charsWritten, format, provider);
-        }
-
         public static fint64 Parse(string s) => Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null);
 
         public static fint64 Parse(string s, NumberStyles style) => Parse(s, style, provider: null);
 
         public static fint64 Parse(string s, IFormatProvider? provider) => Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider);
-
-        public static fint64 Parse(string s, NumberStyles style, IFormatProvider? provider)
-        {
-            return Parse(s.AsSpan(), style, provider);
-        }
 
         // Parses a fint64 from a String in the given style.  If
         // a NumberFormatInfo isn't specified, the current culture's
@@ -422,7 +407,7 @@ namespace LinePutScript.Structure
         // PositiveInfinity or NegativeInfinity for a number that is too
         // large or too small.
 
-        public static fint64 Parse(ReadOnlySpan<char> s, NumberStyles style = NumberStyles.Float | NumberStyles.AllowThousands, IFormatProvider? provider = null)
+        public static fint64 Parse(string s, NumberStyles style = NumberStyles.Float | NumberStyles.AllowThousands, IFormatProvider? provider = null)
         {
             if (long.TryParse(s, style, provider, out long result))
             {
@@ -438,11 +423,9 @@ namespace LinePutScript.Structure
             }
         }
 
-        public static bool TryParse([NotNullWhen(true)] string? s, out fint64 result) => TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null, out result);
+        public static bool TryParse(string? s, out fint64 result) => TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null, out result);
 
-        public static bool TryParse(ReadOnlySpan<char> s, out fint64 result) => TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null, out result);
-
-        public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out fint64 result)
+        public static bool TryParse(string? s, NumberStyles style, IFormatProvider? provider, out fint64 result)
         {
             if (s == null)
             {
@@ -457,11 +440,6 @@ namespace LinePutScript.Structure
             }
             result = res;
             return true;
-        }
-
-        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out fint64 result)
-        {
-            return TryParse(s, style, provider, out result);
         }
 
         //
@@ -547,8 +525,6 @@ namespace LinePutScript.Structure
         {
             return ((IConvertible)ToDouble()).ToDecimal(provider);
         }
-
-        public static fint64 Log2(fint64 value) => Math.Log2((double)value);
 
         //
         // IBitwiseOperators
