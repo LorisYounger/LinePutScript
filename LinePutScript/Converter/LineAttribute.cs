@@ -69,9 +69,13 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>转换结果</returns>
-        public T ConvertToLine<T>(string name, object? value, bool fourceToString = false) where T : ILine, new()
+        public T ConvertToLine<T>(string name, object? value, bool? fourceToString = null) where T : ILine, new()
         {
-            string ln = Name ?? name;           
+            if(!fourceToString.HasValue)
+            {
+                fourceToString = FourceToString;
+            }
+            string ln = Name ?? name;
             //如果为null储存空
             if (value == null)
             {
@@ -81,7 +85,7 @@ namespace LinePutScript.Converter
             }
             //自动判断
             Type = Type == ConvertType.Default ? LPSConvert.GetObjectConvertType(value.GetType(), this) : Type;
-            if (fourceToString || LPSConvert.GetObjectIsString(Type))
+            if (fourceToString == true || LPSConvert.GetObjectIsString(Type))
             {
                 T t = new T();
                 t.Name = ln;

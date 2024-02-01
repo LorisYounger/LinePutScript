@@ -194,7 +194,7 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>TLine列表</returns>
-        public static List<TLine> SerializeObjectToList<TLine>(object value, bool fourceToString = false) where TLine : ILine, new()
+        public static List<TLine> SerializeObjectToList<TLine>(object value, bool? fourceToString = null) where TLine : ILine, new()
         {
             Type type = value.GetType();
             List<TLine> list = new List<TLine>();
