@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using fint64 = LinePutScript.FInt64;
+using fint64 = LinePutScript.Structure.FInt64;
 
 #nullable enable
 
-namespace LinePutScript
+namespace LinePutScript.Structure
 {
     /// <summary>
     /// Set Object 可以储存任何类型的值 对性能进行优化
@@ -482,33 +482,15 @@ namespace LinePutScript
         public int CompareTo(ISetObject? other)
         {
             if (other == null)
-                return int.MinValue;
-            return ((IComparable)Value).CompareTo(other.Value);
-            //if (typeof(IComparable).IsAssignableFrom(Value.GetType()))
-            //{
-            //    return ((IComparable)Value).CompareTo(other.Value);
-            //}
-            //else
-            //{
-            //    return int.MaxValue;
-            //}
-            //switch (Type)
-            //{
-            //    case ObjectType.Integer:
-            //        return ((int)Value).CompareTo((int)other.Value);
-            //    case ObjectType.Integer64:
-            //    case ObjectType.DateTime:
-            //        return ((long)Value).CompareTo((int)other.Value);
-            //    case ObjectType.Double:
-            //    case ObjectType.Fint64:
-            //        return ((double)Value).CompareTo((double)other.Value);
-            //    case ObjectType.String:
-            //        return ((string)Value).CompareTo((string)other.Value);
-            //    case ObjectType.Boolean:
-            //        return ((bool)Value).CompareTo((bool)other.Value);
-            //    default:
-            //        return int.MaxValue;
-            //}            
+                return -1;
+            try
+            {
+                return ((IComparable)Value).CompareTo(other.Value);
+            }
+            catch
+            {
+                return ToString().CompareTo(other?.ToString());
+            }      
         }
         /// <summary>
         /// 比较两个 SetObject 对象差距
@@ -516,12 +498,12 @@ namespace LinePutScript
         public int CompareTo(object? obj)
         {
             if (obj == null)
-                return 1;
+                return -1;
             else if (obj.GetType().Equals(Value.GetType()))
                 return CompareTo((SetObject)obj);
             else if (typeof(IComparable).IsAssignableFrom(obj.GetType()))
                 return ((IComparable)Value).CompareTo(obj);
-            else return int.MaxValue;
+            return ToString().CompareTo(obj?.ToString());
         }
         /// <summary>
         /// 判断是否相等

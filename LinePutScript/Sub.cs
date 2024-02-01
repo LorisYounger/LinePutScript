@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using LinePutScript.Structure;
 #nullable enable
 namespace LinePutScript
 {
@@ -312,7 +313,7 @@ namespace LinePutScript
         public int CompareTo(ISub? other)
         {
             if (other == null)
-                return int.MaxValue;
+                return -1;
             int comp = Name.CompareTo(other.Name);
             if (comp != 0)
                 return comp;

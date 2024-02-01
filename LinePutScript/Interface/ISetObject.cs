@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static LinePutScript.SetObject;
-using fint64 = LinePutScript.FInt64;
+using fint64 = LinePutScript.Structure.FInt64;
 
 #nullable enable
 namespace LinePutScript

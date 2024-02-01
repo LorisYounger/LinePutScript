@@ -1,4 +1,5 @@
 ﻿using LinePutScript.Dictionary;
+using LinePutScript.Structure;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -917,14 +918,18 @@ namespace LinePutScript
         public int CompareTo(ILine? other)
         {
             if (other == null)
-                return int.MaxValue;
+                return -1;
             int comp = Name.CompareTo(other.Name);
             if (comp != 0)
                 return comp;
-            comp = other.infoComparable.CompareTo(info);
-            if (comp != 0)
-                return comp;
-            return ToString().CompareTo(other?.ToString());
+            try
+            {
+                return other.infoComparable.CompareTo(info);
+            }
+            catch
+            {
+                return ToString().CompareTo(other?.ToString());
+            }
         }
         /// <summary>
         /// 将当前line与另一个line进行比较, 判断是否内容相同

@@ -10,9 +10,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using fint64 = LinePutScript.FInt64;
+using fint64 = LinePutScript.Structure.FInt64;
 
-namespace LinePutScript
+namespace LinePutScript.Structure
 {
     /// <summary>
     /// Represents a fint64-precision floating-point number.
@@ -81,7 +81,7 @@ namespace LinePutScript
 
         public static fint64 operator *(fint64 a, fint64 b)
         {
-            return new fint64((a.m_value / 1000) * (b.m_value / 1000) / 1000);
+            return new fint64(a.m_value / 1000 * (b.m_value / 1000) / 1000);
         }
 
         public static fint64 operator /(fint64 a, fint64 b)
@@ -181,17 +181,17 @@ namespace LinePutScript
 
         public bool IsNaN()
         {
-            return this.m_value == NaN.m_value;
+            return m_value == NaN.m_value;
         }
 
         public bool IsNegativeInfinity()
         {
-            return this.m_value == NegativeInfinity.m_value;
+            return m_value == NegativeInfinity.m_value;
         }
 
         public bool IsPositiveInfinity()
         {
-            return this.m_value == PositiveInfinity.m_value;
+            return m_value == PositiveInfinity.m_value;
         }
 
         /// <summary>Represents the additive identity (0).</summary>
@@ -249,7 +249,7 @@ namespace LinePutScript
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNegative(fint64 d)
         {
-            return d < fint64.Zero;
+            return d < Zero;
         }
 
         /// <summary>Determines whether the specified value is negative infinity.</summary>
@@ -287,24 +287,23 @@ namespace LinePutScript
         {
             if (value == null)
             {
-                return 1;
+                return -1;
             }
-
             if (value is fint64 d)
             {
-                return CompareTo(value);
+                return CompareTo(d);
             }
             if (value is long longvalue)
             {
-                return this.CompareTo(FromNumberLong(longvalue));
+                return CompareTo(FromNumberLong(longvalue));
             }
             if (value is int intvalue)
             {
-                return this.CompareTo(FromNumberInt(intvalue));
+                return CompareTo(FromNumberInt(intvalue));
             }
             if (value is double doubleValue)
             {
-                return this.CompareTo(FromNumberDouble(doubleValue));
+                return CompareTo(FromNumberDouble(doubleValue));
             }
             throw new ArgumentException("Object must be a FInt64 or number");
         }
@@ -313,21 +312,21 @@ namespace LinePutScript
         public int CompareTo(fint64 value)
         {
             // 对于 NaN，我们遵循 IEEE 754 标准，认为它小于任何数（包括负无穷大）
-            if (this.IsNaN())
+            if (IsNaN())
             {
                 return -1;
             }
             // 如果 this 是正无穷大，那么它大于任何非 NaN 的数
-            if (this.IsPositiveInfinity())
+            if (IsPositiveInfinity())
             {
                 return value.IsNaN() ? 1 : -1;
             }
             // 如果 this 是负无穷大，那么它小于任何非 NaN 的数
-            if (this.IsNegativeInfinity())
+            if (IsNegativeInfinity())
             {
                 return value.IsNaN() ? -1 : 1;
             }
-            return this.m_value.CompareTo(value.m_value);
+            return m_value.CompareTo(value.m_value);
         }
 
         // True if obj is another FInt64 with the same value as the current instance.  This is
@@ -336,25 +335,25 @@ namespace LinePutScript
         {
             if (obj is fint64 other)
             {
-                if (this.IsNaN() || other.IsNaN())
+                if (IsNaN() || other.IsNaN())
                 {
                     return false; // NaN 不等于任何值，包括其自身
                 }
-                return this.m_value == other.m_value;
+                return m_value == other.m_value;
             }
             return false;
         }
         public bool Equals(fint64 other)
         {
-            if (this.IsNaN() || other.IsNaN())
+            if (IsNaN() || other.IsNaN())
             {
                 return false; // NaN 不等于任何值，包括其自身
             }
-            return this.m_value == other.m_value;
+            return m_value == other.m_value;
         }
         public override int GetHashCode()
         {
-            return this.m_value.GetHashCode();
+            return m_value.GetHashCode();
         }
 
         public static bool operator ==(fint64 a, fint64 b)

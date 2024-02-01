@@ -25,7 +25,7 @@
     <NoWarn>1701;1702;IDE0090;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\gobj.cs" />
+    <Compile Include="..\Structure\gobj.cs" Link="Structure\gobj.cs" />
     <Compile Include="..\Interface\IGetOBJ.cs" Link="Interface\IGetOBJ.cs" />
     <Compile Include="..\Interface\ILine.cs" Link="Interface\ILine.cs" />
     <Compile Include="..\Interface\ILPS.cs" Link="Interface\ILPS.cs" />
@@ -33,8 +33,9 @@
     <Compile Include="..\Interface\ISub.cs" Link="Interface\ISub.cs" />
     <Compile Include="..\Line.cs" />
     <Compile Include="..\LpsDocument.cs" />
-    <Compile Include="..\SetObject.cs" />
-    <Compile Include="..\StringStructure.cs" />
+    <Compile Include="..\Structure\SetObject.cs" Link="Structure\SetObject.cs" />
+    <Compile Include="..\Structure\StringStructure.cs" Link="Structure\StringStructure.cs" />
+    <Compile Include="..\Structure\FInt64.cs" Link="Structure\FInt64.cs" />
     <Compile Include="..\Sub.cs" />
     <Compile Include="..\Dictionary\Line_D.cs" Link="Dictionary\Line_D.cs" />
     <Compile Include="..\Dictionary\LPS_D.cs" Link="Dictionary\LPS_D.cs" />
