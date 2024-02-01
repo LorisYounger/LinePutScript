@@ -313,7 +313,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
         public ISub? FindInfo(string subinfo)
         {
-            ISub v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
+            ISub? v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
             if (v == null)
                 return default;
             else

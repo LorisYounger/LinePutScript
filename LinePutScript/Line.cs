@@ -482,7 +482,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string subName)
         {
-            ISub sub = Subs.FirstOrDefault(x => x.Name == subName);
+            ISub? sub = Subs.FirstOrDefault(x => x.Name == subName);
             if (sub == null)
             {
                 return -1;

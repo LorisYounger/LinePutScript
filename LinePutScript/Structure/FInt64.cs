@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using fint64 = LinePutScript.Structure.FInt64;
-
+#nullable enable
 namespace LinePutScript.Structure
 {
     /// <summary>

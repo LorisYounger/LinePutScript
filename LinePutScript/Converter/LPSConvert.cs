@@ -200,7 +200,7 @@ namespace LinePutScript.Converter
             List<TLine> list = new List<TLine>();
             foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                Attribute att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute? att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
@@ -208,7 +208,7 @@ namespace LinePutScript.Converter
             }
             foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                Attribute att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute? att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
@@ -581,7 +581,9 @@ namespace LinePutScript.Converter
                     return Convert.ChangeType(Sub.TextDeReplace(value), type);
                 case ConvertType.Class:
                     Line line = new Line(Sub.TextDeReplace(value));
-                    object obj = Activator.CreateInstance(type);
+                    object? obj = Activator.CreateInstance(type);
+                    if(obj == null)
+                        return null;
                     foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
                         Attribute latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
@@ -633,6 +635,8 @@ namespace LinePutScript.Converter
                         return dict;
                     case ConvertType.Class:
                         object obj = Activator.CreateInstance(type);
+                        if (obj == null)
+                            return null;
                         foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
                             LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
