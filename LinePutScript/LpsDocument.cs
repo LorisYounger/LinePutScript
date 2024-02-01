@@ -87,7 +87,7 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(IEnumerable<ILine> newLines)
         {
-            foreach (var item in newLines)
+            foreach (ILine item in newLines)
             {
                 AddLine(item);
             }
@@ -108,7 +108,7 @@ namespace LinePutScript
         /// <param name="newLines">要添加的多个Line</param>
         public void InsertRange(int index, IEnumerable<ILine> newLines)
         {
-            foreach (var item in newLines)
+            foreach (ILine item in newLines)
             {
                 InsertLine(index, item);
                 index++;
@@ -359,7 +359,7 @@ namespace LinePutScript
         {
             foreach (ILine li in Assemblage)
             {
-                var l = li.Find(subName);
+                ISub? l = li.Find(subName);
                 if (l != null)
                     return l;
             }
@@ -375,7 +375,7 @@ namespace LinePutScript
         {
             foreach (ILine li in Assemblage)
             {
-                var l = li.Find(subName, subinfo);
+                ISub? l = li.Find(subName, subinfo);
                 if (l != null)
                     return l;
             }
@@ -390,7 +390,7 @@ namespace LinePutScript
         {
             foreach (ILine li in Assemblage)
             {
-                var l = li.FindInfo(subinfo);
+                ISub? l = li.FindInfo(subinfo);
                 if (l != null)
                     return l;
             }
@@ -442,7 +442,7 @@ namespace LinePutScript
         {
             foreach (ILine li in Assemblage)
             {
-                var l = li.Seach(value);
+                ISub? l = li.Seach(value);
                 if (l != null)
                     return l;
             }
@@ -755,7 +755,7 @@ namespace LinePutScript
         /// 如果找到相同名称的line,返回line中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string lineName, double defaultvalue = default)
+        public FInt64 GetFloat(string lineName, FInt64 defaultvalue = default)
         {
             ILine? line = FindLine(lineName);
             if (line == null)
@@ -767,7 +767,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double(long)值</param>
-        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).SetFloat(value);
+        public void SetFloat(string lineName, FInt64 value) => FindorAddLine(lineName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的line
@@ -855,7 +855,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">(gflt)用于定义匹配的名称</param>
         /// <returns>获取或设置对 double 属性的line</returns>
-        public double this[gflt lineName]
+        public FInt64 this[gflt lineName]
         {
             get => GetFloat((string)lineName);
             set => SetFloat((string)lineName, value);

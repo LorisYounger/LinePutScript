@@ -36,7 +36,7 @@ namespace LinePutScript
             Name = line.Name;
             Info = (SetObject)line.Info;
             text = line.text;
-            foreach (var sub in line.ToList())
+            foreach (ISub sub in line.ToList())
             {
                 Subs.Add(sub);
             }
@@ -51,7 +51,7 @@ namespace LinePutScript
         public Line(string name, string info, string text = "", params ISub[] subs) : base(name, info)
         {
             Text = text;
-            foreach (var sub in subs)
+            foreach (ISub sub in subs)
             {
                 Subs.Add(sub);
             }
@@ -67,7 +67,7 @@ namespace LinePutScript
         public Line(string name, string info, IEnumerable<ISub> subs, string text = "") : base(name, info)
         {
             Text = text;
-            foreach (var sub in subs)
+            foreach (ISub sub in subs)
             {
                 Subs.Add(sub);
             }
@@ -111,7 +111,7 @@ namespace LinePutScript
         {
             base.Load(name, info);
             Text = text;
-            foreach (var sub in subs)
+            foreach (ISub sub in subs)
             {
                 Subs.Add(sub);
             }
@@ -127,7 +127,7 @@ namespace LinePutScript
         {
             base.Load(name, info);
             Text = text;
-            foreach (var sub in subs)
+            foreach (ISub sub in subs)
             {
                 Subs.Add(sub);
             }
@@ -142,7 +142,7 @@ namespace LinePutScript
             Info = (SetObject)line.Info;
 
             text = line.text;
-            foreach (var sub in line.ToList())
+            foreach (ISub sub in line.ToList())
             {
                 Subs.Add(sub);
             }
@@ -275,7 +275,7 @@ namespace LinePutScript
         /// <param name="newSubs">要添加的多个Sub</param>
         public void AddRange(IEnumerable<ISub> newSubs)
         {
-            foreach (var sub in newSubs)
+            foreach (ISub sub in newSubs)
             {
                 Subs.Add(sub);
             }
@@ -297,7 +297,7 @@ namespace LinePutScript
         /// <param name="newSubs">要添加的多个Sub</param>
         public void InsertRange(int index, IEnumerable<ISub> newSubs)
         {
-            foreach (var sub in newSubs)
+            foreach (ISub sub in newSubs)
             {
                 Subs.Insert(index, sub);
                 index++;
@@ -481,7 +481,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的sub的第一个元素,则为该元素的从零开始的索引; 否则为 -1</returns>
         public int IndexOf(string subName)
         {
-            var sub = Subs.FirstOrDefault(x => x.Name == subName);
+            ISub sub = Subs.FirstOrDefault(x => x.Name == subName);
             if (sub == null)
             {
                 return -1;
@@ -515,7 +515,7 @@ namespace LinePutScript
         public override string ToString()
         {
             StringBuilder str = new StringBuilder(Name);
-            var infostorestr = info.GetStoreString();
+            string infostorestr = info.GetStoreString();
             if (infostorestr != "")
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
@@ -538,7 +538,7 @@ namespace LinePutScript
         public void ToString(StringBuilder str)
         {
             str.Append('\n' + Name);
-            var infostorestr = info.GetStoreString();
+            string infostorestr = info.GetStoreString();
             if (infostorestr != "")
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
@@ -624,7 +624,7 @@ namespace LinePutScript
         /// <returns>如果找到相同名称的sub,则为True; 否则为false</returns>
         public bool GetBool(string subName)
         {
-            var sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return false;
             return sub.InfoToBoolean;
@@ -695,7 +695,7 @@ namespace LinePutScript
         /// 如果找到相同名称的sub,返回sub中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string subName, double defaultvalue = default)
+        public FInt64 GetFloat(string subName, FInt64 defaultvalue = default)
         {
             ISub? sub = Find(subName);
             if (sub == null)
@@ -707,7 +707,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double(long)值</param>
-        public void SetFloat(string subName, double value) => FindorAdd(subName).SetFloat(value);
+        public void SetFloat(string subName, FInt64 value) => FindorAdd(subName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的sub
@@ -840,7 +840,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">(gflt)用于定义匹配的名称</param>
         /// <returns>获取或设置对 double 属性的Sub</returns>
-        public double this[gflt subName]
+        public FInt64 this[gflt subName]
         {
             get => GetFloat((string)subName);
             set => SetFloat((string)subName, value);

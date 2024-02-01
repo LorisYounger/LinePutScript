@@ -37,10 +37,10 @@ namespace LinePutScript
                 if (!Single || cache == null)
                 {
                     cache = new Dictionary<string, string>();
-                    var strs = Sub.Split(getstr(), "/n");
+                    List<string> strs = Sub.Split(getstr(), "/n");
                     foreach (string str in strs)
                     {
-                        var strs2 = str.Split(new char[1] { '=' }, 2);
+                        string[] strs2 = str.Split(new char[1] { '=' }, 2);
                         if (strs2.Length == 2)
                             cache.Add(strs2[0], strs2[1]);
                     }
@@ -50,7 +50,7 @@ namespace LinePutScript
             set
             {
                 StringBuilder sb = new StringBuilder();
-                foreach (var kv in value)
+                foreach (KeyValuePair<string, string> kv in value)
                 {
                     sb.Append(kv.Key);
                     sb.Append('=');
@@ -83,7 +83,7 @@ namespace LinePutScript
         /// <param name="value">设置项目的String值</param>
         public void SetString(string key, string? value)
         {
-            var c = Cache;
+            Dictionary<string, string> c = Cache;
             if (value == null)
                 c.Remove(key);
             else
@@ -116,7 +116,7 @@ namespace LinePutScript
         {
             if (Cache.ContainsKey(key))
             {
-                var c = Cache[key].ToLower();
+                string c = Cache[key].ToLower();
                 return c == "true" || c == "1" || c == "t";
             }
             else
@@ -202,11 +202,11 @@ namespace LinePutScript
         /// 如果找到项目则返回项目中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string key, double defaultvalue = default)
+        public FInt64 GetFloat(string key, FInt64 defaultvalue = default)
         {
             if (Cache.ContainsKey(key))
             {
-                return Convert.ToInt64(Cache[key]) / 1000000000.0;
+                return FInt64.Parse(Cache[key]);
             }
             else
                 return defaultvalue;
@@ -216,7 +216,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="key">项目名称</param>
         /// <param name="value">设置项目的double(long)值</param>
-        public void SetFloat(string key, double value) => SetString(key, ((long)(value * 1000000000)).ToString());
+        public void SetFloat(string key, FInt64 value) => SetString(key, value.ToStoreString());
 
         /// <summary>
         /// 获得DateTime属性的项目
@@ -331,7 +331,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="key">(gflt)项目名称</param>
         /// <returns>获取或设置对 double 属性的项目</returns>
-        public double this[gflt key]
+        public FInt64 this[gflt key]
         {
             get => GetFloat((string)key);
             set => SetFloat((string)key, value);
@@ -397,7 +397,7 @@ namespace LinePutScript
         /// <param name="value">设置项目的String值</param>
         public void Add(string key, string value)
         {
-            var c = Cache;
+            Dictionary<string, string> c = Cache;
             if (value == null)
                 c.Remove(key);
             else
@@ -411,8 +411,8 @@ namespace LinePutScript
         /// <returns>是否删除成功</returns>
         public bool Remove(string key)
         {
-            var c = Cache;
-            var b = c.Remove(key);
+            Dictionary<string, string> c = Cache;
+            bool b = c.Remove(key);
             Cache = c;
             return b;
         }
@@ -450,7 +450,7 @@ namespace LinePutScript
         /// <param name="arrayIndex">引索</param>
         public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
         {
-            var c = Cache;
+            Dictionary<string, string> c = Cache;
             ((ICollection<KeyValuePair<string, string>>)c).CopyTo(array, arrayIndex);
             Cache = c;
         }
@@ -461,8 +461,8 @@ namespace LinePutScript
         /// <returns>是否删除成功</returns>
         public bool Remove(KeyValuePair<string, string> item)
         {
-            var c = Cache;
-            var b = ((ICollection<KeyValuePair<string, string>>)Cache).Remove(item);
+            Dictionary<string, string> c = Cache;
+            bool b = ((ICollection<KeyValuePair<string, string>>)Cache).Remove(item);
             Cache = c;
             return b;
         }
@@ -507,7 +507,7 @@ namespace LinePutScript
         /// <param name="value">如果找到项目则返回值(原始值)</param>
         public bool TryGetValue(string key, out string value)
         {
-            var ret = ((IDictionary<string, string>)Cache).TryGetValue(key, out var o);
+            bool ret = ((IDictionary<string, string>)Cache).TryGetValue(key, out string? o);
             value = o ?? "";
             return ret;
         }

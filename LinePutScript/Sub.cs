@@ -277,7 +277,7 @@ namespace LinePutScript
         /// <returns>Sub的文本格式 (info已经被转义/去除关键字)</returns>
         public override string ToString()
         {
-            var infostorestring = info.GetStoreString();
+            string infostorestring = info.GetStoreString();
             if (infostorestring == "")
                 return Name + ":|";
             return Name + '#' + infostorestring + ":|";
@@ -343,7 +343,7 @@ namespace LinePutScript
         /// <inheritdoc/>
         public double GetDouble() => info.GetDouble();
         /// <inheritdoc/>
-        public double GetFloat() => info.GetFloat();
+        public FInt64 GetFloat() => info.GetFloat();
         /// <inheritdoc/>
         public DateTime GetDateTime() => info.GetDateTime();
         /// <inheritdoc/>
@@ -357,7 +357,7 @@ namespace LinePutScript
         /// <inheritdoc/>
         public void SetDouble(double value) => info.SetDouble(value);
         /// <inheritdoc/>
-        public void SetFloat(double value) => info.SetFloat(value);
+        public void SetFloat(FInt64 value) => info.SetFloat(value);
         /// <inheritdoc/>
         public void SetDateTime(DateTime value) => info.SetDateTime(value);
         /// <inheritdoc/>

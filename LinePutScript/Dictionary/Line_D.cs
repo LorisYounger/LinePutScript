@@ -246,7 +246,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称的第一个sub,则为该sub; 否则为null</returns>
         public ISub? Find(string subName)
         {
-            if (Subs.TryGetValue(subName, out var sub))
+            if (Subs.TryGetValue(subName, out ISub? sub))
                 return sub;
             return default;
         }
@@ -258,7 +258,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称和信息的第一个Line,则为该Line; 否则为null</returns>
         public ISub? Find(string subName, string subinfo)
         {
-            if (Subs.TryGetValue(subName, out var v))
+            if (Subs.TryGetValue(subName, out ISub? v))
                 if (v.GetString().Equals(subinfo))
                     return v;
             return default;
@@ -271,7 +271,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ISub[] FindAll(string subName)
         {
-            if (!Subs.TryGetValue(subName, out var v))
+            if (!Subs.TryGetValue(subName, out ISub? v))
                 return Array.Empty<ISub>();
             else
                 return new ISub[] { v };
@@ -285,7 +285,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ISub[] FindAll(string subName, string subinfo)
         {
-            var v = Find(subName, subinfo);
+            ISub? v = Find(subName, subinfo);
             if (v == null)
                 return Array.Empty<ISub>();
             else
@@ -299,7 +299,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ISub[] FindAllInfo(string subinfo)
         {
-            var v = FindInfo(subinfo);
+            ISub? v = FindInfo(subinfo);
             if (v == null)
                 return Array.Empty<ISub>();
             else
@@ -312,7 +312,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
         public ISub? FindInfo(string subinfo)
         {
-            var v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
+            ISub v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
             if (v == null)
                 return default;
             else
@@ -378,7 +378,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称的sub,则为True; 否则为false</returns>
         public bool GetBool(string subName)
         {
-            var sub = Find(subName);
+            ISub? sub = Find(subName);
             if (sub == null)
                 return false;
             return sub.GetBoolean();
@@ -449,7 +449,7 @@ namespace LinePutScript.Dictionary
         /// 如果找到相同名称的sub,返回sub中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string subName, double defaultvalue = default)
+        public FInt64 GetFloat(string subName, FInt64 defaultvalue = default)
         {
             ISub? sub = Find(subName);
             if (sub == null)
@@ -461,7 +461,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double(long)值</param>
-        public void SetFloat(string subName, double value) => FindorAdd(subName).SetFloat(value);
+        public void SetFloat(string subName, FInt64 value) => FindorAdd(subName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的sub
@@ -674,7 +674,7 @@ namespace LinePutScript.Dictionary
         public void ToString(StringBuilder str)
         {
             str.Append('\n' + Name);
-            var infostorestr = info.GetStoreString();
+            string infostorestr = info.GetStoreString();
             if (infostorestr != "")
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
@@ -695,7 +695,7 @@ namespace LinePutScript.Dictionary
         public override string ToString()
         {
             StringBuilder str = new StringBuilder(Name);
-            var infostorestr = info.GetStoreString();
+            string infostorestr = info.GetStoreString();
             if (infostorestr != "")
                 str.Append('#' + infostorestr);
             if (str.Length != 0)
@@ -811,10 +811,14 @@ namespace LinePutScript.Dictionary
             int comp = Name.CompareTo(other.Name);
             if (comp != 0)
                 return comp;
-            comp = other.infoComparable.CompareTo(info);
-            if (comp != 0)
-                return comp;
-            return ToString().CompareTo(other?.ToString());
+            try
+            {
+                return other.infoComparable.CompareTo(info);              
+            }
+            catch
+            {
+                return ToString().CompareTo(other?.ToString());
+            }
         }
         /// <summary>
         /// 将当前line与另一个line进行比较, 判断是否内容相同
@@ -885,7 +889,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="subName">(gflt)用于定义匹配的名称</param>
         /// <returns>获取或设置对 double 属性的Sub</returns>
-        public double this[gflt subName]
+        public FInt64 this[gflt subName]
         {
             get => GetFloat((string)subName);
             set => SetFloat((string)subName, value);

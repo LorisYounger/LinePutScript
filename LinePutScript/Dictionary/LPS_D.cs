@@ -81,7 +81,7 @@ namespace LinePutScript.Dictionary
         /// <param name="newLines">要添加的多个Line</param>
         public void AddRange(IEnumerable<ILine> newLines)
         {
-            foreach (var item in newLines)
+            foreach (ILine item in newLines)
             {
                 Assemblage[item.Name] = item;
             }
@@ -202,7 +202,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ILine[] FindAllLine(string lineName)
         {
-            if (!Assemblage.TryGetValue(lineName, out var v))
+            if (!Assemblage.TryGetValue(lineName, out ILine? v))
                 return Array.Empty<ILine>();
             else
                 return new ILine[] { v };
@@ -216,7 +216,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ILine[] FindAllLine(string lineName, string lineinfo)
         {
-            var v = FindLine(lineName, lineinfo);
+            ILine? v = FindLine(lineName, lineinfo);
             if (v == null)
                 return Array.Empty<ILine>();
             else
@@ -230,7 +230,7 @@ namespace LinePutScript.Dictionary
         [Obsolete("注意:在字典中,信息是唯一的")]
         public ILine[] FindAllLineInfo(string lineinfo)
         {
-            var v = FindLineInfo(lineinfo);
+            ILine? v = FindLineInfo(lineinfo);
             if (v == null)
                 return Array.Empty<ILine>();
             else
@@ -243,7 +243,7 @@ namespace LinePutScript.Dictionary
         /// <returns>如果找到相同名称的第一个Line,则为该Line; 否则为null</returns>
         public ILine? FindLine(string lineName)
         {
-            if (Assemblage.TryGetValue(lineName, out var line))
+            if (Assemblage.TryGetValue(lineName, out ILine? line))
                 return line;
             return default;
         }
@@ -344,7 +344,7 @@ namespace LinePutScript.Dictionary
         {
             foreach (ILine li in Assemblage.Values)
             {
-                var l = li.Find(subName);
+                ISub? l = li.Find(subName);
                 if (l != null)
                     return l;
             }
@@ -360,7 +360,7 @@ namespace LinePutScript.Dictionary
         {
             foreach (ILine li in Assemblage.Values)
             {
-                var l = li.Find(subName, subinfo);
+                ISub? l = li.Find(subName, subinfo);
                 if (l != null)
                     return l;
             }
@@ -375,7 +375,7 @@ namespace LinePutScript.Dictionary
         {
             foreach (ILine li in Assemblage.Values)
             {
-                var l = li.FindInfo(subinfo);
+                ISub? l = li.FindInfo(subinfo);
                 if (l != null)
                     return l;
             }
@@ -427,7 +427,7 @@ namespace LinePutScript.Dictionary
         {
             foreach (ILine li in Assemblage.Values)
             {
-                var l = li.Seach(value);
+                ISub? l = li.Seach(value);
                 if (l != null)
                     return l;
             }
@@ -723,7 +723,7 @@ namespace LinePutScript.Dictionary
         /// 如果找到相同名称的line,返回line中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string lineName, double defaultvalue = default)
+        public FInt64 GetFloat(string lineName, FInt64 defaultvalue = default)
         {
             ILine? line = FindLine(lineName);
             if (line == null)
@@ -735,7 +735,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="value">储存进line的double(long)值</param>
-        public void SetFloat(string lineName, double value) => FindorAddLine(lineName).SetFloat(value);
+        public void SetFloat(string lineName, FInt64 value) => FindorAddLine(lineName).SetFloat(value);
 
         /// <summary>
         /// 获得DateTime属性的line
@@ -823,7 +823,7 @@ namespace LinePutScript.Dictionary
         /// </summary>
         /// <param name="lineName">(gflt)用于定义匹配的名称</param>
         /// <returns>获取或设置对 double 属性的line</returns>
-        public double this[gflt lineName]
+        public FInt64 this[gflt lineName]
         {
             get => GetFloat((string)lineName);
             set => SetFloat((string)lineName, value);

@@ -1,72 +1,251 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using fint64 = LinePutScript.FInt64;
+
 #nullable enable
 
 namespace LinePutScript
 {
     /// <summary>
-    /// Load Object 可以储存任何类型的值 对性能进行优化
+    /// Set Object 可以储存任何类型的值 对性能进行优化
     /// </summary>
     public class SetObject : ISetObject, IEquatable<SetObject>, IEquatable<string>, IEquatable<long>, IEquatable<int>, IEquatable<double>, IEquatable<DateTime>, IEquatable<bool>
     {
         /// <summary>
-        /// 储存Object的类型
+        /// 数据转换器 原类型,目标类型,转换函数
         /// </summary>
-        public enum ObjectType
+        public static Dictionary<Type, Dictionary<Type, Func<object, object>>> ConverterSetObject = GetDefaultSetObjectConverts();
+
+        /// <summary>
+        /// 默认转换器包含 int,long,double,fint64(int64),string,bool,DateTime,TimeSpan
+        /// </summary>
+        public static Dictionary<Type, Dictionary<Type, Func<object, object>>> GetDefaultSetObjectConverts()
         {
-            /// <summary>
-            /// 字符串
-            /// </summary>
-            String,
-            /// <summary>
-            /// 布尔值
-            /// </summary>
-            Boolean,
-            /// <summary>
-            /// 整数
-            /// </summary>
-            Integer,
-            /// <summary>
-            /// 整数64位
-            /// </summary>
-            Integer64,
-            /// <summary>
-            /// 浮点数
-            /// </summary>
-            Double,
-            /// <summary>
-            /// 浮点数(long)
-            /// </summary>
-            Float,
-            /// <summary>
-            /// 时间
-            /// </summary>
-            DateTime,
+            Dictionary<Type, Dictionary<Type, Func<object, object>>> result = new Dictionary<Type, Dictionary<Type, Func<object, object>>>();
+            Dictionary<Type, Func<object, object>> intTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)v },
+                { typeof(long), (object v) => (long)(int)v },
+                { typeof(DateTime), (object v) => new DateTime((int)v) },
+                { typeof(TimeSpan), (object v) => new TimeSpan((int)v) },
+                { typeof(double), (object v) => (double)(int)v },
+                { typeof(fint64), (object v) => (fint64)(int)v },
+                { typeof(string), (object v) => ((int)v).ToString() },
+                { typeof(bool), (object v) => (int)v >= 1 }
+            };
+            Dictionary<Type, Func<object, object>> longTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)(long)v },
+                { typeof(long), (object v) => (long)v },
+                { typeof(DateTime), (object v) => new DateTime((long)v) },
+                 { typeof(TimeSpan), (object v) => new TimeSpan((long)v) },
+                { typeof(double), (object v) => (double)(long)v },
+                { typeof(fint64), (object v) => (fint64)(long)v },
+                { typeof(string), (object v) => ((long)v).ToString() },
+                { typeof(bool), (object v) => (long)v >= 1 }
+            };
+            Dictionary<Type, Func<object, object>> dbeTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)(double)v },
+                { typeof(long), (object v) => (long)(double)v },
+                { typeof(DateTime), (object v) => new DateTime((long)(double)v) },
+                { typeof(TimeSpan), (object v) => new TimeSpan((long)(double)v) },
+                { typeof(double), (object v) => (double)v },
+                { typeof(fint64), (object v) => (fint64)(double)v },
+                { typeof(string), (object v) => ((double)v).ToString() },
+                { typeof(bool), (object v) => (double)v >= 1 }
+            };
+            Dictionary<Type, Func<object, object>> fltTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)(fint64)v },
+                { typeof(long), (object v) => (long)(fint64)v },
+                { typeof(DateTime), (object v) => new DateTime((long)(fint64)v) },
+                { typeof(TimeSpan), (object v) => new TimeSpan((long)(fint64)v) },
+                { typeof(double), (object v) => (double)((fint64)v) },
+                { typeof(fint64), (object v) => (fint64)v },
+                { typeof(string), (object v) => ((fint64)v).ToString() },
+                { typeof(bool), (object v) => (fint64)v >= 1 }
+            };
+            Dictionary<Type, Func<object, object>> strTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => {
+                    if (int.TryParse((string)v, out int result))
+                        return result;
+                    else if (long.TryParse((string)v, out long resultl))
+                        return (int)resultl;
+                    else if (double.TryParse((string)v, out double resultdb))
+                        return (int)resultdb;
+                    else if (DateTime.TryParseExact((string)v,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime resultd))
+                    {
+                        return (int)resultd.Ticks;
+                    }
+                    else if (DateTime.TryParse((string)v, out resultd))
+                    {
+                        return (int)resultd.Ticks;
+                    }
+                    else if(TimeSpan.TryParse((string)v, out var resultt))
+                    {
+                        return (int)resultt.Ticks;
+                    }
+                    else
+                        return 0;
+                } },
+                { typeof(long), (object v) => {
+                    if (long.TryParse((string)v, out long result))
+                        return result;
+                    else if (double.TryParse((string)v, out double resultdb))
+                        return (long)resultdb;
+                    else if (DateTime.TryParseExact((string)v,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime resultd))
+                    {
+                        return resultd.Ticks;
+                    }
+                    else if (DateTime.TryParse((string)v, out resultd))
+                    {
+                        return resultd.Ticks;
+                    }
+                    else if(TimeSpan.TryParse((string)v, out var resultt))
+                    {
+                        return resultt.Ticks;
+                    }
+                    else
+                        return 0;} },
+                { typeof(DateTime), (object v) => {
+                    if (long.TryParse((string)v, out long r))
+                    {
+                        return new DateTime(r);
+                    }
+                    else if (DateTime.TryParseExact((string)v,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                    {
+                        return result;
+                    }
+                    else if (DateTime.TryParse((string)v, out result))
+                    {
+                        return result;
+                    }
+                    else
+                    {
+                        return DateTime.MinValue;
+                    }
+                } },
+                { typeof(TimeSpan), (object v) => {
+                    if (long.TryParse((string)v, out long r))
+                    {
+                        return new TimeSpan(r);
+                    }
+                    else if (TimeSpan.TryParse((string)v, out var result))
+                    {
+                        return result;
+                    }
+                    else
+                    {
+                        return TimeSpan.MinValue;
+                    }
+                } },
+                { typeof(double), (object v) => {
+                    if (double.TryParse((string)v, out double result))
+                        return result;
+                    else
+                        return 0;}},
+                { typeof(fint64), (object v) => {return fint64.Parse((string)v);
+                } },
+                { typeof(string), (object v) => (string)v },
+                { typeof(bool), (object v) => {
+                    switch (((string)v).ToLower())
+                    {
+                        case "t":
+                        case "true":
+                        case "1":
+                            return true;
+                        default:
+                            return false;
+                    }} }
+            };
+            Dictionary<Type, Func<object, object>> boolTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (bool)v ? 1 : 0 },
+                { typeof(long), (object v) => (bool)v ? 1 : 0 },
+                { typeof(DateTime), (object v) => (bool)v ? DateTime.MaxValue : DateTime.MinValue },
+                { typeof(TimeSpan), (object v) => (bool)v ? TimeSpan.MaxValue : TimeSpan.MinValue },
+                { typeof(double), (object v) => (bool)v ? 1 : 0 },
+                { typeof(fint64), (object v) => (bool)v ? 1 : 0 },
+                { typeof(string), (object v) => ((bool)v).ToString() },
+                { typeof(bool), (object v) => (bool)v }
+            };
+            Dictionary<Type, Func<object, object>> dtTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)((DateTime)v).Ticks },
+                { typeof(long), (object v) => ((DateTime)v).Ticks },
+                { typeof(DateTime), (object v) => (DateTime)v },
+                { typeof(TimeSpan), (object v) => new DateTime(((TimeSpan)v).Ticks) },
+                { typeof(double), (object v) => ((DateTime)v).Ticks },
+                { typeof(fint64), (object v) => ((DateTime)v).Ticks },
+                { typeof(string), (object v) => ((DateTime)v).ToString("yyyy-MM-dd HH:mm:ss") },
+                { typeof(bool), (object v) => ((DateTime)v).Ticks >= 1 }
+            };
+            Dictionary<Type, Func<object, object>> tsTo = new Dictionary<Type, Func<object, object>>
+            {
+                { typeof(int), (object v) => (int)((TimeSpan)v).Ticks },
+                { typeof(long), (object v) => ((TimeSpan)v).Ticks },
+                { typeof(DateTime), (object v) => new DateTime(((TimeSpan)v).Ticks) },
+                { typeof(TimeSpan), (object v) => (TimeSpan)v },
+                { typeof(double), (object v) => ((TimeSpan)v).Ticks },
+                { typeof(fint64), (object v) => ((TimeSpan)v).Ticks },
+                { typeof(string), (object v) => ((TimeSpan)v).ToString() },
+                { typeof(bool), (object v) => ((TimeSpan)v).Ticks >= 1 }
+            };
+            result.Add(typeof(int), intTo);
+            result.Add(typeof(long), longTo);
+            result.Add(typeof(double), dbeTo);
+            result.Add(typeof(fint64), fltTo);
+            result.Add(typeof(string), strTo);
+            result.Add(typeof(bool), boolTo);
+            result.Add(typeof(DateTime), dtTo);
+            result.Add(typeof(TimeSpan), tsTo);
+            return result;
         }
         /// <summary>
-        /// 类型
+        /// 数据转换储存格式 原类型,转换函数
         /// </summary>
-        public ObjectType Type;
-        private dynamic[] objectvalue = new dynamic[7];
+        public static Dictionary<Type, Func<object, string>> ConverterSetObjectToStoreString = GetDefaultSetObjectStoreStringConverts();
+
+        public static Dictionary<Type, Func<object, string>> GetDefaultSetObjectStoreStringConverts()
+        {
+            Dictionary<Type, Func<object, string>> result = new Dictionary<Type, Func<object, string>>
+            {
+                { typeof(int), (object v) => ((int)v).ToString() },
+                { typeof(long), (object v) => ((long)v).ToString() },
+                { typeof(DateTime), (object v) => ((DateTime)v).Ticks.ToString() },
+                { typeof(TimeSpan), (object v) => ((TimeSpan)v).Ticks.ToString() },
+                { typeof(double), (object v) => ((double)v).ToString() },
+                { typeof(fint64), (object v) => ((fint64)v).ToStoreString() },
+                { typeof(string), (object v) => (string)v },
+                { typeof(bool), (object v) => ((bool)v).ToString() }
+            };
+            return result;
+        }
         /// <summary>
         /// 储存的数据
         /// </summary>
-        public dynamic Value
-        {
-            get => objectvalue[(int)Type];
-            set => objectvalue[(int)Type] = value;
-        }
+        public object Value { get; set; }
+        dynamic ISetObject.Value { get => Value; set => Value = value; }
         #region 构造函数
         /// <summary>
         /// 新建 SetObject: string
         /// </summary>
         public SetObject()
         {
-            Type = ObjectType.String;
-            this.Value = "";
+            Value = "";
+        }
+        /// <summary>
+        /// 新建 SetObject: string
+        /// </summary>
+        public SetObject(object value)
+        {
+            Value = value;
         }
         /// <summary>
         /// 新建 SetObject: string
@@ -74,7 +253,6 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(string value)
         {
-            Type = ObjectType.String;
             this.Value = value;
         }
 
@@ -84,7 +262,6 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(long value)
         {
-            Type = ObjectType.Integer64;
             this.Value = value;
         }
 
@@ -94,7 +271,6 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(int value)
         {
-            Type = ObjectType.Integer;
             this.Value = value;
         }
 
@@ -104,7 +280,6 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(double value)
         {
-            Type = ObjectType.Double;
             this.Value = value;
         }
 
@@ -112,10 +287,9 @@ namespace LinePutScript
         /// 新建 SetObject: String
         /// </summary>
         /// <param name="value">值</param>
-        public SetObject(float value)
+        public SetObject(fint64 value)
         {
-            Type = ObjectType.Float;
-            this.Value = (double)value;
+            this.Value = value;
         }
 
         /// <summary>
@@ -124,7 +298,6 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(DateTime value)
         {
-            Type = ObjectType.DateTime;
             this.Value = value;
         }
         /// <summary>
@@ -133,246 +306,74 @@ namespace LinePutScript
         /// <param name="value">值</param>
         public SetObject(bool value)
         {
-            Type = ObjectType.Boolean;
             this.Value = value;
         }
         #endregion
 
         #region 转换函数
         /// <summary>
+        /// 转换成指定类型
+        /// </summary>
+        /// <param name="type">指定类型呢</param>
+        public dynamic? GetObjectByType(Type type)
+        {
+            if (type.IsAssignableFrom(Value.GetType()))
+            {
+                return Value;
+            }
+            if (ConverterSetObject.TryGetValue(Value.GetType(), out Dictionary<Type, Func<object, object>>? conv))
+            {
+                if (conv?.TryGetValue(type, out Func<object, object>? fun) == true)
+                {
+                    return fun(Value);
+                }
+            }
+            return null;
+        }
+        /// <summary>
         /// 转换成为储存String类型
         /// </summary>
         public string GetStoreString()
         {
-            switch (Type)
+            if (ConverterSetObjectToStoreString.TryGetValue(Value.GetType(), out Func<object, string>? fun))
             {
-                case ObjectType.Integer:
-                    return ((int)Value).ToString();
-                case ObjectType.Integer64:
-                    return ((long)Value).ToString();
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).Ticks.ToString();
-                case ObjectType.Double:
-                    return ((double)Value).ToString();
-                case ObjectType.Float:
-                    return ((long)((double)Value * 1000000000)).ToString();
-                case ObjectType.String:
-                    return (string)Value;
-                case ObjectType.Boolean:
-                    return ((bool)Value).ToString();
-                default:
-                    return String.Empty;
+                return fun?.Invoke(Value) ?? string.Empty;
             }
+            return string.Empty;
         }
         /// <summary>
         /// 转换成 String 类型
         /// </summary>
-        public string GetString()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return ((int)Value).ToString();
-                case ObjectType.Integer64:
-                    return ((long)Value).ToString();
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return ((double)Value).ToString();
-                case ObjectType.String:
-                    return (string)Value;
-                case ObjectType.Boolean:
-                    return ((bool)Value).ToString();
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).ToString("yyyy-MM-dd HH:mm:ss");
-                default:
-                    return String.Empty;
-            }
-        }
+        public string GetString() => GetObjectByType(typeof(string)) as string ?? string.Empty;
         /// <summary>
         /// 转换成 long 类型
         /// </summary>
-        public long GetInteger64()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return (long)Value;
-                case ObjectType.Integer64:
-                    return (long)Value;
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).Ticks;
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return (long)(double)Value;
-                case ObjectType.String:
-                    if (long.TryParse((string)Value, out long result))                    
-                        return result;                    
-                    else                    
-                        return 0;                    
-                case ObjectType.Boolean:
-                    return (bool)Value ? 1 : 0;
-                default:
-                    return 0;
-            }
-        }
+        public long GetInteger64() => GetObjectByType(typeof(long)) as long? ?? 0;
         /// <summary>
         /// 转换成 int 类型
         /// </summary>
-        public int GetInteger()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return (int)Value;
-                case ObjectType.Integer64:
-                    return (int)(long)Value;
-                case ObjectType.DateTime:
-                    return (int)((DateTime)Value).Ticks;
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return (int)(double)Value;
-                case ObjectType.String:
-                    if (int.TryParse((string)Value, out var result))
-                        return result;
-                    else
-                        return 0;
-                case ObjectType.Boolean:
-                    return (bool)Value ? 1 : 0;
-                default:
-                    return 0;
-            }
-        }
+        public int GetInteger() => GetObjectByType(typeof(int)) as int? ?? 0;
         /// <summary>
         /// 转换成 double 类型
         /// </summary>
-        public double GetDouble()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return (int)Value;
-                case ObjectType.Integer64:
-                    return (long)Value;
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).Ticks;
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return (double)Value;
-                case ObjectType.String:
-                    if (double.TryParse((string)Value, out var result))
-                        return result;
-                    else
-                        return 0;
-                case ObjectType.Boolean:
-                    return (bool)Value ? 1 : 0;
-                default:
-                    return 0;
-            }
-        }
+        public double GetDouble() => GetObjectByType(typeof(double)) as double? ?? 0;
         /// <summary>
         /// 转换成 double(int64) 类型
         /// </summary>
-        public double GetFloat()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return (int)Value;
-                case ObjectType.Integer64:
-                    return (long)Value;
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).Ticks;
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return (double)Value;
-                case ObjectType.String:
-                    if (long.TryParse((string)Value, out long result))
-                    {
-                        return result / 1000000000.0;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                case ObjectType.Boolean:
-                    return (bool)Value ? 1 : 0;
-                default:
-                    return 0;
-            }
-        }
+        public fint64 GetFloat() => GetObjectByType(typeof(fint64)) as fint64? ?? 0;
         /// <summary>
         /// 转换成 DateTime 类型
         /// </summary>
-        public DateTime GetDateTime()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                    return new DateTime((int)Value);
-                case ObjectType.Integer64:
-                    return new DateTime((long)Value);
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return new DateTime((long)(double)Value);
-                case ObjectType.String:
-                    if (long.TryParse((string)Value, out long r))
-                    {
-                        return new DateTime(r);
-                    }
-                    else if (DateTime.TryParse((string)Value, out DateTime result))
-                    {
-                        return result;
-                    }
-                    else
-                    {
-                        return DateTime.MinValue;
-                    }
-                case ObjectType.Boolean:
-                    return (bool)Value ? DateTime.MaxValue : DateTime.MinValue;
-                case ObjectType.DateTime:
-                    return (DateTime)Value;
-                default:
-                    return new DateTime(0);
-            }
-        }
+        public DateTime GetDateTime() => GetObjectByType(typeof(DateTime)) as DateTime? ?? DateTime.MinValue;
         /// <summary>
         /// 转换成 bool 类型
         /// </summary>
-        public bool GetBoolean()
-        {
-            switch (Type)
-            {
-                case ObjectType.Integer:
-                case ObjectType.Integer64:
-                    return (long)Value >= 1;
-                case ObjectType.DateTime:
-                    return ((DateTime)Value).Ticks >= 1;
-                case ObjectType.Double:
-                case ObjectType.Float:
-                    return (double)Value >= 1;
-                case ObjectType.String:
-                    switch (((string)Value).ToLower())
-                    {
-                        case "t":
-                        case "":
-                        case "true":
-                        case "1":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case ObjectType.Boolean:
-                    return (bool)Value;
-                default:
-                    return false;
-            }
-        }
+        public bool GetBoolean() => GetObjectByType(typeof(bool)) as bool? ?? false;
         /// <summary>
         /// 设置 string 值
         /// </summary>
         public void SetString(string value)
         {
-            Type = ObjectType.String;
             this.Value = value;
         }
         /// <summary>
@@ -380,7 +381,6 @@ namespace LinePutScript
         /// </summary>
         public void SetInteger(int value)
         {
-            Type = ObjectType.Integer;
             this.Value = value;
         }
         /// <summary>
@@ -388,7 +388,6 @@ namespace LinePutScript
         /// </summary>
         public void SetInteger64(long value)
         {
-            Type = ObjectType.Integer64;
             this.Value = value;
         }
         /// <summary>
@@ -396,19 +395,13 @@ namespace LinePutScript
         /// </summary>
         public void SetDouble(double value)
         {
-            if (Type == ObjectType.Float)
-            {
-                this.Value = value;
-            }
-            Type = ObjectType.Double;
             this.Value = value;
         }
         /// <summary>
-        /// 设置 float 值
+        /// 设置 fint64 值
         /// </summary>
-        public void SetFloat(double value)
+        public void SetFloat(fint64 value)
         {
-            Type = ObjectType.Float;
             this.Value = value;
         }
         /// <summary>
@@ -416,7 +409,6 @@ namespace LinePutScript
         /// </summary>
         public void SetDateTime(DateTime value)
         {
-            Type = ObjectType.DateTime;
             this.Value = value;
         }
         /// <summary>
@@ -424,7 +416,6 @@ namespace LinePutScript
         /// </summary>
         public void SetBoolean(bool value)
         {
-            Type = ObjectType.Boolean;
             this.Value = value;
         }
         #endregion
@@ -509,7 +500,7 @@ namespace LinePutScript
             //    case ObjectType.DateTime:
             //        return ((long)Value).CompareTo((int)other.Value);
             //    case ObjectType.Double:
-            //    case ObjectType.Float:
+            //    case ObjectType.Fint64:
             //        return ((double)Value).CompareTo((double)other.Value);
             //    case ObjectType.String:
             //        return ((string)Value).CompareTo((string)other.Value);
@@ -525,8 +516,8 @@ namespace LinePutScript
         public int CompareTo(object? obj)
         {
             if (obj == null)
-                return int.MinValue;
-            else if (obj.GetType().Equals(GetType()))
+                return 1;
+            else if (obj.GetType().Equals(Value.GetType()))
                 return CompareTo((SetObject)obj);
             else if (typeof(IComparable).IsAssignableFrom(obj.GetType()))
                 return ((IComparable)Value).CompareTo(obj);
@@ -539,23 +530,19 @@ namespace LinePutScript
         /// <returns></returns>
         public override bool Equals(object? other)
         {
-            switch (other?.GetType().Name)
+            if (other == null)
             {
-                case "String":
-                    return GetString() == (string)other;
-                case "Int32":
-                    return GetInteger() == (int)other;
-                case "Int64":
-                    return GetInteger64() == (long)other;
-                case "Double":
-                    return GetDouble() == (double)other;
-                case "Boolean":
-                    return GetBoolean() == (bool)other;
-                case "DateTime":
-                    return GetDateTime() == (DateTime)other;
-                default:
-                    return false;
+                return false;
             }
+            if (other.GetType().IsAssignableFrom(Value.GetType()))
+            {
+                return Value.Equals(other);
+            }
+            if (other is ISetObject)
+            {
+                return Equals((ISetObject)other);
+            }
+            return false;
         }
         /// <summary>
         /// 比较两个 SetObject 对象是否相等
@@ -577,25 +564,11 @@ namespace LinePutScript
         /// <returns></returns>
         public object Clone()
         {
-            switch (Type)
+            if (Value is ICloneable)
             {
-                case ObjectType.Integer:
-                    return new SetObject((int)Value);
-                case ObjectType.Integer64:
-                    return new SetObject((long)Value);
-                case ObjectType.DateTime:
-                    return new SetObject((DateTime)Value);
-                case ObjectType.Double:
-                    return new SetObject((double)Value);
-                case ObjectType.Float:
-                    return new SetObject((float)Value);
-                case ObjectType.String:
-                    return new SetObject((string)Value);
-                case ObjectType.Boolean:
-                    return new SetObject((bool)Value);
-                default:
-                    return new SetObject("");
+                return new SetObject(((ICloneable)Value).Clone());
             }
+            return new SetObject(Value);
         }
         /// <summary>
         /// 比较 SetObject 和 string 是否相等

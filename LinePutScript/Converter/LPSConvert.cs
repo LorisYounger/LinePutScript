@@ -41,7 +41,7 @@ namespace LinePutScript.Converter
             /// <returns>String:Info</returns>
             public static string Convert(Type type, dynamic? value)
             {
-                var mi = type.GetMethod("Convert");
+                MethodInfo? mi = type.GetMethod("Convert");
                 object?[] args = { value };
                 return (string)(mi?.Invoke(Activator.CreateInstance(type), args) ?? "");
             }
@@ -53,7 +53,7 @@ namespace LinePutScript.Converter
             /// <returns>要转换的值</returns>
             public static dynamic? ConvertBack(Type type, string info)
             {
-                var mi = type.GetMethod("ConvertBack");
+                MethodInfo? mi = type.GetMethod("ConvertBack");
                 object[] args = { info };
                 return mi?.Invoke(Activator.CreateInstance(type), args);
             }
@@ -150,7 +150,7 @@ namespace LinePutScript.Converter
             /// </summary>
             ToString,
             /// <summary>
-            /// 浮点数(long): *1000000000 ConvertToInt64
+            /// 浮点数(long): *Anchor ConvertToInt64
             /// </summary>
             ToFloat,
             /// <summary>
@@ -195,19 +195,19 @@ namespace LinePutScript.Converter
         /// <returns>TLine列表</returns>
         public static List<TLine> SerializeObjectToList<TLine>(object value, bool fourceToString = false) where TLine : ILine, new()
         {
-            var type = value.GetType();
-            var list = new List<TLine>();
-            foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            Type type = value.GetType();
+            List<TLine> list = new List<TLine>();
+            foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                var att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
                 }
             }
-            foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                var att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
@@ -230,9 +230,9 @@ namespace LinePutScript.Converter
         /// <returns>LPS</returns>
         public static TLPS SerializeObjectToLPS<TLPS, TLine>(object value, bool fourceToString = false) where TLPS : ILPS, new() where TLine : ILine, new()
         {
-            var list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
+            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
             TLPS LPS = new TLPS();
-            foreach (var item in list)
+            foreach (TLine item in list)
             {
                 LPS.AddLine(item);
             }
@@ -252,10 +252,10 @@ namespace LinePutScript.Converter
         /// <returns>Line</returns>
         public static TLine SerializeObjectToLine<TLine>(object value, string linename, bool fourceToString = true) where TLine : ILine, new()
         {
-            var list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
+            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
             TLine Line = new TLine();
             Line.Name = linename;
-            foreach (var item in list)
+            foreach (TLine item in list)
             {
                 Line.Add(item);
             }
@@ -273,9 +273,9 @@ namespace LinePutScript.Converter
         /// <returns>LPS</returns>
         public static LpsDocument SerializeObject(object value, bool fourceToString = false)
         {
-            var list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
+            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
             LpsDocument LPS = new LpsDocument();
-            foreach (var item in list)
+            foreach (Line item in list)
             {
                 LPS.AddLine(item);
             }
@@ -294,10 +294,10 @@ namespace LinePutScript.Converter
         /// <returns>Line</returns>
         public static Line SerializeObject(object value, string linename, bool fourceToString = true)
         {
-            var list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
+            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
             Line Line = new Line();
             Line.Name = linename;
-            foreach (var item in list)
+            foreach (Line item in list)
             {
                 Line.Add(item);
             }
@@ -388,7 +388,7 @@ namespace LinePutScript.Converter
                 case ConvertType.ToDateTime:
                     return ((DateTime)value).Ticks.ToString();
                 case ConvertType.ToFloat:
-                    return (((double)value) * 1000000000).ToString("f0");
+                    return FInt64.FromObject(value).ToStoreString();
                 case ConvertType.ToArray:
                     StringBuilder sb = new StringBuilder();
                     foreach (object obj in (Array)value)
@@ -435,7 +435,7 @@ namespace LinePutScript.Converter
         /// <returns></returns>
         public static TLine GetObjectLine<TLine>(object? value, string linename, ConvertType type = ConvertType.Default, LineAttribute? att = null) where TLine : ILine, new()
         {
-            var name = att?.Name == null ? linename : att.Name;
+            string name = att?.Name == null ? linename : att.Name;
             TLine t = new TLine();
             t.Name = name;
             //如果为null储存空
@@ -466,7 +466,7 @@ namespace LinePutScript.Converter
                     t.Info = ((DateTime)value).Ticks.ToString();
                     break;
                 case ConvertType.ToFloat:
-                    t.Info = (((double)value) * 1000000000).ToString("f0");
+                    t.Info = FInt64.FromObject(value).ToStoreString();
                     break;
                 case ConvertType.ToArray:
                     StringBuilder sb = new StringBuilder();
@@ -532,14 +532,14 @@ namespace LinePutScript.Converter
             {
                 case ConvertType.ToList:
                     IList list = (IList)Activator.CreateInstance(type);//type.GetConstructor(Array.Empty<Type>()).Invoke(null, null);
-                    var subtype = type.GetGenericArguments().First();
+                    Type? subtype = type.GetGenericArguments().First();
                     foreach (string str in value.Split(','))
                     {
                         list.Add(GetStringObject(Sub.TextDeReplace(str), subtype));
                     }
                     return list;
                 case ConvertType.ToArray:
-                    var strs = value.Split(',');
+                    string[] strs = value.Split(',');
                     subtype = type.GetElementType();
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
                     Array arr = Array.CreateInstance(subtype, strs.Length);
@@ -550,12 +550,12 @@ namespace LinePutScript.Converter
                     }
                     return arr;
                 case ConvertType.ToDictionary:
-                    var subtypes = type.GetGenericArguments();
+                    Type[] subtypes = type.GetGenericArguments();
                     IDictionary dict = (IDictionary)Activator.CreateInstance(type);
                     foreach (string str in value.Replace("/n", "\n").Split('\n'))
                     {
                         strs = str.Split('=');
-                        var k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0]);
+                        object? k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0]);
                         if (k != null)
                             dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1]));
                     }
@@ -567,7 +567,7 @@ namespace LinePutScript.Converter
                     }
                     return Convert.ToDateTime(Sub.TextDeReplace(value));
                 case ConvertType.ToFloat:
-                    return double.Parse(value) / 1000000000;
+                    return FInt64.Parse(value);
                 case ConvertType.Converter:
                     if (att?.Converter != null)
                         return ConvertFunction.ConvertBack(att.Converter, Sub.TextDeReplace(value));
@@ -581,24 +581,24 @@ namespace LinePutScript.Converter
                 case ConvertType.Class:
                     Line line = new Line(Sub.TextDeReplace(value));
                     object obj = Activator.CreateInstance(type);
-                    foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        Attribute latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                         if (latt != null && latt is LineAttribute la)
                         {
-                            var name = la.Name ?? mi.Name;
-                            var s = line.Find(name);
+                            string name = la.Name ?? mi.Name;
+                            ISub? s = line.Find(name);
                             if (s != null)
                                 mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
                         }
                     }
-                    foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        var latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        Attribute latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
                         if (latt != null && latt is LineAttribute la)
                         {
-                            var name = la.Name ?? mi.Name;
-                            var s = line.Find(name);
+                            string name = la.Name ?? mi.Name;
+                            ISub? s = line.Find(name);
                             if (s != null)
                                 mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
                         }
@@ -621,23 +621,23 @@ namespace LinePutScript.Converter
                 switch (ct)
                 {
                     case ConvertType.ToDictionary:
-                        var subtypes = type.GetGenericArguments();
+                        Type[] subtypes = type.GetGenericArguments();
                         IDictionary dict = (IDictionary)Activator.CreateInstance(type);
                         foreach (ISub s in line)
                         {
-                            var k = GetStringObject(s.Name, subtypes[0]);
+                            object? k = GetStringObject(s.Name, subtypes[0]);
                             if (k != null)
                                 dict.Add(k, GetStringObject(s.info, subtypes[1]));
                         }
                         return dict;
                     case ConvertType.Class:
                         object obj = Activator.CreateInstance(type);
-                        foreach (var mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            var latt = mi.GetCustomAttribute<LineAttribute>();
+                            LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
                             if (latt != null)
                             {
-                                var name = latt.Name ?? mi.Name;
+                                string name = latt.Name ?? mi.Name;
                                 ISub? s;
                                 if (latt.IgnoreCase)
                                 {
@@ -650,12 +650,12 @@ namespace LinePutScript.Converter
                                     mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: latt));
                             }
                         }
-                        foreach (var mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            var latt = mi.GetCustomAttribute<LineAttribute>();
+                            LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
                             if (latt != null)
                             {
-                                var name = latt.Name ?? mi.Name;
+                                string name = latt.Name ?? mi.Name;
                                 ISub? s;
                                 if (latt.IgnoreCase)
                                 {
@@ -706,7 +706,7 @@ namespace LinePutScript.Converter
         /// <returns>生成的对象</returns>
         public static T? DeserializeObject<T>(ILine[] value) where T : new()
         {
-            var l = new Line();
+            Line l = new Line();
             l.AddRange(value);
             return DeserializeObject<T>(l);
         }

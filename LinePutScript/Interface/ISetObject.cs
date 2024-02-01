@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static LinePutScript.SetObject;
+using fint64 = LinePutScript.FInt64;
+
 #nullable enable
 namespace LinePutScript
 {
@@ -41,7 +43,7 @@ namespace LinePutScript
         /// <summary>
         /// 转换成 double(int64) 类型
         /// </summary>
-        public double GetFloat();
+        public fint64 GetFloat();
         /// <summary>
         /// 转换成 DateTime 类型
         /// </summary>
@@ -69,7 +71,7 @@ namespace LinePutScript
         /// <summary>
         /// 设置 float 值
         /// </summary>
-        public void SetFloat(double value);
+        public void SetFloat(fint64 value);
         /// <summary>
         /// 设置 DateTime 值
         /// </summary>

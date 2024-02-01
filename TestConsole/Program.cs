@@ -1,9 +1,12 @@
 ﻿using LinePutScript;
 using LinePutScript.Converter;
 using LinePutScript.Dictionary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using static LinePutScript.Converter.LPSConvert;
@@ -26,6 +29,14 @@ namespace TestConsole
                     case "":
                     case "test":
                         Text();
+                        break;
+                    case "flongspeed":
+                    case "fs":
+                        flongspeed();
+                        break;
+                    case "flongtest":
+                    case "ft":
+                        flongtest();
                         break;
                     case "addline":
                         lps.AddLine(new Line(order[1]));
@@ -157,7 +168,7 @@ namespace TestConsole
             lps.Remove("str");
             int hs3 = lps.GetHashCode();
             Console.WriteLine("HS测试2:\t" + (hs != hs3));
-            lps.Insert(0,tmr);
+            lps.Insert(0, tmr);
             int hs4 = lps.GetHashCode();
             Console.WriteLine("HS测试3:\t" + (hs == hs4)); //+ lps.ToString());
             lps.Remove(tmr);
@@ -300,7 +311,329 @@ namespace TestConsole
             /// 物品图片
             /// </summary>
             [Line(ignoreCase: true)]
-            public string Image;
+            public string? Image;
+        }
+
+        static void flongspeed()
+        {
+            // 创建一些测试值
+            FInt64 fI64A = FInt64.FromNumberDouble(1.23);
+            FInt64 fI64B = FInt64.FromNumberDouble(4.56);
+            double doubleA = 1.23;
+            double doubleB = 4.56;
+            long longA = fI64A.m_value;
+            long longB = fI64B.m_value;
+            db2 dbA = new db2(doubleA);
+            db2 dbB = new db2(doubleB);
+            int intA = 123;
+            int intB = 456;
+            float floatA = 1.23f;
+            float floatB = 4.56f;
+            decimal decimalA = 1.23m;
+            decimal decimalB = 4.56m;
+            BigInteger bigIntegerA = new BigInteger(123);
+            BigInteger bigIntegerB = new BigInteger(456);
+            FInt64 fdoubleA = new FInt64(doubleA);
+            FInt64 fdoubleB = new FInt64(doubleB);
+            SetObject setA = new SetObject(doubleA);
+            SetObject setB = new SetObject(doubleB);
+
+            // 创建一个 Stopwatch 对象来测量时间
+            Stopwatch stopwatch = new Stopwatch();
+
+            // 测试 FInt64 的速度
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                FInt64 result = fI64A + fI64B;
+                result = fI64A - fI64B;
+                result = fI64A * fI64B;
+                result = fI64A / fI64B;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"fI64 time: {stopwatch.ElapsedMilliseconds} ms");
+
+            // 重置 Stopwatch
+            stopwatch.Reset();
+
+            // 测试 double 的速度
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                double result = doubleA + doubleB;
+                result = doubleA - doubleB;
+                result = doubleA * doubleB;
+                result = doubleA / doubleB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"double time: {stopwatch.ElapsedMilliseconds} ms");
+
+            // 重置 Stopwatch
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                long result = longA + longB;
+                result = longA - longB;
+                result = longA * longB;
+                result = longA / longB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"long time: {stopwatch.ElapsedMilliseconds} ms");
+
+            // 重置 Stopwatch
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                db2 result = dbA + dbB;
+                result = dbA - dbB;
+                result = dbA * dbB;
+                result = dbA / dbB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"db2 time: {stopwatch.ElapsedMilliseconds} ms");
+            // 重置 Stopwatch
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                int result = intA + intB;
+                result = intA - intB;
+                result = intA * intB;
+                result = intA / intB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"int time: {stopwatch.ElapsedMilliseconds} ms");
+            // 重置 Stopwatch
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                float result = floatA + floatB;
+                result = floatA - floatB;
+                result = floatA * floatB;
+                result = floatA / floatB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"float time: {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                decimal result = decimalA + decimalB;
+                result = decimalA - decimalB;
+                result = decimalA * decimalB;
+                result = decimalA / decimalB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"decimal time: {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                BigInteger result = bigIntegerA + bigIntegerB;
+                result = bigIntegerA - bigIntegerB;
+                result = bigIntegerA * bigIntegerB;
+                result = bigIntegerA / bigIntegerB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"BigInteger time: {stopwatch.ElapsedMilliseconds} ms");
+
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                FInt64 result = fdoubleA + fdoubleB;
+                result = fdoubleA - fdoubleB;
+                result = fdoubleA * fdoubleB;
+                result = fdoubleA / fdoubleB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"FInt64 time: {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Reset();
+            stopwatch.Start();
+            for (int i = 0; i < 100000000; i++)
+            {
+                SetObject result = setA + setB;
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"SetObject time: {stopwatch.ElapsedMilliseconds} ms");
+
+        }
+        public readonly struct db2
+        {
+            public readonly double value = 0;
+            public db2(double value)
+            {
+                this.value = value;
+            }
+            public static db2 operator +(db2 a, db2 b)
+            {
+                return new db2(a.value + b.value);
+            }
+            public static db2 operator -(db2 a, db2 b)
+            {
+                return new db2(a.value - b.value);
+            }
+            public static db2 operator *(db2 a, db2 b)
+            {
+                return new db2(a.value * b.value);
+            }
+            public static db2 operator /(db2 a, db2 b)
+            {
+                return new db2(a.value / b.value);
+            }
+        }
+        static void flongtest()
+        {
+            Console.WriteLine("欢迎使用 FInt64 测试控制台");
+            Console.WriteLine("测试FI64");
+            for (int i = 0; i < 10; i++)
+            {
+                // 创建一些测试值
+                Random random = new Random();
+                double doubleA = random.NextDouble() * random.Next(-1000, 1000);
+                double doubleB = random.NextDouble() * random.Next(-1000, 1000);
+                FInt64 fdoubleA = new FInt64(doubleA);
+                FInt64 fdoubleB = new FInt64(doubleB);
+
+                // 测试加法
+                FInt64 fdoubleAddResult = fdoubleA + fdoubleB;
+                double doubleAddResult = doubleA + doubleB;
+                if (Math.Abs((double)(fdoubleAddResult - doubleAddResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"ADD FInt64 = {fdoubleAddResult}, double = {doubleAddResult} (Error)");
+                }
+                // 测试减法
+                FInt64 fdoubleSubResult = fdoubleA - fdoubleB;
+                double doubleSubResult = doubleA - doubleB;
+                if (Math.Abs((double)(fdoubleSubResult - doubleSubResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"SUB FInt64 = {fdoubleSubResult}, double = {doubleSubResult} (Error)");
+                }
+                // 测试乘法
+                FInt64 fdoubleMulResult = fdoubleA * fdoubleB;
+                double doubleMulResult = doubleA * doubleB;
+                if (Math.Abs((double)(fdoubleMulResult - doubleMulResult)) > 0.01)
+                {
+                    Console.WriteLine($"MUL FInt64 = {fdoubleMulResult}, double = {doubleMulResult} (Error)");
+                }
+                // 测试除法
+                FInt64 fdoubleDivResult = fdoubleA / fdoubleB;
+                double doubleDivResult = doubleA / doubleB;
+                if (Math.Abs((double)(fdoubleDivResult - doubleDivResult)) > 0.0001)
+                {
+                    Console.WriteLine($"DIV FInt64 = {fdoubleDivResult}, double = {doubleDivResult} (Error)");
+                }
+                // 测试比较
+                int fdoubleCompareResult = fdoubleA.CompareTo(fdoubleB);
+                int doubleCompareResult = doubleA.CompareTo(doubleB);
+                if (Math.Abs((double)(fdoubleCompareResult - doubleCompareResult)) > 0.0001)
+                {
+                    Console.WriteLine($"COM FInt64 = {fdoubleCompareResult}, double = {doubleCompareResult} (Error)");
+                }
+                // 测试等于
+                bool fdoubleEqualsResult = fdoubleA.Equals(fdoubleB);
+                bool doubleEqualsResult = doubleA.Equals(doubleB);
+                if (fdoubleEqualsResult != doubleEqualsResult)
+                {
+                    Console.WriteLine($"EQU FInt64 = {fdoubleEqualsResult}, double = {doubleEqualsResult} (Error)");
+                }
+            }
+            Console.WriteLine("测试FI64+DBL");
+            for (int i = 0; i < 10; i++)
+            {
+                // 创建一些测试值
+                Random random = new Random();
+                double doubleA = random.NextDouble() * random.Next(0, 100);
+                double doubleB = random.NextDouble() * random.Next(0, 100);
+                FInt64 fdoubleA = new FInt64(doubleA);
+                double fdoubleB = doubleB;
+
+                // 测试加法
+                FInt64 fdoubleAddResult = fdoubleA + fdoubleB;
+                double doubleAddResult = doubleA + doubleB;
+                if (Math.Abs((double)(fdoubleAddResult - doubleAddResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"ADD FInt64 = {fdoubleAddResult}, double = {doubleAddResult} (Error)");
+                }
+                // 测试减法
+                FInt64 fdoubleSubResult = fdoubleA - fdoubleB;
+                double doubleSubResult = doubleA - doubleB;
+                if (Math.Abs((double)(fdoubleSubResult - doubleSubResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"SUB FInt64 = {fdoubleSubResult}, double = {doubleSubResult} (Error)");
+                }
+                // 测试乘法
+                FInt64 fdoubleMulResult = fdoubleA * fdoubleB;
+                double doubleMulResult = doubleA * doubleB;
+                if (Math.Abs((double)(fdoubleMulResult - doubleMulResult)) > 0.01)
+                {
+                    Console.WriteLine($"MUL FInt64 = {fdoubleMulResult}, double = {doubleMulResult} (Error)");
+                }
+                // 测试除法
+                FInt64 fdoubleDivResult = fdoubleA / fdoubleB;
+                double doubleDivResult = doubleA / doubleB;
+                if (Math.Abs((double)(fdoubleDivResult - doubleDivResult)) > 0.0001)
+                {
+                    Console.WriteLine($"DIV FInt64 = {fdoubleDivResult}, double = {doubleDivResult} (Error)");
+                }
+                // 测试比较
+                int fdoubleCompareResult = fdoubleA.CompareTo(fdoubleB);
+                int doubleCompareResult = doubleA.CompareTo(doubleB);
+                if (Math.Abs((double)(fdoubleCompareResult - doubleCompareResult)) > 0.0001)
+                {
+                    Console.WriteLine($"COM FInt64 = {fdoubleCompareResult}, double = {doubleCompareResult} (Error)");
+                }
+                // 测试等于
+                bool fdoubleEqualsResult = fdoubleA.Equals(fdoubleB);
+                bool doubleEqualsResult = doubleA.Equals(doubleB);
+                if (fdoubleEqualsResult != doubleEqualsResult)
+                {
+                    Console.WriteLine($"EQU FInt64 = {fdoubleEqualsResult}, double = {doubleEqualsResult} (Error)");
+                }
+            }
+            Console.WriteLine("测试DBL+FI64");
+            for (int i = 0; i < 10; i++)
+            {
+                // 创建一些测试值
+                Random random = new Random();
+                double doubleA = random.NextDouble() * random.Next(0, 100);
+                double doubleB = random.NextDouble() * random.Next(0, 100);
+                double fdoubleA = doubleA;
+                FInt64 fdoubleB = new FInt64(doubleB);
+
+                // 测试加法
+                FInt64 fdoubleAddResult = fdoubleA + fdoubleB;
+                double doubleAddResult = doubleA + doubleB;
+                if (Math.Abs((double)(fdoubleAddResult - doubleAddResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"ADD FInt64 = {fdoubleAddResult}, double = {doubleAddResult} (Error)");
+                }
+                // 测试减法
+                FInt64 fdoubleSubResult = fdoubleA - fdoubleB;
+                double doubleSubResult = doubleA - doubleB;
+                if (Math.Abs((double)(fdoubleSubResult - doubleSubResult)) > 0.0000001)
+                {
+                    Console.WriteLine($"SUB FInt64 = {fdoubleSubResult}, double = {doubleSubResult} (Error)");
+                }
+                // 测试乘法
+                FInt64 fdoubleMulResult = fdoubleA * fdoubleB;
+                double doubleMulResult = doubleA * doubleB;
+                if (Math.Abs((double)(fdoubleMulResult - doubleMulResult)) > 0.01)
+                {
+                    Console.WriteLine($"MUL FInt64 = {fdoubleMulResult}, double = {doubleMulResult} (Error)");
+                }
+                // 测试除法
+                FInt64 fdoubleDivResult = fdoubleA / fdoubleB;
+                double doubleDivResult = doubleA / doubleB;
+                if (Math.Abs((double)(fdoubleDivResult - doubleDivResult)) > 0.0001)
+                {
+                    Console.WriteLine($"DIV FInt64 = {fdoubleDivResult}, double = {doubleDivResult} (Error)");
+                }
+            }
+            Console.WriteLine("测试结束");
         }
     }
 }

@@ -75,13 +75,13 @@ namespace LinePutScript
         /// 如果找到相同名称的sub,返回sub中储存的double(long)值
         /// 如果没找到,则返回默认值
         /// </returns>
-        public double GetFloat(string subName, double defaultvalue = default);
+        public FInt64 GetFloat(string subName, FInt64 defaultvalue = default);
         /// <summary>
         /// 设置double(long)属性的sub 通过转换long获得更精确的小数,小数位最大保留9位
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="value">储存进sub的double(long)值</param>
-        public void SetFloat(string subName, double value);
+        public void SetFloat(string subName, FInt64 value);
 
         /// <summary>
         /// 获得DateTime属性的sub
@@ -175,7 +175,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">(gflt)用于定义匹配的名称</param>
         /// <returns>获取或设置对 double 属性的Sub</returns>
-        public double this[gflt subName] { get; set; }
+        public FInt64 this[gflt subName] { get; set; }
 
         /// <summary>
         /// 获取或设置 DateTime 属性的sub
