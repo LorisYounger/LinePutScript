@@ -99,7 +99,9 @@ namespace TestConsole.Properties {
         ///stringlistgetset#a:/!|a,b/idb,c/!|/!|c:|
         ///auto#test:|
         ///pubstr#pubtest:|
-        ///tc:|getsetint#0:|getsetDateTime#694039104000000000:|intlistgetset#11,45,14,19,19:|stringlistgetset:|auto#test:|pubstr#substring:|tc:|pubint#0:|intlist:|intdict#1=2/n3=4/n5=6:|
+        ///db#3.1415926:|
+        ///db2#3141592600:|
+        ///tc:|getsetint#0:|getsetDateTime#694039104000000000:|intlistgetset#11,45,14,19,19:|stringlistgetset:|auto#test:|pubstr#substring:|db#0:|db2#0:|tc:|pubint#0:|intlist:|intdict#1=2/n3=4/n5=6:|
         ///pubint#20:|
         ///intlist#10,20,30,40,50:|
         ///intdict:|1#2:|3#4:|5#6:| 的本地化字符串。

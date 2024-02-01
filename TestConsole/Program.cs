@@ -114,6 +114,8 @@ namespace TestConsole
                 intlist = new List<int>() { 10, 20, 30, 40, 50 },
                 pubstr = "pubtest",
                 pubint = 20,
+                db = 3.1415926,
+                db2 = 3.1415926,
                 getsetint = 10,
                 stringlistgetset = new string[] { "a:|a", "b#b", "c||c" },
                 intdict = new Dictionary<int, int>() { { 1, 2 }, { 3, 4 }, { 5, 6 } },
@@ -131,15 +133,9 @@ namespace TestConsole
             Console.WriteLine("CV测试2:\t" + LPSConvert.SerializeObject(
                 LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
                 ).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
-#pragma warning restore CS8604 // 引用类型参数可能为 null。
-            //Console.WriteLine(LPSConvert.SerializeObject(
-            //    LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
-            //    ).ToString());
-            //Console.WriteLine();
-            //tc.tc.tc = new testclass() {
-            //    pubstr = "intc",
-            //};
-            //Console.WriteLine(LPSConvert.SerializeObject(tc));
+
+
+#pragma warning restore CS8604 // 引用类型参数可能为 null。           
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
             var tlpscv = LPSConvert.DeserializeObject<testlpsconv>(LPSConvert.SerializeObject(new testlpsconv(lps, lps.First(), lps.Last().First())));
@@ -197,6 +193,10 @@ namespace TestConsole
             private string nopubstr = "1";
             [Line]
             public string pubstr = "";
+            [Line]
+            public double db;
+            [Line(Type = ConvertType.ToFloat)]
+            public double db2;
             [Line]
             public testclass? tc;
             [Line]

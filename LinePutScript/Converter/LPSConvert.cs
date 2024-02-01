@@ -590,7 +590,7 @@ namespace LinePutScript.Converter
                             string name = la.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: la));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: la));
                         }
                     }
                     foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
@@ -601,7 +601,7 @@ namespace LinePutScript.Converter
                             string name = la.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: la));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: la));
                         }
                     }
                     return obj;
@@ -648,7 +648,7 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValue(obj, GetSubObject(s, mi.PropertyType, att: latt));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt));
                             }
                         }
                         foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
@@ -666,7 +666,7 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValue(obj, GetSubObject(s, mi.FieldType, att: latt));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt));
                             }
                         }
                         return obj;
@@ -675,6 +675,70 @@ namespace LinePutScript.Converter
                 }
             else
                 return GetStringObject(sub.info, type, ct, att);
+        }
+        /// <summary>
+        /// 安全设置字段值
+        /// </summary>
+        public static void SetValueSafe(this FieldInfo mi, object obj, object? value)
+        {
+            // Check if the types match
+            if (value != null && !mi.FieldType.IsAssignableFrom(value.GetType()))
+            {
+                // Try to convert the value
+                if (value is IConvertible convertible)
+                {
+                    value = Convert.ChangeType(convertible, mi.FieldType);
+                }
+                else
+                {
+                    // Try to use a possible implicit conversion
+                    var implicitConversionMethod = value?.GetType().GetMethod("op_Implicit", new[] { mi.FieldType });
+                    if (implicitConversionMethod != null)
+                    {
+                        value = implicitConversionMethod.Invoke(null, new[] { value });
+                    }
+                    else
+                    {
+                        return;
+                        //throw new ArgumentException("The provided value cannot be converted to the field type.");
+                    }
+                }
+            }
+
+            // Now you can set the value
+            mi.SetValue(obj, value);
+        }
+        /// <summary>
+        /// 安全设置字段值
+        /// </summary>
+        public static void SetValueSafe(this PropertyInfo mi, object obj, object? value)
+        {
+            // Check if the types match
+            if (value != null && !mi.PropertyType.IsAssignableFrom(value.GetType()))
+            {
+                // Try to convert the value
+                if (value is IConvertible convertible)
+                {
+                    value = Convert.ChangeType(convertible, mi.PropertyType);
+                }
+                else
+                {
+                    // Try to use a possible implicit conversion
+                    var implicitConversionMethod = value?.GetType().GetMethod("op_Implicit", new[] { mi.PropertyType });
+                    if (implicitConversionMethod != null)
+                    {
+                        value = implicitConversionMethod.Invoke(null, new[] { value });
+                    }
+                    else
+                    {
+                        return;
+                        //throw new ArgumentException("The provided value cannot be converted to the field type.");
+                    }
+                }
+            }
+
+            // Now you can set the value
+            mi.SetValue(obj, value);
         }
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning restore CS8602 // 解引用可能出现空引用。
