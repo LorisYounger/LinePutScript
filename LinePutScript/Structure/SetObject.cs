@@ -68,7 +68,7 @@ namespace LinePutScript.Structure
                 { typeof(double), (object v) => (double)((fint64)v) },
                 { typeof(fint64), (object v) => (fint64)v },
                 { typeof(string), (object v) => ((fint64)v).ToString() },
-                { typeof(bool), (object v) => (fint64)v >= 1 }
+                { typeof(bool), (object v) => ((fint64)v).ToBoolean(null) }
             };
             Dictionary<Type, Func<object, object>> strTo = new Dictionary<Type, Func<object, object>>
             {
@@ -211,7 +211,10 @@ namespace LinePutScript.Structure
         /// 数据转换储存格式 原类型,转换函数
         /// </summary>
         public static Dictionary<Type, Func<object, string>> ConverterSetObjectToStoreString = GetDefaultSetObjectStoreStringConverts();
-
+        /// <summary>
+        /// 获取默认的储存转换器
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<Type, Func<object, string>> GetDefaultSetObjectStoreStringConverts()
         {
             Dictionary<Type, Func<object, string>> result = new Dictionary<Type, Func<object, string>>

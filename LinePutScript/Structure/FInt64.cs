@@ -10,7 +10,7 @@ using fint64 = LinePutScript.Structure.FInt64;
 namespace LinePutScript.Structure
 {
     /// <summary>
-    /// Represents a fint64-precision floating-point number.
+    /// fint64 类型 提供了在 long 范围内进行的固定精度数学运算
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
@@ -24,18 +24,31 @@ namespace LinePutScript.Structure
         /// 切换标头
         /// </summary>
         public static readonly long Anchor = 1000000000;
+        /// <summary>
+        /// 切换标头 double
+        /// </summary>
         public static readonly double Anchord = 1000000000.0;
-
+        /// <summary>
+        /// 实际储存值
+        /// </summary>
         public readonly long m_value;
-
+        /// <summary>
+        /// 从实际值long创建fint64
+        /// </summary>
         public FInt64(long value)
         {
             m_value = value;
         }
+        /// <summary>
+        /// 从数值double创建fint64
+        /// </summary>
         public FInt64(double value)
         {
             m_value = (long)(value * Anchord);
         }
+        /// <summary>
+        /// 从类创建fint64(自动转换)
+        /// </summary>
         public static fint64 FromObject(object? value)
         {
             if (value is fint64 fint64Value)
@@ -63,67 +76,95 @@ namespace LinePutScript.Structure
                 return NaN;
             }
         }
-
+        #region 运算符
+        /// <summary>
+        /// +运算符
+        /// </summary>
         public static fint64 operator +(fint64 a, fint64 b)
         {
             return new fint64(a.m_value + b.m_value);
         }
-
+        /// <summary>
+        /// -运算符
+        /// </summary>
         public static fint64 operator -(fint64 a, fint64 b)
         {
             return new fint64(a.m_value - b.m_value);
         }
-
+        /// <summary>
+        /// *运算符
+        /// </summary>
         public static fint64 operator *(fint64 a, fint64 b)
         {
             return new fint64(a.m_value / 1000 * (b.m_value / 1000) / 1000);
         }
-
+        /// <summary>
+        /// /运算符
+        /// </summary>
         public static fint64 operator /(fint64 a, fint64 b)
         {
             return new fint64(a.m_value * 100000 / b.m_value * 10000);
         }
-
+        /// <summary>
+        /// +运算符
+        /// </summary>
         public static fint64 operator +(fint64 a, double b)
         {
             return new fint64(a.m_value + (long)(b * Anchord));
         }
-
+        /// <summary>
+        /// -运算符
+        /// </summary>
         public static fint64 operator -(fint64 a, double b)
         {
             return new fint64(a.m_value - (long)(b * Anchord));
         }
-
+        /// <summary>
+        /// *运算符
+        /// </summary>
         public static fint64 operator *(fint64 a, double b)
         {
             return new fint64((long)(a.m_value * b));
         }
-
+        /// <summary>
+        /// /运算符
+        /// </summary>
         public static fint64 operator /(fint64 a, double b)
         {
             return new fint64((long)(a.m_value / b));
         }
-
+        /// <summary>
+        /// +运算符
+        /// </summary>
         public static fint64 operator +(double a, fint64 b)
         {
             return new fint64((long)(a * Anchord) + b.m_value);
         }
-
+        /// <summary>
+        /// -运算符
+        /// </summary>
         public static fint64 operator -(double a, fint64 b)
         {
             return new fint64((long)(a * Anchord) - b.m_value);
         }
-
+        /// <summary>
+        /// *运算符
+        /// </summary>
         public static fint64 operator *(double a, fint64 b)
         {
             return new fint64((long)(a * b.m_value));
         }
-
+        /// <summary>
+        /// /运算符
+        /// </summary>
         public static fint64 operator /(double a, fint64 b)
         {
             return new fint64(a / b.ToDouble());
         }
-
+        #endregion
+        /// <summary>
+        /// 转换为数值double
+        /// </summary>
         public double ToDouble()
         {
             if (IsNaN())
@@ -132,25 +173,38 @@ namespace LinePutScript.Structure
             }
             return m_value / Anchord;
         }
-
+        /// <summary>
+        /// 从数值double创建fint64
+        /// </summary>
         public static fint64 FromNumberDouble(double value)
         {
             return new fint64(value);
         }
+        /// <summary>
+        /// 从数值long创建fint64
+        /// </summary>
         public static fint64 FromNumberLong(long value)
         {
             return new fint64(value * Anchor);
         }
+        /// <summary>
+        /// 从数值int创建fint64
+        /// </summary>
         public static fint64 FromNumberInt(int value)
         {
             return new fint64(value * Anchor);
         }
-
+        /// <summary>
+        /// 转换为纯文本(数值double)
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return ToDouble().ToString();
         }
-
+        /// <summary>
+        /// 转换成储存字符串
+        /// </summary>
         public string ToStoreString()
         {
             return m_value.ToString();
@@ -165,44 +219,66 @@ namespace LinePutScript.Structure
         /// </summary>
         public static explicit operator double(fint64 v) => v.ToDouble();
 
+        #region 公共方法
         //
         // Public Constants
         //
+        /// <summary>
+        /// 最小值
+        /// </summary>
         public static readonly fint64 MinValue = new fint64(long.MinValue);
+        /// <summary>
+        /// 最大值
+        /// </summary>
         public static readonly fint64 MaxValue = new fint64(long.MaxValue);
+        /// <summary>
+        /// NaN
+        /// </summary>
         public static readonly fint64 NaN = new fint64(long.MaxValue - 1);
+        /// <summary>
+        /// 正无穷大
+        /// </summary>
         public static readonly fint64 NegativeInfinity = new fint64(long.MinValue + 1);
+        /// <summary>
+        /// 负无穷大
+        /// </summary>
         public static readonly fint64 PositiveInfinity = new fint64(long.MaxValue);
-
+        /// <summary>
+        /// 判断是否是NaN
+        /// </summary>
         public bool IsNaN()
         {
             return m_value == NaN.m_value;
         }
-
+        /// <summary>
+        /// 是否是负无穷大
+        /// </summary>
         public bool IsNegativeInfinity()
         {
             return m_value == NegativeInfinity.m_value;
         }
-
+        /// <summary>
+        /// 是否是正无穷大
+        /// </summary>
         public bool IsPositiveInfinity()
         {
             return m_value == PositiveInfinity.m_value;
         }
 
         /// <summary>Represents the additive identity (0).</summary>
-        internal static readonly fint64 AdditiveIdentity = new fint64(0);
+        public static readonly fint64 AdditiveIdentity = new fint64(0);
 
         /// <summary>Represents the multiplicative identity (1).</summary>
-        internal static readonly fint64 MultiplicativeIdentity = new fint64(Anchor);
+        public static readonly fint64 MultiplicativeIdentity = new fint64(Anchor);
 
         /// <summary>Represents the number one (1).</summary>
-        internal static readonly fint64 One = new fint64(Anchor);
+        public static readonly fint64 One = new fint64(Anchor);
 
         /// <summary>Represents the number zero (0).</summary>
-        internal static readonly fint64 Zero = new fint64(0);
+        public static readonly fint64 Zero = new fint64(0);
 
         /// <summary>Represents the number negative one (-1).</summary>
-        internal static readonly fint64 NegativeOne = -1.0;
+        public static readonly fint64 NegativeOne = -1.0;
 
         /// <summary>Represents the number negative zero (-0).</summary>
         public static readonly fint64 NegativeZero = -0.0;
@@ -270,6 +346,7 @@ namespace LinePutScript.Structure
         {
             return d == PositiveInfinity;
         }
+        #endregion
 
         // Compares this object to another object, returning an instance of System.Relation.
         // Null is considered less than any instance.
@@ -278,6 +355,11 @@ namespace LinePutScript.Structure
         //
         // Returns a value less than zero if this  object
         //
+        /// <summary>
+        /// 对比fint64和object差异
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <exception cref="ArgumentException">如果不是可对比的数据,则报错</exception>
         public int CompareTo(object? value)
         {
             if (value == null)
@@ -302,7 +384,10 @@ namespace LinePutScript.Structure
             }
             throw new ArgumentException("Object must be a FInt64 or number");
         }
-
+        /// <summary>
+        /// 对比fint64差异
+        /// </summary>
+        /// <param name="value">值</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int CompareTo(fint64 value)
         {
@@ -323,21 +408,32 @@ namespace LinePutScript.Structure
             }
             return m_value.CompareTo(value.m_value);
         }
-
-        // True if obj is another FInt64 with the same value as the current instance.  This is
-        // a method of object equality, that only returns true if obj is also a fint64.
+        /// <summary>
+        /// 判断是否相等
+        /// </summary>
         public override bool Equals(object? obj)
         {
             if (obj is fint64 other)
             {
-                if (IsNaN() || other.IsNaN())
-                {
-                    return false; // NaN 不等于任何值，包括其自身
-                }
-                return m_value == other.m_value;
+                return Equals(other);
+            }
+            else if (obj is long longvalue)
+            {
+                return m_value == longvalue * Anchor;
+            }
+            else if (obj is int intvalue)
+            {
+                return m_value == intvalue * Anchor;
+            }
+            else if (obj is double doubleValue)
+            {
+                return m_value == (long)(doubleValue * Anchord);
             }
             return false;
         }
+        /// <summary>
+        /// 判断是否相等
+        /// </summary>
         public bool Equals(fint64 other)
         {
             if (IsNaN() || other.IsNaN())
@@ -346,57 +442,166 @@ namespace LinePutScript.Structure
             }
             return m_value == other.m_value;
         }
+        /// <summary>
+        /// 获取HashCode
+        /// </summary>
         public override int GetHashCode()
         {
             return m_value.GetHashCode();
         }
-
+        /// <summary>
+        /// ==运算符
+        /// </summary>
         public static bool operator ==(fint64 a, fint64 b)
         {
-            return a.Equals(b);
+            return a.m_value == b.m_value;
         }
-
+        /// <summary>
+        /// !=运算符
+        /// </summary>
         public static bool operator !=(fint64 a, fint64 b)
         {
-            return !a.Equals(b);
+            return a.m_value != b.m_value;
         }
-
+        /// <summary>
+        /// 小于运算符
+        /// </summary>
         public static bool operator <(fint64 a, fint64 b)
         {
-            return a.CompareTo(b) < 0;
+            return a.m_value < b.m_value;
         }
-
+        /// <summary>
+        /// 大于运算符
+        /// </summary>
         public static bool operator >(fint64 a, fint64 b)
         {
-            return a.CompareTo(b) > 0;
+            return a.m_value > b.m_value;
         }
-
+        /// <summary>
+        /// 小于等于运算符
+        /// </summary>
         public static bool operator <=(fint64 a, fint64 b)
         {
-            return a.CompareTo(b) <= 0;
+            return a.m_value <= b.m_value;
         }
-
+        /// <summary>
+        /// 大于等于运算符
+        /// </summary>
         public static bool operator >=(fint64 a, fint64 b)
         {
-            return a.CompareTo(b) >= 0;
+            return a.m_value >= b.m_value;
         }
 
+        /// <summary>
+        /// ==运算符
+        /// </summary>
+        public static bool operator ==(fint64 a, double b)
+        {
+            return a.m_value == (long)(b * Anchord);
+        }
+        /// <summary>
+        /// !=运算符
+        /// </summary>
+        public static bool operator !=(fint64 a, double b)
+        {
+            return a.m_value != (long)(b * Anchord);
+        }
+        /// <summary>
+        /// 小于运算符
+        /// </summary>
+        public static bool operator <(fint64 a, double b)
+        {
+            return a.m_value < b * Anchord;
+        }
+        /// <summary>
+        /// 大于运算符
+        /// </summary>
+        public static bool operator >(fint64 a, double b)
+        {
+            return a.m_value > b * Anchord;
+        }
+        /// <summary>
+        /// 小于等于运算符
+        /// </summary>
+        public static bool operator <=(fint64 a, double b)
+        {
+            return a.m_value <= b * Anchord;
+        }
+        /// <summary>
+        /// 大于等于运算符
+        /// </summary>
+        public static bool operator >=(fint64 a, double b)
+        {
+            return a.m_value >= b * Anchord;
+        }
 
-
+        /// <summary>
+        /// ==运算符
+        /// </summary>
+        public static bool operator ==(double a, fint64 b)
+        {
+            return (long)(a * Anchord) == b.m_value;
+        }
+        /// <summary>
+        /// !=运算符
+        /// </summary>
+        public static bool operator !=(double a, fint64 b)
+        {
+            return (long)(a * Anchord) != b.m_value;
+        }
+        /// <summary>
+        /// 小于运算符
+        /// </summary>
+        public static bool operator <(double a, fint64 b)
+        {
+            return a * Anchord < b.m_value;
+        }
+        /// <summary>
+        /// 大于运算符
+        /// </summary>
+        public static bool operator >(double a, fint64 b)
+        {
+            return a * Anchord > b.m_value;
+        }
+        /// <summary>
+        /// 小于等于运算符
+        /// </summary>
+        public static bool operator <=(double a, fint64 b)
+        {
+            return a * Anchord <= b.m_value;
+        }
+        /// <summary>
+        /// 大于等于运算符
+        /// </summary>
+        public static bool operator >=(double a, fint64 b)
+        {
+            return a * Anchord >= b.m_value;
+        }
+        /// <summary>
+        /// 按格式进行转换(数值double)
+        /// </summary>
         public string ToString(IFormatProvider? provider)
         {
             return ToDouble().ToString(provider);
         }
-
+        /// <summary>
+        /// 按格式进行转换(数值double)
+        /// </summary>
         public string ToString(string? format, IFormatProvider? provider)
         {
             return ToDouble().ToString(format, provider);
         }
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static fint64 Parse(string s) => Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null);
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static fint64 Parse(string s, NumberStyles style) => Parse(s, style, provider: null);
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static fint64 Parse(string s, IFormatProvider? provider) => Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider);
 
         // Parses a fint64 from a String in the given style.  If
@@ -406,7 +611,9 @@ namespace LinePutScript.Structure
         // This method will not throw an OverflowException, but will return
         // PositiveInfinity or NegativeInfinity for a number that is too
         // large or too small.
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static fint64 Parse(string s, NumberStyles style = NumberStyles.Float | NumberStyles.AllowThousands, IFormatProvider? provider = null)
         {
             if (long.TryParse(s, style, provider, out long result))
@@ -422,9 +629,13 @@ namespace LinePutScript.Structure
                 return NaN;
             }
         }
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static bool TryParse(string? s, out fint64 result) => TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider: null, out result);
-
+        /// <summary>
+        /// 文本转换成fint64
+        /// </summary>
         public static bool TryParse(string? s, NumberStyles style, IFormatProvider? provider, out fint64 result)
         {
             if (s == null)
@@ -441,122 +652,169 @@ namespace LinePutScript.Structure
             result = res;
             return true;
         }
-
+        #region 转换成其他类型
         //
         // IConvertible implementation
         //
-
-        public TypeCode GetTypeCode()
+        /// <summary>
+        /// 获取类型
+        /// </summary>
+        TypeCode IConvertible.GetTypeCode()
         {
             return TypeCode.Object;
         }
-
-        bool IConvertible.ToBoolean(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成bool
+        /// </summary>
+        public bool ToBoolean(IFormatProvider? provider = null)
         {
             return m_value > Anchor;
         }
-
+        /// <summary>
+        /// 转换成Char
+        /// </summary>
         char IConvertible.ToChar(IFormatProvider? provider)
         {
             throw new InvalidCastException("Cannot convert FInt64 to Char.");
         }
-
-        sbyte IConvertible.ToSByte(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成SByte(数值double)
+        /// </summary>
+        public sbyte ToSByte(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToSByte(provider);
         }
-
-        byte IConvertible.ToByte(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Byte(数值double)
+        /// </summary>
+        public byte ToByte(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToByte(provider);
         }
-
-        short IConvertible.ToInt16(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Int16(数值double)
+        /// </summary>
+        public short ToInt16(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToInt16(provider);
         }
-
-        ushort IConvertible.ToUInt16(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Uint16(数值double)
+        /// </summary>
+        public ushort ToUInt16(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToUInt16(provider);
         }
-
-        int IConvertible.ToInt32(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Int32(数值double)
+        /// </summary>
+        public int ToInt32(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToInt32(provider);
         }
-
-        uint IConvertible.ToUInt32(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Uint32(数值double)
+        /// </summary>
+        public uint ToUInt32(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToUInt32(provider);
         }
-
-        long IConvertible.ToInt64(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Int64(数值double)
+        /// </summary>
+        public long ToInt64(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToInt64(provider);
         }
-
-        ulong IConvertible.ToUInt64(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Uint64(数值double)
+        /// </summary>
+        public ulong ToUInt64(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToUInt64(provider);
         }
-
-        float IConvertible.ToSingle(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Single(数值double)
+        /// </summary>
+        public float ToSingle(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToSingle(provider);
         }
-
+        /// <summary>
+        /// 转换成Double(数值double)
+        /// </summary>
         double IConvertible.ToDouble(IFormatProvider? provider)
         {
             return ToDouble();
         }
-
-        decimal IConvertible.ToDecimal(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成Decimal(数值double)
+        /// </summary>
+        public decimal ToDecimal(IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToDecimal(provider);
         }
-
-        DateTime IConvertible.ToDateTime(IFormatProvider? provider)
+        /// <summary>
+        /// 转换成DateTime
+        /// </summary>
+        public DateTime ToDateTime(IFormatProvider? provider)
         {
-            return ((IConvertible)m_value).ToDateTime(provider);
+            return new DateTime(m_value);
         }
-
+        /// <summary>
+        /// 转换成指定类型
+        /// </summary>
         object IConvertible.ToType(Type type, IFormatProvider? provider)
         {
             return ((IConvertible)ToDouble()).ToDecimal(provider);
         }
-
+        #endregion
+        #region 运算符
         //
         // IBitwiseOperators
         //
-
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator &(fint64 a, fint64 b)
         {
             return new fint64(a.m_value & b.m_value);
         }
-
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator |(fint64 a, fint64 b)
         {
             return new fint64(a.m_value | b.m_value);
         }
-
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator ^(fint64 a, fint64 b)
         {
             return new fint64(a.m_value ^ b.m_value);
         }
-
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator ~(fint64 a)
         {
             return new fint64(~a.m_value);
         }
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator --(fint64 a)
         {
             return new fint64(a.m_value - Anchor);
         }
+        /// <summary>
+        /// 运算符
+        /// </summary>
         public static fint64 operator ++(fint64 a)
         {
             return new fint64(a.m_value + Anchor);
         }
-
+        #endregion
     }
 }
