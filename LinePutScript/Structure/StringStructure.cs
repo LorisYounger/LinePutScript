@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using LinePutScript.Structure;
 
 #nullable enable
-namespace LinePutScript.Structure
+namespace LinePutScript
 {
     /// <summary>
     /// String 结构 通过String实时修改具体参数,为LineputScript提供第四层结构

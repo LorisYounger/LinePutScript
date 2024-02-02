@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using fint64 = LinePutScript.Structure.FInt64;
+using fint64 = LinePutScript.FInt64;
 
 #nullable enable
 
-namespace LinePutScript.Structure
+namespace LinePutScript
 {
     /// <summary>
     /// Set Object 可以储存任何类型的值 对性能进行优化
@@ -477,6 +477,15 @@ namespace LinePutScript.Structure
         /// 转换 SetObject 为 DateTime
         /// </summary>
         public static explicit operator DateTime(SetObject v) => v.GetDateTime();
+
+        /// <summary>
+        /// 转换 fint64 为 SetObject
+        /// </summary>
+        public static implicit operator SetObject(fint64 v) => new SetObject(v);
+        /// <summary>
+        /// 转换 SetObject 为 fint64
+        /// </summary>
+        public static explicit operator fint64(SetObject v) => v.GetFloat();
         #endregion
 
         /// <summary>

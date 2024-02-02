@@ -5,9 +5,9 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using fint64 = LinePutScript.Structure.FInt64;
+using fint64 = LinePutScript.FInt64;
 #nullable enable
-namespace LinePutScript.Structure
+namespace LinePutScript
 {
     /// <summary>
     /// fint64 类型 提供了在 long 范围内进行的固定精度数学运算
@@ -217,7 +217,7 @@ namespace LinePutScript.Structure
         /// <summary>
         /// 转换 FInt64 为 double
         /// </summary>
-        public static explicit operator double(fint64 v) => v.ToDouble();
+        public static implicit operator double(fint64 v) => v.ToDouble();
 
         #region 公共方法
         //

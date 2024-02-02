@@ -1,7 +1,6 @@
 ﻿using LinePutScript;
 using LinePutScript.Converter;
 using LinePutScript.Dictionary;
-using LinePutScript.Structure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,8 +47,19 @@ namespace TestConsole
                     case "exit":
                     case "quit":
                         return;
+                    case "def":
+                        def();
+                        break;
                 }
             }
+        }
+
+        static void def(FInt64 fInt64 = default)
+        {
+            Console.WriteLine("def:");
+            Console.WriteLine(fInt64.ToString());
+            Console.WriteLine(fInt64.m_value);
+
         }
 
         static void Text()
