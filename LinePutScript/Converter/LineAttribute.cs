@@ -22,7 +22,8 @@ namespace LinePutScript.Converter
         /// <param name="iLineType">如果为类,指定转换ILine的类型,默认为T</param>
         /// <param name="fourceToString">强制转换内容为String (多用于当前类为Sub)</param>
         /// <param name="ignoreCase">忽略名称的大小写</param>
-        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null, bool fourceToString = false, bool ignoreCase = false)
+        /// <param name="ignore">忽略该属性</param>
+        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null, bool fourceToString = false, bool ignoreCase = false, bool ignore = false)
         {
             Type = type;
             Converter = converter;
@@ -30,7 +31,9 @@ namespace LinePutScript.Converter
             ILineType = iLineType;
             FourceToString = fourceToString;
             IgnoreCase = ignoreCase;
+            Ignore = ignore;
         }
+
         /// <summary>
         /// 自定义转换方法
         /// </summary>
@@ -69,7 +72,7 @@ namespace LinePutScript.Converter
         /// <returns>转换结果</returns>
         public T ConvertToLine<T>(string name, object? value, bool? fourceToString = null) where T : ILine, new()
         {
-            if(!fourceToString.HasValue)
+            if (!fourceToString.HasValue)
             {
                 fourceToString = FourceToString;
             }
@@ -99,5 +102,19 @@ namespace LinePutScript.Converter
         /// 忽略大小写
         /// </summary>
         public bool IgnoreCase { get; set; } = false;
+        /// <summary>
+        /// 忽略该属性
+        /// </summary>
+        public bool Ignore { get; set; } = false;
+        /// <summary>
+        /// 将两个LineAttribute合并, 以第二个为准
+        /// </summary>
+        /// <param name="a1">第一个</param>
+        /// <param name="a2">第二个</param>
+        /// <returns>合并结果</returns>
+        public static LineAttribute Combine(LineAttribute a1, LineAttribute a2) => new LineAttribute(
+            (a2.Type == ConvertType.Default ? a1.Type : a2.Type), (a2.Converter == null ? a1.Converter : a2.Converter),
+            (a2.Name == null ? a1.Name : a2.Name), (a2.ILineType == null ? a1.ILineType : a2.ILineType),
+            a2.FourceToString, a2.IgnoreCase, a2.Ignore);
     }
 }

@@ -194,7 +194,7 @@ namespace TestConsole
             linc.Value.pubint = 40;
             Console.WriteLine("CC测试6:\t" + (linc[(gint)"pubint"] == 40));
             var linec2 = new Line_C<testclass>(new Line(linc.ToString()));
-            Console.WriteLine("CC测试7:\t" + (linc[(gint)"pubint"] == 40));
+            Console.WriteLine("CC测试7:\t" + (linec2[(gint)"pubint"] == 40));
 
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。

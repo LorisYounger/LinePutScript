@@ -517,7 +517,8 @@ namespace LinePutScript.Converter
         /// <param name="convtype">转换方法,默认自动判断</param>
         /// <param name="att">附加参数,若有</param>
         /// <returns>指定Type的Object</returns>
-        public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null)
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
         {
             if (value == "")
             {
@@ -535,7 +536,7 @@ namespace LinePutScript.Converter
                     Type? subtype = type.GetGenericArguments().First();
                     foreach (string str in value.Split(','))
                     {
-                        list.Add(GetStringObject(Sub.TextDeReplace(str), subtype));
+                        list.Add(GetStringObject(Sub.TextDeReplace(str), subtype, convertNoneLineAttribute: true));
                     }
                     return list;
                 case ConvertType.ToArray:
@@ -546,7 +547,7 @@ namespace LinePutScript.Converter
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
                     for (int i = 0; i < strs.Length; i++)
                     {
-                        arr.SetValue(GetStringObject(Sub.TextDeReplace(strs[i]), subtype), i);
+                        arr.SetValue(GetStringObject(Sub.TextDeReplace(strs[i]), subtype, convertNoneLineAttribute: true), i);
                     }
                     return arr;
                 case ConvertType.ToDictionary:
@@ -555,9 +556,9 @@ namespace LinePutScript.Converter
                     foreach (string str in value.Replace("/n", "\n").Split('\n'))
                     {
                         strs = str.Split('=');
-                        object? k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0]);
+                        object? k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0], convertNoneLineAttribute: true);
                         if (k != null)
-                            dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1]));
+                            dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1], convertNoneLineAttribute: true));
                     }
                     return dict;
                 case ConvertType.ToDateTime:
@@ -585,24 +586,40 @@ namespace LinePutScript.Converter
                         return null;
                     foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        Attribute latt = mi.GetCustomAttribute<LineAttribute>();
-                        if (latt != null && latt is LineAttribute la)
+                        LineAttribute latt = mi.GetCustomAttributes<LineAttribute>().Combine();
+                        if (latt != null)
                         {
-                            string name = la.Name ?? mi.Name;
+                            if (latt.Ignore)
+                                continue;
+                            string name = latt.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: la));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: true));
+                        }
+                        else if (convertNoneLineAttribute)
+                        {
+                            ISub? s = line.Find(mi.Name);
+                            if (s != null)
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, convertNoneLineAttribute: true));
                         }
                     }
                     foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        Attribute latt = mi.GetCustomAttribute<LineAttribute>();
-                        if (latt != null && latt is LineAttribute la)
+                        LineAttribute latt = mi.GetCustomAttributes<LineAttribute>().Combine();
+                        if (latt != null)
                         {
-                            string name = la.Name ?? mi.Name;
+                            if (latt.Ignore)
+                                continue;
+                            string name = latt.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: la));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: true));
+                        }
+                        else if (convertNoneLineAttribute)
+                        {
+                            ISub? s = line.Find(mi.Name);
+                            if (s != null)
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, convertNoneLineAttribute: true));
                         }
                     }
                     return obj;
@@ -615,8 +632,9 @@ namespace LinePutScript.Converter
         /// <param name="type">要转换的Type</param>
         /// <param name="convtype">转换方法,默认自动判断</param>
         /// <param name="att">附加参数,若有</param>
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
         /// <returns>指定Type的Object</returns>
-        public static object? GetSubObject(ISub sub, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null)
+        public static object? GetSubObject(ISub sub, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
         {
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
             if (sub is ILine line)
@@ -638,9 +656,11 @@ namespace LinePutScript.Converter
                             return null;
                         foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
+                            LineAttribute? latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                             if (latt != null)
                             {
+                                if (latt.Ignore)
+                                    continue;
                                 string name = latt.Name ?? mi.Name;
                                 ISub? s;
                                 if (latt.IgnoreCase)
@@ -651,14 +671,22 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: true));
+                            }
+                            else if (convertNoneLineAttribute)
+                            {
+                                ISub? s = line.Find(mi.Name);
+                                if (s != null)
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, convertNoneLineAttribute: true));
                             }
                         }
                         foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
+                            LineAttribute? latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                             if (latt != null)
                             {
+                                if (latt.Ignore)
+                                    continue;
                                 string name = latt.Name ?? mi.Name;
                                 ISub? s;
                                 if (latt.IgnoreCase)
@@ -669,7 +697,13 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: true));
+                            }
+                            else if (convertNoneLineAttribute)
+                            {
+                                ISub? s = line.Find(mi.Name);
+                                if (s != null)
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, convertNoneLineAttribute: true));
                             }
                         }
                         return obj;
@@ -830,6 +864,22 @@ namespace LinePutScript.Converter
                 else
                     return default;
             }
+        }
+        /// <summary>
+        /// 组合所有的LineAttribute, 后面覆盖前面
+        /// </summary>
+        /// <param name="lineAttributes">LineAttribute 列表</param>
+        /// <returns>LineAttribute</returns>
+        public static LineAttribute? Combine(this IEnumerable<LineAttribute> lineAttributes)
+        {
+            LineAttribute? la = lineAttributes.FirstOrDefault();
+            foreach (LineAttribute item in lineAttributes.Skip(1))
+            {
+#pragma warning disable CS8604
+                la = LineAttribute.Combine(la, item);
+#pragma warning restore CS8604
+            }
+            return la;
         }
     }
 }

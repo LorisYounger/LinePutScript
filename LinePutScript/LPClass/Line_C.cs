@@ -234,9 +234,12 @@ namespace LinePutScript
             Name = name;
             if (Value != null)
             {
-                this.info = info;
                 this.text = text;
                 AddRange(subs);
+            }
+            else
+            {
+                Value = LPSConvert.GetSubObject(new Line(name, info, subs), typeof(T)).TryConvertToValue<T>();
             }
         }
         /// <inheritdoc/>
@@ -245,13 +248,12 @@ namespace LinePutScript
             Name = line.Name;
             if (Value != null)
             {
-                info = line.info;
                 text = line.text;
                 AddRange(line);
             }
             else
             {
-                Value = LPSConvert.GetStringObject(line.info, typeof(T)).TryConvertToValue<T>();
+                Value = LPSConvert.GetSubObject(line, typeof(T)).TryConvertToValue<T>();
             }
         }
 
@@ -348,6 +350,8 @@ namespace LinePutScript
         /// <inheritdoc/>
         public ISub? Find(string subName)
         {
+            if (Value == null)
+                return null;
             foreach (var mi in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();
@@ -555,6 +559,8 @@ namespace LinePutScript
         public List<ISub> Subs()
         {
             List<ISub> list = new List<ISub>();
+            if (Value == null)
+                return list;
             foreach (var mi in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 LineAttribute? latt = mi.GetCustomAttribute<LineAttribute>();

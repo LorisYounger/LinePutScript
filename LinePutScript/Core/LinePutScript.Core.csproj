@@ -44,9 +44,4 @@
     <Compile Include="..\LPClass\Line_C.cs" Link="LPClass\Line_C.cs" />
     <Compile Include="..\LPClass\Sub_C.cs" Link="LPClass\Sub_C.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Converter\" />
-    <Folder Include="Dictionary\" />
-  </ItemGroup>
 </Project>
