@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ImplicitUsings>disable</ImplicitUsings>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -45,8 +45,6 @@
     <Compile Include="..\LPClass\Sub_C.cs" Link="LPClass\Sub_C.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Converter\" />
-    <Folder Include="Dictionary\" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 </Project>

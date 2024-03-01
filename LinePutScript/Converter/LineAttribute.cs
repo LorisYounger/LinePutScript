@@ -9,8 +9,6 @@ namespace LinePutScript.Converter
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class LineAttribute : Attribute
     {
-
-
         /// <summary>
         /// 将该内容转换成Line
         /// </summary>

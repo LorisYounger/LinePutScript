@@ -292,32 +292,17 @@ namespace LinePutScript.Dictionary
                 return new ISub[] { v };
         }
         /// <summary>
-        /// 匹配拥有相同信息的Line或sub的所有元素(注意:在字典中,信息是唯一的)
+        /// 匹配拥有相同信息的Line或sub的所有元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        [Obsolete("注意:在字典中,信息是唯一的")]
-        public ISub[] FindAllInfo(string subinfo)
-        {
-            ISub? v = FindInfo(subinfo);
-            if (v == null)
-                return Array.Empty<ISub>();
-            else
-                return new ISub[] { v };
-        }
+        public ISub[] FindAllInfo(string subinfo) => Subs.Values.Where(x => x.GetString().Equals(subinfo)).ToArray();
         /// <summary>
         /// 搜索与指定信息,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的第一个Line,则为该Line; 否则为null</returns>
-        public ISub? FindInfo(string subinfo)
-        {
-            ISub? v = Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
-            if (v == null)
-                return default;
-            else
-                return v;
-        }
+        public ISub? FindInfo(string subinfo) => Subs.Values.FirstOrDefault(x => x.GetString().Equals(subinfo));
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素;若未找到,则新建并添加相同名称的Sub,并且返回这个Sub
         /// </summary>
@@ -724,10 +709,10 @@ namespace LinePutScript.Dictionary
         /// <param name="lps">lps文本</param>
         public override void Load(string lps)
         {
-            string[] sts = Split(lps, "///", 2).ToArray();
+            string[] sts = Split(lps, 2, StringSplitOptions.RemoveEmptyEntries, "///");
             if (sts.Length == 2)
                 Comments = sts[1];
-            sts = Split(sts[0], ":|").ToArray();
+            sts = Split(sts[0], separatorArray: ":|");
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             info = new SetObject();
@@ -813,7 +798,7 @@ namespace LinePutScript.Dictionary
                 return comp;
             try
             {
-                return other.infoComparable.CompareTo(info);              
+                return other.infoComparable.CompareTo(info);
             }
             catch
             {

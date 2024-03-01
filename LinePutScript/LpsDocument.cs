@@ -186,13 +186,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="sub">要在Assemblage中定位的Sub</param>
         /// <returns>如果在Assemblage中找到line,则为True; 否则为false</returns>
-        public bool Contains(ISub sub)
-        {
-            foreach (ILine li in Assemblage)
-                if (li.Contains(sub))
-                    return true;
-            return false;
-        }
+        public bool Contains(ISub sub) => Assemblage.Any(x => x.Contains(sub));
         /// <summary>
         /// 确定某Line(名字定位)是否在Assemblage中
         /// </summary>
@@ -218,41 +212,20 @@ namespace LinePutScript
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ILine[] FindAllLine(string lineName)
-        {
-            List<ILine> lines = new List<ILine>();
-            foreach (ILine li in Assemblage)
-                if (li.Name == lineName)
-                    lines.Add(li);
-            return lines.ToArray();
-        }
+        public ILine[] FindAllLine(string lineName) => Assemblage.Where(x => x.Name == lineName).ToArray();
         /// <summary>
         /// 匹配拥有相同名称和信息的Line的所有元素
         /// </summary>
         /// <param name="lineName">用于定义匹配的名称</param>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ILine[] FindAllLine(string lineName, string lineinfo)
-        {
-            List<ILine> lines = new List<ILine>();
-            foreach (ILine li in Assemblage)
-                if (li.Name == lineName && li.infoComparable.Equals(lineinfo))
-                    lines.Add(li);
-            return lines.ToArray();
-        }
+        public ILine[] FindAllLine(string lineName, string lineinfo) => Assemblage.Where(x => x.Name == lineName && x.infoComparable.Equals(lineinfo)).ToArray();
         /// <summary>
         /// 匹配拥有相同信息的Line的所有元素
         /// </summary>
         /// <param name="lineinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的Line,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ILine[] FindAllLineInfo(string lineinfo)
-        {
-            List<ILine> lines = new List<ILine>();
-            foreach (ILine li in Assemblage)
-                if (li.infoComparable.Equals(lineinfo))
-                    lines.Add(li);
-            return lines.ToArray();
-        }
+        public ILine[] FindAllLineInfo(string lineinfo) => Assemblage.Where(x => x.infoComparable.Equals(lineinfo)).ToArray();
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
@@ -312,44 +285,20 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAllSub(string subName)
-        {
-            List<ISub> lines = new List<ISub>();
-            foreach (ILine li in Assemblage)
-            {
-                lines.AddRange(li.FindAll(subName));
-            }
-            return lines.ToArray();
-        }
+        public ISub[] FindAllSub(string subName) => Assemblage.SelectMany(x => x.FindAll(subName)).ToArray();
         /// <summary>
         /// 匹配拥有相同名称和信息的Sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAllSub(string subName, string subinfo)
-        {
-            List<ISub> lines = new List<ISub>();
-            foreach (ILine li in Assemblage)
-            {
-                lines.AddRange(li.FindAll(subName, subinfo));
-            }
-            return lines.ToArray();
-        }
+        public ISub[] FindAllSub(string subName, string subinfo) => Assemblage.SelectMany(x => x.FindAll(subName, subinfo)).ToArray();
         /// <summary>
         /// 匹配拥有相同信息的Sub的所有元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的Sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAllSubInfo(string subinfo)
-        {
-            List<ISub> lines = new List<ISub>();
-            foreach (ILine li in Assemblage)
-            {
-                lines.AddRange(li.FindAllInfo(subinfo));
-            }
-            return lines.ToArray();
-        }
+        public ISub[] FindAllSubInfo(string subinfo) => Assemblage.SelectMany(x => x.FindAllInfo(subinfo)).ToArray();
         /// <summary>
         /// 搜索与指定名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
@@ -402,14 +351,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为数组; 否则为一个空的Array</returns>
-        public ILine[] SearchAllLine(string value)
-        {
-            List<ILine> lines = new List<ILine>();
-            foreach (ILine li in Assemblage)
-                if (li.Name.Contains(value))
-                    lines.Add(li);
-            return lines.ToArray();
-        }
+        public ILine[] SearchAllLine(string value) => Assemblage.Where(x => x.Name.Contains(value)).ToArray();
         /// <summary>
         /// 搜索字段是否出现在Line名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>
@@ -424,15 +366,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Line,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] SearchAllSub(string value)
-        {
-            List<ISub> lines = new List<ISub>();
-            foreach (ILine li in Assemblage)
-            {
-                lines.AddRange(li.SeachALL(value));
-            }
-            return lines.ToArray();
-        }
+        public ISub[] SearchAllSub(string value) => Assemblage.SelectMany(x => x.SeachALL(value)).ToArray();
         /// <summary>
         /// 搜索字段是否出现在Sub名称,并返回整个Assemblage中的第一个匹配元素
         /// </summary>

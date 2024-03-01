@@ -79,10 +79,10 @@ namespace LinePutScript
         /// <param name="lps">lps文本</param>
         public override void Load(string lps)
         {
-            string[] sts = Split(lps, "///", 2).ToArray();
+            string[] sts = Split(lps, 2, StringSplitOptions.RemoveEmptyEntries, "///");
             if (sts.Length == 2)
                 Comments = sts[1];
-            sts = Split(sts[0], ":|").ToArray();
+            sts = Split(sts[0], separatorArray: ":|");
             string[] st = sts[0].Split(new char[1] { '#' }, 2);//第一个
             Name = st[0];
             info = new SetObject();
@@ -93,8 +93,6 @@ namespace LinePutScript
 
             for (int i = 1; i < sts.Length - 1; i++)
             {
-                if (sts[i] == "")
-                    continue;//
                 Sub t = new Sub();
                 t.Load(sts[i]);
                 Subs.Add(t);
@@ -367,41 +365,20 @@ namespace LinePutScript
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <returns>如果找到相同名称的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAll(string subName)
-        {
-            List<ISub> subs = new List<ISub>();
-            foreach (ISub su in Subs)
-                if (su.Name == subName)
-                    subs.Add(su);
-            return subs.ToArray();
-        }
+        public ISub[] FindAll(string subName) => Subs.Where(x => x.Name == subName).ToArray();
         /// <summary>
         /// 匹配拥有相同名称和信息的Line或sub的所有元素
         /// </summary>
         /// <param name="subName">用于定义匹配的名称</param>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同名称和信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAll(string subName, string subinfo)
-        {
-            List<ISub> subs = new List<ISub>();
-            foreach (ISub su in Subs)
-                if (su.Name == subName && su.infoComparable.Equals(subinfo))
-                    subs.Add(su);
-            return subs.ToArray();
-        }
+        public ISub[] FindAll(string subName, string subinfo) => Subs.Where(x => x.Name == subName && x.infoComparable.Equals(subinfo)).ToArray();
         /// <summary>
         /// 匹配拥有相同信息的Line或sub的所有元素
         /// </summary>
         /// <param name="subinfo">用于定义匹配的信息 (去除关键字的文本)</param>
         /// <returns>如果找到相同信息的sub,其中所有元素均与指定谓词定义的条件匹配,则为该数组; 否则为一个空的Array</returns>
-        public ISub[] FindAllInfo(string subinfo)
-        {
-            List<ISub> subs = new List<ISub>();
-            foreach (ISub su in Subs)
-                if (su.infoComparable.Equals(subinfo))
-                    subs.Add(su);
-            return subs.ToArray();
-        }
+        public ISub[] FindAllInfo(string subinfo) => Subs.Where(x => x.infoComparable.Equals(subinfo)).ToArray();
         /// <summary>
         /// 搜索与指定名称,并返回Line或整个Subs中的第一个匹配元素
         /// </summary>
@@ -457,14 +434,7 @@ namespace LinePutScript
         /// </summary>
         /// <param name="value">%字段%</param>
         /// <returns>如果找到相似名称的Sub,则为数组; 否则为一个空的Array</returns>
-        public ISub[] SeachALL(string value)
-        {
-            List<ISub> subs = new List<ISub>();
-            foreach (ISub su in Subs)
-                if (su.Name.Contains(value))
-                    subs.Add(su);
-            return subs.ToArray();
-        }
+        public ISub[] SeachALL(string value) => Subs.Where(x => x.Name.Contains(value)).ToArray();
         /// <summary>
         /// 搜索字段是否出现在Line名称,并返回整个Subs中的第一个匹配元素
         /// </summary>

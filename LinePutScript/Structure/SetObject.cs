@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinePutScript.Converter;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -317,7 +318,82 @@ namespace LinePutScript
         /// <summary>
         /// 转换成指定类型
         /// </summary>
-        /// <param name="type">指定类型呢</param>
+        /// <param name="type">指定类型</param>
+        /// <param name="value">值</param>
+        /// <param name="attribute">属性</param>
+        public static object? ConvertTo(object value, Type type, LineAttribute? attribute = null)
+        {
+            if (value.GetType().IsAssignableFrom(type))
+            {
+                return value;
+            }
+            if (ConverterSetObject.TryGetValue(value.GetType(), out Dictionary<Type, Func<object, object>>? conv))
+            {
+                if (conv?.TryGetValue(type, out Func<object, object>? fun) == true)
+                {
+                    return fun(value);
+                }
+            }
+            if (value is string s)
+            {
+                var v = LPSConvert.GetStringObject(s, type, att: attribute);
+                if (v != null)
+                {
+                    return v;
+                }
+            }
+            else if (value is IConvertible)
+            {
+                return Convert.ChangeType(value, type);
+            }
+            return null;
+        }
+        /// <summary>
+        /// 转换成指定类型
+        /// </summary>
+        /// <param name="value">值</param>
+        public static object? ConvertTo<T>(object value)
+        {
+            var v = ConvertTo(value, typeof(T));
+            if (v != null)
+            {
+                return (T)v;
+            }
+            return default;
+        }
+        /// <summary>
+        /// 转换成指定String类型
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="attribute">属性</param>
+        public static string ConvertToString(object value, LineAttribute? attribute = null)
+        {
+            var v = ConvertTo(value, typeof(string));
+            if (v != null)
+            {
+                return (string)v;
+            }
+            return LPSConvert.GetObjectString(value, att: attribute);
+        }
+        /// <summary>
+        /// 转换成储存String类型
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="attribute">属性</param>
+        public static string ConvertToStoreString(object value, LineAttribute? attribute = null)
+        {
+            if (ConverterSetObjectToStoreString.TryGetValue(value.GetType(), out Func<object, string>? fun))
+            {
+                return fun?.Invoke(value) ?? string.Empty;
+            }
+            return LPSConvert.GetObjectString(value, att: attribute);
+        }
+
+
+        /// <summary>
+        /// 转换成指定类型
+        /// </summary>
+        /// <param name="type">指定类型</param>
         public dynamic? GetObjectByType(Type type)
         {
             if (type.IsAssignableFrom(Value.GetType()))
@@ -336,14 +412,7 @@ namespace LinePutScript
         /// <summary>
         /// 转换成为储存String类型
         /// </summary>
-        public string GetStoreString()
-        {
-            if (ConverterSetObjectToStoreString.TryGetValue(Value.GetType(), out Func<object, string>? fun))
-            {
-                return fun?.Invoke(Value) ?? string.Empty;
-            }
-            return string.Empty;
-        }
+        public string GetStoreString() => ConvertToStoreString(Value);
         /// <summary>
         /// 转换成 String 类型
         /// </summary>
@@ -502,7 +571,7 @@ namespace LinePutScript
             catch
             {
                 return ToString().CompareTo(other?.ToString());
-            }      
+            }
         }
         /// <summary>
         /// 比较两个 SetObject 对象差距

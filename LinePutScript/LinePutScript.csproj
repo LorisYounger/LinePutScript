@@ -10,7 +10,7 @@
     <RootNamespace>LinePutScript</RootNamespace>
     <AssemblyName>LinePutScript</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>Latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile>
@@ -61,6 +61,8 @@
     <Compile Include="Converter\LPSConvert.cs" />
     <Compile Include="Dictionary\Line_D.cs" />
     <Compile Include="Dictionary\LPS_D.cs" />
+    <Compile Include="LPClass\Line_C.cs" />
+    <Compile Include="LPClass\Sub_C.cs" />
     <Compile Include="Structure\gobj.cs" />
     <Compile Include="Interface\IGetOBJ.cs" />
     <Compile Include="Interface\ILine.cs" />

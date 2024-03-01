@@ -182,9 +182,24 @@ namespace TestConsole
             int hs5 = lps.GetHashCode();
             Console.WriteLine("HS测试4:\t" + (hs != hs5));
             Console.WriteLine("HS测试5:\t" + (hs5 == hs3));
+
+            //测试 Class_C
+            var linc = new Line_C<testclass>(tc, "tc");
+            Console.WriteLine("CC测试1:\t" + (linc[(gstr)"pubstr"] == "pubtest"));
+            Console.WriteLine("CC测试2:\t" + (linc[(gdbe)"db"] == 3.1415926));
+            Console.WriteLine("CC测试3:\t" + (linc[(gint)"pubint"] == 20));
+            linc[(gint)"pubint"] = 30;
+            Console.WriteLine("CC测试4:\t" + (linc[(gint)"pubint"] == 30));
+            Console.WriteLine("CC测试5:\t" + (linc.Value.pubint == 30));
+            linc.Value.pubint = 40;
+            Console.WriteLine("CC测试6:\t" + (linc[(gint)"pubint"] == 40));
+            var linec2 = new Line_C<testclass>(new Line(linc.ToString()));
+            Console.WriteLine("CC测试7:\t" + (linc[(gint)"pubint"] == 40));
+
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
+#pragma warning disable CS8981 // 该类型名称仅包含小写 ascii 字符。此类名称可能会成为该语言的保留值。
         public class testconvert : ConvertFunction
         {
             public override string Convert(dynamic value)

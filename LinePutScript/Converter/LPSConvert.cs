@@ -199,7 +199,7 @@ namespace LinePutScript.Converter
             List<TLine> list = new List<TLine>();
             foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                Attribute? att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute? att = mi.GetCustomAttribute<LineAttribute>();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
@@ -207,7 +207,7 @@ namespace LinePutScript.Converter
             }
             foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                Attribute? att = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                Attribute? att = mi.GetCustomAttribute<LineAttribute>();
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
@@ -581,11 +581,11 @@ namespace LinePutScript.Converter
                 case ConvertType.Class:
                     Line line = new Line(Sub.TextDeReplace(value));
                     object? obj = Activator.CreateInstance(type);
-                    if(obj == null)
+                    if (obj == null)
                         return null;
                     foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        Attribute latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        Attribute latt = mi.GetCustomAttribute<LineAttribute>();
                         if (latt != null && latt is LineAttribute la)
                         {
                             string name = la.Name ?? mi.Name;
@@ -596,7 +596,7 @@ namespace LinePutScript.Converter
                     }
                     foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        Attribute latt = mi.GetCustomAttributes(typeof(LineAttribute)).FirstOrDefault();
+                        Attribute latt = mi.GetCustomAttribute<LineAttribute>();
                         if (latt != null && latt is LineAttribute la)
                         {
                             string name = la.Name ?? mi.Name;
@@ -777,6 +777,59 @@ namespace LinePutScript.Converter
             Line l = new Line();
             l.AddRange(value);
             return DeserializeObject<T>(l);
+        }
+        /// <summary>
+        /// 快速转换为指定类型
+        /// </summary>
+        /// <typeparam name="T">任何类型</typeparam>
+        /// <param name="value">需要转换的值</param>
+        /// <param name="defvalue">默认值</param>
+        /// <returns>转换结果</returns>
+        public static T TryConvertValue<T>(this object? value, T defvalue)
+        {
+            if (value == null)
+            {
+                return defvalue;
+            }
+            else if (value is T t)
+            {
+                return t;
+            }
+            else
+            {
+                object? v = SetObject.ConvertTo<T>(value);
+                if (v != null)
+                {
+                    return (T)v;
+                }
+                else
+                    return defvalue;
+            }
+        }
+        /// <summary>
+        /// 快速转换回指定类型
+        /// </summary>
+        /// <typeparam name="T">任何类型</typeparam>
+        /// <param name="value">需要转换的值</param>
+        /// <returns>转换结果</returns>
+        public static T? TryConvertToValue<T>(this object? value)
+        {
+            if (value == null)
+                return default;
+            if (value is T t)
+            {
+                return t;
+            }
+            else
+            {
+                object? v = SetObject.ConvertTo<T>(value);
+                if (v != null)
+                {
+                    return (T)v;
+                }
+                else
+                    return default;
+            }
         }
     }
 }

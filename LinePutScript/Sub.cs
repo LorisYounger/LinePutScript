@@ -142,7 +142,7 @@ namespace LinePutScript
         public SetObject info { get; set; }
         string ISub.info { get => info; set => info = value; }
         ICloneable ISub.infoCloneable { get => info; }
-        IComparable ISub.infoComparable { get => info;}
+        IComparable ISub.infoComparable { get => info; }
 
         /// <summary>
         /// 信息 (正常)
@@ -380,23 +380,46 @@ namespace LinePutScript
         /// <returns></returns>
         public static List<string> Split(string text, string separator, int count = -1)
         {
-            List<string> list = new List<string>();
-            string lasttext = text;
-            for (int i = 0; i < count || count == -1; i++)
+            return Split(text, separator, StringSplitOptions.None, count);
+        }
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        /// <param name="text">需要分割的文本</param>
+        /// <param name="separator">分割符号</param>
+        /// <param name="count">分割次数 -1 为无限次数</param>
+        /// <param name="options">分割选项</param>
+        /// <returns></returns>
+        public static List<string> Split(string text, string separator, StringSplitOptions options, int count = -1)
+        {
+            string[] separatorArray = new string[] { separator };
+            if (count == -1)
             {
-                int iof = lasttext.IndexOf(separator);
-                if (iof == -1)
-                {
-                    break;
-                }
-                else
-                {
-                    list.Add(lasttext.Substring(0, iof));
-                    lasttext = lasttext.Substring(iof + separator.Length);
-                }
+                return new List<string>(text.Split(separatorArray, options));
             }
-            list.Add(lasttext);
-            return list;
+            else
+            {
+                return new List<string>(text.Split(separatorArray, count, options));
+            }
+        }
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        /// <param name="text">需要分割的文本</param>
+        /// <param name="count">分割次数 -1 为无限次数</param>
+        /// <param name="options">分割选项</param>
+        /// <param name="separatorArray">分割符号</param>
+        /// <returns></returns>
+        public static string[] Split(string text, int count = -1, StringSplitOptions options = StringSplitOptions.None, params string[] separatorArray)
+        {
+            if (count == -1)
+            {
+                return text.Split(separatorArray, options);
+            }
+            else
+            {
+                return text.Split(separatorArray, count, options);
+            }
         }
 
         /// <summary>
