@@ -425,15 +425,12 @@ namespace LinePutScript
         public void Load<Y>(string lps) where Y : ILine, new()
         {
             Assemblage.Clear();//清空当前文档
-            string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split('\n');
+            string[] file = lps.Replace("\r", "").Replace(":\n|", "/n").Replace(":\n:", "").Trim('\n').Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string str in file)
             {
-                if (str != "")
-                {
-                    ILine t = new Y();
-                    t.Load(str);
-                    Assemblage.Add(t);
-                }
+                ILine t = new Y();
+                t.Load(str);
+                Assemblage.Add(t);
             }
         }
         /// <summary>

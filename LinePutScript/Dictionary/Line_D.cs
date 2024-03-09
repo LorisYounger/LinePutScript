@@ -709,7 +709,7 @@ namespace LinePutScript.Dictionary
         /// <param name="lps">lps文本</param>
         public override void Load(string lps)
         {
-            string[] sts = Split(lps, 2, StringSplitOptions.RemoveEmptyEntries, "///");
+            string[] sts = Split(lps, 2, separatorArray: "///");
             if (sts.Length == 2)
                 Comments = sts[1];
             sts = Split(sts[0], separatorArray: ":|");

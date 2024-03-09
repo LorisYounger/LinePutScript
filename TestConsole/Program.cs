@@ -196,6 +196,11 @@ namespace TestConsole
             var linec2 = new Line_C<testclass>(new Line(linc.ToString()));
             Console.WriteLine("CC测试7:\t" + (linec2[(gint)"pubint"] == 40));
 
+            lps = new LpsDocument("test#测试注释:|///测试\n///test2#注释失效:|");
+            Console.WriteLine("注释测试1:\t" + (lps["test"].Comments == "测试"));
+            Console.WriteLine("注释测试2:\t" + (lps[1].Comments == "test2#注释失效:|"));
+            Console.WriteLine("注释测试3:\t" + (lps[1].Name != "test2"));
+
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
