@@ -399,7 +399,7 @@ namespace LinePutScript
             }
             else
             {
-                return new List<string>(text.Split(separatorArray, count, options));
+                return new List<string>(text.Split(separatorArray, count + 1, options));
             }
         }
         /// <summary>
@@ -418,7 +418,7 @@ namespace LinePutScript
             }
             else
             {
-                return text.Split(separatorArray, count, options);
+                return text.Split(separatorArray, count + 1, options);
             }
         }
 
