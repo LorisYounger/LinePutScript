@@ -99,6 +99,42 @@ namespace LinePutScript.Converter
             }
         }
         /// <summary>
+        /// 将该文本转换成Line
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="fourceToString">
+        /// 强制转换内容为String (多用于当前类为Sub)
+        /// false: 自动判断
+        /// true: 强制转换String
+        /// </param>
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        /// <returns>转换结果</returns>
+        public static T ConvertToLine<T>(string name, object? value, bool? fourceToString = null, bool convertNoneLineAttribute = false) where T : ILine, new()
+        {
+            //如果为null储存空
+            if (value == null)
+            {
+                T t = new T();
+                t.Name = name;
+                return t;
+            }
+            //自动判断
+            var Type = LPSConvert.GetObjectConvertType(value.GetType());
+            if (fourceToString == true || LPSConvert.GetObjectIsString(Type))
+            {
+                T t = new T();
+                t.Name = name;
+                t.info = LPSConvert.GetObjectString(value, Type, null, convertNoneLineAttribute);
+                return t;
+            }
+            else
+            {
+                return LPSConvert.GetObjectLine<T>(value, name, Type, convertNoneLineAttribute: convertNoneLineAttribute);
+            }
+        }
+        /// <summary>
         /// 忽略大小写
         /// </summary>
         public bool IgnoreCase { get; set; } = false;

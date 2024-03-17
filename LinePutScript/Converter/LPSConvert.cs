@@ -193,7 +193,8 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>TLine列表</returns>
-        public static List<TLine> SerializeObjectToList<TLine>(object value, bool? fourceToString = null) where TLine : ILine, new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static List<TLine> SerializeObjectToList<TLine>(object value, bool? fourceToString = null, bool convertNoneLineAttribute = false) where TLine : ILine, new()
         {
             Type type = value.GetType();
             List<TLine> list = new List<TLine>();
@@ -204,6 +205,10 @@ namespace LinePutScript.Converter
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
                 }
+                else if (convertNoneLineAttribute)
+                {
+                    list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
+                }
             }
             foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
@@ -211,6 +216,10 @@ namespace LinePutScript.Converter
                 if (att != null && att is LineAttribute la)
                 {
                     list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
+                }
+                else if (convertNoneLineAttribute)
+                {
+                    list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
                 }
             }
             return list;
@@ -228,9 +237,10 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>LPS</returns>
-        public static TLPS SerializeObjectToLPS<TLPS, TLine>(object value, bool fourceToString = false) where TLPS : ILPS, new() where TLine : ILine, new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static TLPS SerializeObjectToLPS<TLPS, TLine>(object value, bool fourceToString = false, bool convertNoneLineAttribute = false) where TLPS : ILPS, new() where TLine : ILine, new()
         {
-            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
+            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString, convertNoneLineAttribute);
             TLPS LPS = new TLPS();
             foreach (TLine item in list)
             {
@@ -250,9 +260,10 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>Line</returns>
-        public static TLine SerializeObjectToLine<TLine>(object value, string linename, bool fourceToString = true) where TLine : ILine, new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static TLine SerializeObjectToLine<TLine>(object value, string linename, bool fourceToString = true, bool convertNoneLineAttribute = false) where TLine : ILine, new()
         {
-            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString);
+            List<TLine> list = SerializeObjectToList<TLine>(value, fourceToString: fourceToString, convertNoneLineAttribute);
             TLine Line = new TLine();
             Line.Name = linename;
             foreach (TLine item in list)
@@ -271,9 +282,10 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>LPS</returns>
-        public static LpsDocument SerializeObject(object value, bool fourceToString = false)
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static LpsDocument SerializeObject(object value, bool fourceToString = false, bool convertNoneLineAttribute = false)
         {
-            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
+            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString, convertNoneLineAttribute);
             LpsDocument LPS = new LpsDocument();
             foreach (Line item in list)
             {
@@ -292,9 +304,10 @@ namespace LinePutScript.Converter
         /// true: 强制转换String
         /// </param>
         /// <returns>Line</returns>
-        public static Line SerializeObject(object value, string linename, bool fourceToString = true)
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static Line SerializeObject(object value, string linename, bool fourceToString = true, bool convertNoneLineAttribute = false)
         {
-            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString);
+            List<Line> list = SerializeObjectToList<Line>(value, fourceToString: fourceToString, convertNoneLineAttribute);
             Line Line = new Line();
             Line.Name = linename;
             foreach (Line item in list)
@@ -356,8 +369,9 @@ namespace LinePutScript.Converter
         /// <param name="value">需要序列化的object</param>
         /// <param name="type">转换方法,默认自动判断</param>
         /// <param name="att">附加参数,若有</param>
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
         /// <returns>退回序列化的String</returns>
-        public static string GetObjectString(object? value, ConvertType type = ConvertType.Default, LineAttribute? att = null)
+        public static string GetObjectString(object? value, ConvertType type = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
         {
             //如果为null储存空
             if (value == null)
@@ -368,13 +382,13 @@ namespace LinePutScript.Converter
             if (Type == ConvertType.Class)
             {
                 if (att?.ILineType == null)
-                    return Sub.TextReplace(SerializeObject(value, att?.Name ?? "deflinename").ToString());
+                    return Sub.TextReplace(SerializeObject(value, att?.Name ?? "deflinename", convertNoneLineAttribute: convertNoneLineAttribute).ToString());
                 Type ex = typeof(LPSConvert);
 #pragma warning disable CS8600
                 MethodInfo mi = ex.GetMethod("SerializeObjectToLine");
 #pragma warning disable CS8602
                 MethodInfo miConstructed = mi.MakeGenericMethod(att.ILineType);
-                object[] args = { value, att?.Name ?? "deflinename" };
+                object[] args = { value, att?.Name ?? "deflinename", true, convertNoneLineAttribute };
                 return Sub.TextReplace(((ILine)miConstructed.Invoke(null, args)).ToString());
 
             }
@@ -433,7 +447,8 @@ namespace LinePutScript.Converter
         /// <param name="att">附加参数,若有</param>
         /// <param name="linename">行名字</param>
         /// <returns></returns>
-        public static TLine GetObjectLine<TLine>(object? value, string linename, ConvertType type = ConvertType.Default, LineAttribute? att = null) where TLine : ILine, new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static TLine GetObjectLine<TLine>(object? value, string linename, ConvertType type = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false) where TLine : ILine, new()
         {
             string name = att?.Name == null ? linename : att.Name;
             TLine t = new TLine();
@@ -446,13 +461,13 @@ namespace LinePutScript.Converter
             {
                 case ConvertType.Class:
                     if (att?.ILineType == null)
-                        return SerializeObjectToLine<TLine>(value, linename);
+                        return SerializeObjectToLine<TLine>(value, linename, convertNoneLineAttribute: convertNoneLineAttribute);
                     Type ex = typeof(LPSConvert);
 #pragma warning disable CS8600
                     MethodInfo mi = ex.GetMethod("SerializeObjectToLine");
 #pragma warning disable CS8602
                     MethodInfo miConstructed = mi.MakeGenericMethod(att.ILineType);
-                    object[] args = { value, linename };
+                    object[] args = { value, linename, true, convertNoneLineAttribute };
 #pragma warning disable CS8603 // 可能返回 null 引用。
                     return (TLine)miConstructed.Invoke(null, args);
 
@@ -785,9 +800,10 @@ namespace LinePutScript.Converter
         /// <typeparam name="T">想要获得的类型</typeparam>
         /// <param name="lps">ILPS</param>
         /// <returns>生成的对象</returns>
-        public static T? DeserializeObject<T>(ILPS lps) where T : new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static T? DeserializeObject<T>(ILPS lps, bool convertNoneLineAttribute = false) where T : new()
         {
-            return DeserializeObject<T>(lps.ToArray());
+            return DeserializeObject<T>(lps.ToArray(), convertNoneLineAttribute);
         }
         /// <summary>
         /// 将指定的ISub/ILine反序列化为T对象
@@ -795,9 +811,10 @@ namespace LinePutScript.Converter
         /// <typeparam name="T">想要获得的类型</typeparam>
         /// <param name="value">ISub/ILine</param>
         /// <returns>生成的对象</returns>
-        public static T? DeserializeObject<T>(ISub value) where T : new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static T? DeserializeObject<T>(ISub value, bool convertNoneLineAttribute = false) where T : new()
         {
-            object? o = GetSubObject(value, typeof(T));
+            object? o = GetSubObject(value, typeof(T), convertNoneLineAttribute: convertNoneLineAttribute);
             return o == null ? default : (T)o;
         }
         /// <summary>
@@ -806,11 +823,12 @@ namespace LinePutScript.Converter
         /// <typeparam name="T">想要获得的类型</typeparam>
         /// <param name="value">ILine列表</param>
         /// <returns>生成的对象</returns>
-        public static T? DeserializeObject<T>(ILine[] value) where T : new()
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public static T? DeserializeObject<T>(ILine[] value, bool convertNoneLineAttribute = false) where T : new()
         {
             Line l = new Line();
             l.AddRange(value);
-            return DeserializeObject<T>(l);
+            return DeserializeObject<T>(l, convertNoneLineAttribute);
         }
         /// <summary>
         /// 快速转换为指定类型

@@ -138,7 +138,6 @@ namespace TestConsole
                 }
             };
             Console.WriteLine("CV测试1:\t" + LPSConvert.SerializeObject(tc).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
-
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
             Console.WriteLine("CV测试2:\t" + LPSConvert.SerializeObject(
                 LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
