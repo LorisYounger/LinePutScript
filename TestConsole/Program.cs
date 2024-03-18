@@ -200,6 +200,27 @@ namespace TestConsole
             Console.WriteLine("注释测试2:\t" + (lps[1].Comments == "test2#注释失效:|"));
             Console.WriteLine("注释测试3:\t" + (lps[1].Name != "test2"));
 
+            var gi = new GraphInfo()
+            {
+                Name = "test",
+                Type = GraphInfo.GraphType.Move,
+                Animat = GraphInfo.AnimatType.B_Loop
+            };
+            var gi2 = LPSConvert.SerializeObject(gi, convertNoneLineAttribute: true);
+            //Console.WriteLine("VA测试1:\t" + LPSConvert.SerializeObject(gi, convertNoneLineAttribute: true));
+            GraphInfo? g2 = DeserializeObject<GraphInfo>(gi2, true);
+            Console.WriteLine("VA测试2:\t" + (g2.Name == gi.Name).ToString());
+            Console.WriteLine("VA测试3:\t" + (g2.Type == gi.Type).ToString());
+            Console.WriteLine("VA测试4:\t" + (g2.Animat == gi.Animat).ToString());
+
+            var mpm = MPMessage.ConverTo(Properties.Resources.test5);
+            Console.WriteLine("VA测试5:\t" + (mpm.Type == MPMessage.MSGType.DispayGraph).ToString());
+            Console.WriteLine("VA测试6:\t" + (mpm.To == 76561198267979020).ToString());
+
+            var g3 = DeserializeObject<GraphInfo>(new Line(mpm.Content), convertNoneLineAttribute: true);
+            Console.WriteLine("VA测试7:\t" + (g3.Name == "workone").ToString());
+            Console.WriteLine("VA测试8:\t" + (g3.Type == GraphInfo.GraphType.Work).ToString());
+            Console.WriteLine("VA测试9:\t" + (g3.Animat == GraphInfo.AnimatType.A_Start).ToString());
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
@@ -664,6 +685,202 @@ namespace TestConsole
                 }
             }
             Console.WriteLine("测试结束");
+        }
+
+        /// <summary>
+        /// 动画信息
+        /// </summary>
+        /// 新版本动画类型是根据整体类型+名字定义而成
+        /// 动画类型->动画名字
+        /// 动画名字->状态+动作->动画
+        /// 类型: 主要动作分类
+        /// 动画名字: 用户自定义, 同名字动画支持相同随机,不再使用StoreRand
+        /// 动作: 动画的动作 Start Loop End
+        /// 状态: 动画的状态 Save.GameSave.ModeType
+        public class GraphInfo
+        {
+            /// <summary>
+            /// 用于Convert的空动画信息
+            /// </summary>
+            public GraphInfo()
+            {
+
+            }
+            /// <summary>
+            /// 类型: 主要动作分类
+            /// </summary>
+            /// * 为必须有的动画
+            public enum GraphType
+            {
+                /// <summary>
+                /// 通用动画,用于被被其他动画调用或者mod等用途
+                /// </summary>
+                /// 不被默认启用/使用的 不包含在GrapType
+                Common,
+                /// <summary>
+                /// 被提起动态 *
+                /// </summary>
+                Raised_Dynamic,
+                /// <summary>
+                /// 被提起静态 (开始&循环&结束) *
+                /// </summary>
+                Raised_Static,
+                /// <summary>
+                /// 现在所有会动的东西都是MOVE
+                /// </summary>
+                Move,
+                /// <summary>
+                /// 呼吸 *
+                /// </summary>
+                Default,
+                /// <summary>
+                /// 摸头 (开始&循环&结束)
+                /// </summary>
+                Touch_Head,
+                /// <summary>
+                /// 摸身体 (开始&循环&结束)
+                /// </summary>
+                Touch_Body,
+                /// <summary>
+                /// 空闲 (包括下蹲/无聊等通用空闲随机动画) (开始&循环&结束)
+                /// </summary>
+                Idel,
+                /// <summary>
+                /// 睡觉 (开始&循环&结束) *
+                /// </summary>
+                Sleep,
+                /// <summary>
+                /// 说话 (开始&循环&结束) *
+                /// </summary>
+                Say,
+                /// <summary>
+                /// 待机 模式1 (开始&循环&结束)
+                /// </summary>
+                StateONE,
+                /// <summary>
+                /// 待机 模式2 (开始&循环&结束)
+                /// </summary>
+                StateTWO,
+                /// <summary>
+                /// 开机 *
+                /// </summary>
+                StartUP,
+                /// <summary>
+                /// 关机
+                /// </summary>
+                Shutdown,
+                /// <summary>
+                /// 工作 (开始&循环&结束) *
+                /// </summary>
+                Work,
+                /// <summary>
+                /// 向上切换状态
+                /// </summary>
+                Switch_Up,
+                /// <summary>
+                /// 向下切换状态
+                /// </summary>
+                Switch_Down,
+                /// <summary>
+                /// 口渴
+                /// </summary>
+                Switch_Thirsty,
+                /// <summary>
+                /// 饥饿
+                /// </summary>
+                Switch_Hunger,
+            }
+            /// <summary>
+            /// 动作: 动画的动作 Start Loop End
+            /// </summary>
+            public enum AnimatType
+            {
+                /// <summary>
+                /// 动画只有一个动作
+                /// </summary>
+                Single,
+                /// <summary>
+                /// 开始动作
+                /// </summary>
+                A_Start,
+                /// <summary>
+                /// 循环动作
+                /// </summary>
+                B_Loop,
+                /// <summary>
+                /// 结束动作
+                /// </summary>
+                C_End,
+            }
+            /// <summary>
+            /// 动画名字: 用户自定义 同名字动画支持相同随机,不再使用StoreRand
+            /// </summary>
+            public string Name { get; set; } = "";
+            /// <summary>
+            /// 动作: 动画的动作 Start Loop End
+            /// </summary>
+            public AnimatType Animat { get; set; } = AnimatType.Single;
+            /// <summary>
+            /// 类型: 主要动作分类
+            /// </summary>
+            public GraphType Type { get; set; } = GraphType.Common;
+        }
+
+        /// <summary>
+        /// 多人模式传输的消息
+        /// </summary>
+        public struct MPMessage
+        {
+            /// <summary>
+            /// 消息类型
+            /// </summary>
+            public enum MSGType
+            {
+                /// <summary>
+                /// 一般是出错或者空消息
+                /// </summary>
+                Empty,
+                /// <summary>
+                /// 聊天消息 (string)
+                /// </summary>
+                Message,
+                /// <summary>
+                /// 显示动画 (graphinfo)
+                /// </summary>
+                DispayGraph,
+                /// <summary>
+                /// 摸身体 
+                /// </summary>
+                TouchHead,
+                /// <summary>
+                /// 摸头
+                /// </summary>
+                TouchBody,
+                /// <summary>
+                /// 喂食
+                /// </summary>
+                Feed,
+            }
+            /// <summary>
+            /// 消息类型
+            /// </summary>
+            [Line] public MSGType Type { get; set; }
+
+            /// <summary>
+            /// 消息内容
+            /// </summary>
+            [Line] public string Content { get; set; }
+            /// <summary>
+            /// 被操作者 (显示动画用)
+            /// </summary>
+            [Line] public ulong To { get; set; }
+
+            public static string ConverTo(MPMessage data) => LPSConvert.SerializeObject(data).ToString();
+            public static MPMessage ConverTo(string data)
+            {
+                var lps = new LPS(data);
+                return LPSConvert.DeserializeObject<MPMessage>(lps);
+            }
         }
     }
 }

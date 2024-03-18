@@ -210,7 +210,7 @@ namespace LinePutScript.Converter
                     list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
                 }
             }
-            foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
             {
                 Attribute? att = mi.GetCustomAttribute<LineAttribute>();
                 if (att != null && att is LineAttribute la)
@@ -337,6 +337,8 @@ namespace LinePutScript.Converter
                     Type = ConvertType.ToArray;
                 else if (valuetype.IsEnum)
                     Type = ConvertType.ToEnum;
+                else if (valuetype.IsValueType && !valuetype.IsPrimitive)
+                    Type = ConvertType.Class;
                 else if (typeof(string).IsAssignableFrom(valuetype) || valuetype.IsValueType)
                     Type = ConvertType.ToString;
                 else if (typeof(IDictionary).IsAssignableFrom(valuetype))
@@ -618,7 +620,7 @@ namespace LinePutScript.Converter
                                 mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, convertNoneLineAttribute: true));
                         }
                     }
-                    foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
                     {
                         LineAttribute latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                         if (latt != null)
@@ -695,7 +697,7 @@ namespace LinePutScript.Converter
                                     mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, convertNoneLineAttribute: true));
                             }
                         }
-                        foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
                         {
                             LineAttribute? latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                             if (latt != null)

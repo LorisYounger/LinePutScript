@@ -111,5 +111,16 @@ namespace TestConsole.Properties {
                 return ResourceManager.GetString("test4", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 Type#DispayGraph:|
+        ///Content#deflinename:/!|Name/idworkone:/!|Animat/idA_Start:/!|Type/idWork:/!|ModeType/idHappy:/!|&lt;Name&gt;k__BackingField/idworkone:/!|&lt;Animat&gt;k__BackingField/idA_Start:/!|&lt;Type&gt;k__BackingField/idWork:/!|&lt;ModeType&gt;k__BackingField/idHappy:/!|:|
+        ///To#76561198267979020:| 的本地化字符串。
+        /// </summary>
+        internal static string test5 {
+            get {
+                return ResourceManager.GetString("test5", resourceCulture);
+            }
+        }
     }
 }

@@ -145,4 +145,9 @@ pubint#20:|
 intlist#10,20,30,40,50:|
 intdict:|1#2:|3#4:|5#6:|</value>
   </data>
+  <data name="test5" xml:space="preserve">
+    <value>Type#DispayGraph:|
+Content#deflinename:/!|Name/idworkone:/!|Animat/idA_Start:/!|Type/idWork:/!|ModeType/idHappy:/!|&lt;Name&gt;k__BackingField/idworkone:/!|&lt;Animat&gt;k__BackingField/idA_Start:/!|&lt;Type&gt;k__BackingField/idWork:/!|&lt;ModeType&gt;k__BackingField/idHappy:/!|:|
+To#76561198267979020:|</value>
+  </data>
 </root>
