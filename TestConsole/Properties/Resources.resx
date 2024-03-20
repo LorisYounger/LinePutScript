@@ -146,8 +146,11 @@ intlist#10,20,30,40,50:|
 intdict:|1#2:|3#4:|5#6:|</value>
   </data>
   <data name="test5" xml:space="preserve">
-    <value>Type#DispayGraph:|
+    <value>Type#2:|
 Content#deflinename:/!|Name/idworkone:/!|Animat/idA_Start:/!|Type/idWork:/!|ModeType/idHappy:/!|&lt;Name&gt;k__BackingField/idworkone:/!|&lt;Animat&gt;k__BackingField/idA_Start:/!|&lt;Type&gt;k__BackingField/idWork:/!|&lt;ModeType&gt;k__BackingField/idHappy:/!|:|
 To#76561198267979020:|</value>
+  </data>
+  <data name="test6" xml:space="preserve">
+    <value>deflinename:|EnableFunction#False:|Item#deflinename:/!|Type/idDrink:/!|name/id蒸馏水:/!|TranslateName/id蒸馏水:/!|Exp/id10:/!|Strength/id0:/!|StrengthFood/id0:/!|StrengthDrink/id140:/!|Feeling/id1:/!|Health/id-0.5:/!|Likability/id0:/!|Price/id16.5:/!|Desc/id最正宗的水，其实不合适长期饮用:/!|Description/id/n最正宗的水，其实不合适长期饮用:/!|DescriptionValues/id经验值=+10.00/!n口渴度=+140.00/!n心情=+1.00/!n健康=-0.50:/!|ImageSource/iddeflinename:/!!/!|:/!|Star/idFalse:/!|RealPrice/id16.122222222222224:/!|Graph/iddrink:/!|transname/id蒸馏水:/!|descs:/!|Image:/!|isoverload/idFalse:/!|:|</value>
   </data>
 </root>

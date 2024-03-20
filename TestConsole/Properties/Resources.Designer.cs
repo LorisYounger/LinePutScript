@@ -113,13 +113,22 @@ namespace TestConsole.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Type#DispayGraph:|
+        ///   查找类似 Type#2:|
         ///Content#deflinename:/!|Name/idworkone:/!|Animat/idA_Start:/!|Type/idWork:/!|ModeType/idHappy:/!|&lt;Name&gt;k__BackingField/idworkone:/!|&lt;Animat&gt;k__BackingField/idA_Start:/!|&lt;Type&gt;k__BackingField/idWork:/!|&lt;ModeType&gt;k__BackingField/idHappy:/!|:|
         ///To#76561198267979020:| 的本地化字符串。
         /// </summary>
         internal static string test5 {
             get {
                 return ResourceManager.GetString("test5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 deflinename:|EnableFunction#False:|Item#deflinename:/!|Type/idDrink:/!|name/id蒸馏水:/!|TranslateName/id蒸馏水:/!|Exp/id10:/!|Strength/id0:/!|StrengthFood/id0:/!|StrengthDrink/id140:/!|Feeling/id1:/!|Health/id-0.5:/!|Likability/id0:/!|Price/id16.5:/!|Desc/id最正宗的水，其实不合适长期饮用:/!|Description/id/n最正宗的水，其实不合适长期饮用:/!|DescriptionValues/id经验值=+10.00/!n口渴度=+140.00/!n心情=+1.00/!n健康=-0.50:/!|ImageSource/iddeflinename:/!!/!|:/!|Star/idFalse:/!|RealPrice/id16.122222222222224:/!|Graph/iddrink:/!|transname/id蒸馏水:/!|descs:/!|Image [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string test6 {
+            get {
+                return ResourceManager.GetString("test6", resourceCulture);
             }
         }
     }

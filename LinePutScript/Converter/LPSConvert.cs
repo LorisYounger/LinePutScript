@@ -198,12 +198,13 @@ namespace LinePutScript.Converter
         {
             Type type = value.GetType();
             List<TLine> list = new List<TLine>();
-            foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(p => p.CanRead))
             {
-                Attribute? att = mi.GetCustomAttribute<LineAttribute>();
-                if (att != null && att is LineAttribute la)
+                LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
+                if (att != null)
                 {
-                    list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
+                    if (att.Ignore) continue;
+                    list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
                 }
                 else if (convertNoneLineAttribute)
                 {
@@ -212,10 +213,11 @@ namespace LinePutScript.Converter
             }
             foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
             {
-                Attribute? att = mi.GetCustomAttribute<LineAttribute>();
-                if (att != null && att is LineAttribute la)
+                LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
+                if (att != null)
                 {
-                    list.Add(la.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
+                    if (att.Ignore) continue;
+                    list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
                 }
                 else if (convertNoneLineAttribute)
                 {
@@ -376,13 +378,14 @@ namespace LinePutScript.Converter
         public static string GetObjectString(object? value, ConvertType type = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
         {
             //如果为null储存空
-            if (value == null)
+            if (value == null || att?.Ignore == true)
             {
                 return "";
             }
             ConvertType Type = type == ConvertType.Default ? GetObjectConvertType(value.GetType(), att) : type;
             if (Type == ConvertType.Class)
             {
+                convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
                 if (att?.ILineType == null)
                     return Sub.TextReplace(SerializeObject(value, att?.Name ?? "deflinename", convertNoneLineAttribute: convertNoneLineAttribute).ToString());
                 Type ex = typeof(LPSConvert);
@@ -400,7 +403,7 @@ namespace LinePutScript.Converter
                     if (att?.Converter != null)
                         return ConvertFunction.Convert(att.Converter, value);
                     else
-                        return value.ToString() ?? "";
+                        return value.ToString() == null ? "" : Sub.TextReplace(value.ToString());
                 case ConvertType.ToDateTime:
                     return ((DateTime)value).Ticks.ToString();
                 case ConvertType.ToFloat:
@@ -437,7 +440,7 @@ namespace LinePutScript.Converter
                     return sb.ToString().TrimEnd('/', 'n');
 
                 default:
-                    return value.ToString() ?? "";
+                    return value.ToString() == null ? "" : Sub.TextReplace(value.ToString());
             }
         }
         /// <summary>
@@ -456,12 +459,13 @@ namespace LinePutScript.Converter
             TLine t = new TLine();
             t.Name = name;
             //如果为null储存空
-            if (value == null)
+            if (value == null || att?.Ignore == true)
                 return t;
             ConvertType Type = type == ConvertType.Default ? GetObjectConvertType(value.GetType(), att) : type;
             switch (Type)
             {
                 case ConvertType.Class:
+                    convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
                     if (att?.ILineType == null)
                         return SerializeObjectToLine<TLine>(value, linename, convertNoneLineAttribute: convertNoneLineAttribute);
                     Type ex = typeof(LPSConvert);
@@ -535,8 +539,11 @@ namespace LinePutScript.Converter
         /// <param name="att">附加参数,若有</param>
         /// <returns>指定Type的Object</returns>
         /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
-        public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
+        public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool? convertNoneLineAttribute = null)
         {
+            if(att?.Ignore == true)
+                return null;
+            convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
             if (value == "")
             {
                 if (type.IsValueType)
@@ -553,7 +560,7 @@ namespace LinePutScript.Converter
                     Type? subtype = type.GetGenericArguments().First();
                     foreach (string str in value.Split(','))
                     {
-                        list.Add(GetStringObject(Sub.TextDeReplace(str), subtype, convertNoneLineAttribute: true));
+                        list.Add(GetStringObject(Sub.TextDeReplace(str), subtype, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                     }
                     return list;
                 case ConvertType.ToArray:
@@ -564,7 +571,7 @@ namespace LinePutScript.Converter
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
                     for (int i = 0; i < strs.Length; i++)
                     {
-                        arr.SetValue(GetStringObject(Sub.TextDeReplace(strs[i]), subtype, convertNoneLineAttribute: true), i);
+                        arr.SetValue(GetStringObject(Sub.TextDeReplace(strs[i]), subtype, convertNoneLineAttribute: convertNoneLineAttribute ?? true), i);
                     }
                     return arr;
                 case ConvertType.ToDictionary:
@@ -573,9 +580,9 @@ namespace LinePutScript.Converter
                     foreach (string str in value.Replace("/n", "\n").Split('\n'))
                     {
                         strs = str.Split('=');
-                        object? k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0], convertNoneLineAttribute: true);
+                        object? k = GetStringObject(Sub.TextDeReplace(strs[0]), subtypes[0], convertNoneLineAttribute: convertNoneLineAttribute ?? true);
                         if (k != null)
-                            dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1], convertNoneLineAttribute: true));
+                            dict.Add(k, GetStringObject(Sub.TextDeReplace(strs[1]), subtypes[1], convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                     }
                     return dict;
                 case ConvertType.ToDateTime:
@@ -601,7 +608,7 @@ namespace LinePutScript.Converter
                     object? obj = Activator.CreateInstance(type);
                     if (obj == null)
                         return null;
-                    foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(p => p.CanWrite))
                     {
                         LineAttribute latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                         if (latt != null)
@@ -611,9 +618,9 @@ namespace LinePutScript.Converter
                             string name = latt.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: true));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                         }
-                        else if (convertNoneLineAttribute)
+                        else if (convertNoneLineAttribute == true)
                         {
                             ISub? s = line.Find(mi.Name);
                             if (s != null)
@@ -630,9 +637,9 @@ namespace LinePutScript.Converter
                             string name = latt.Name ?? mi.Name;
                             ISub? s = line.Find(name);
                             if (s != null)
-                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: true));
+                                mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                         }
-                        else if (convertNoneLineAttribute)
+                        else if (convertNoneLineAttribute == true)
                         {
                             ISub? s = line.Find(mi.Name);
                             if (s != null)
@@ -651,8 +658,11 @@ namespace LinePutScript.Converter
         /// <param name="att">附加参数,若有</param>
         /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
         /// <returns>指定Type的Object</returns>
-        public static object? GetSubObject(ISub sub, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
+        public static object? GetSubObject(ISub sub, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool? convertNoneLineAttribute = null)
         {
+            if (att?.Ignore == true)
+                return null;
+            convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
             if (sub is ILine line)
                 switch (ct)
@@ -671,7 +681,7 @@ namespace LinePutScript.Converter
                         object obj = Activator.CreateInstance(type);
                         if (obj == null)
                             return null;
-                        foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => f.CanWrite))
                         {
                             LineAttribute? latt = mi.GetCustomAttributes<LineAttribute>().Combine();
                             if (latt != null)
@@ -688,9 +698,9 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: true));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.PropertyType, att: latt, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                             }
-                            else if (convertNoneLineAttribute)
+                            else if (convertNoneLineAttribute == true)
                             {
                                 ISub? s = line.Find(mi.Name);
                                 if (s != null)
@@ -714,9 +724,9 @@ namespace LinePutScript.Converter
                                 else
                                     s = line.Find(name);
                                 if (s != null)
-                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: true));
+                                    mi.SetValueSafe(obj, GetSubObject(s, mi.FieldType, att: latt, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
                             }
-                            else if (convertNoneLineAttribute)
+                            else if (convertNoneLineAttribute == true)
                             {
                                 ISub? s = line.Find(mi.Name);
                                 if (s != null)

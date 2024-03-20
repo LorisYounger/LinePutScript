@@ -23,7 +23,9 @@ namespace LinePutScript.Converter
         /// <param name="fourceToString">强制转换内容为String (多用于当前类为Sub)</param>
         /// <param name="ignoreCase">忽略名称的大小写</param>
         /// <param name="ignore">忽略该属性</param>
-        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null, bool fourceToString = false, bool ignoreCase = false, bool ignore = false)
+        /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
+        public LineAttribute(ConvertType type = ConvertType.Default, Type? converter = null, string? name = null, Type? iLineType = null,
+            bool fourceToString = false, bool ignoreCase = false, bool ignore = false, bool convertNoneLineAttribute = false)
         {
             Type = type;
             Converter = converter;
@@ -32,6 +34,7 @@ namespace LinePutScript.Converter
             FourceToString = fourceToString;
             IgnoreCase = ignoreCase;
             Ignore = ignore;
+            ConvertNoneLineAttribute = convertNoneLineAttribute;
         }
 
         /// <summary>
@@ -72,6 +75,10 @@ namespace LinePutScript.Converter
         /// <returns>转换结果</returns>
         public T ConvertToLine<T>(string name, object? value, bool? fourceToString = null) where T : ILine, new()
         {
+            if (Ignore)
+            {
+                return default(T);
+            }
             if (!fourceToString.HasValue)
             {
                 fourceToString = FourceToString;
@@ -143,6 +150,10 @@ namespace LinePutScript.Converter
         /// </summary>
         public bool Ignore { get; set; } = false;
         /// <summary>
+        /// 是否转换不带LineAttribute的类
+        /// </summary>
+        public bool ConvertNoneLineAttribute = false;
+        /// <summary>
         /// 将两个LineAttribute合并, 以第二个为准
         /// </summary>
         /// <param name="a1">第一个</param>
@@ -151,6 +162,6 @@ namespace LinePutScript.Converter
         public static LineAttribute Combine(LineAttribute a1, LineAttribute a2) => new LineAttribute(
             (a2.Type == ConvertType.Default ? a1.Type : a2.Type), (a2.Converter == null ? a1.Converter : a2.Converter),
             (a2.Name == null ? a1.Name : a2.Name), (a2.ILineType == null ? a1.ILineType : a2.ILineType),
-            a2.FourceToString, a2.IgnoreCase, a2.Ignore);
+            a2.FourceToString, a2.IgnoreCase, a2.Ignore, a2.ConvertNoneLineAttribute);
     }
 }

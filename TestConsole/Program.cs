@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using static LinePutScript.Converter.LPSConvert;
+using static TestConsole.Program.MPMessage;
 
 namespace TestConsole
 {
@@ -214,13 +216,14 @@ namespace TestConsole
             Console.WriteLine("VA测试4:\t" + (g2.Animat == gi.Animat).ToString());
 
             var mpm = MPMessage.ConverTo(Properties.Resources.test5);
-            Console.WriteLine("VA测试5:\t" + (mpm.Type == MPMessage.MSGType.DispayGraph).ToString());
+            Console.WriteLine("VA测试5:\t" + (mpm.Type == (int)MPMessage.MSGType.DispayGraph).ToString());
             Console.WriteLine("VA测试6:\t" + (mpm.To == 76561198267979020).ToString());
 
             var g3 = DeserializeObject<GraphInfo>(new Line(mpm.Content), convertNoneLineAttribute: true);
             Console.WriteLine("VA测试7:\t" + (g3.Name == "workone").ToString());
             Console.WriteLine("VA测试8:\t" + (g3.Type == GraphInfo.GraphType.Work).ToString());
             Console.WriteLine("VA测试9:\t" + (g3.Animat == GraphInfo.AnimatType.A_Start).ToString());
+         
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
@@ -841,30 +844,26 @@ namespace TestConsole
                 /// </summary>
                 Empty,
                 /// <summary>
-                /// 聊天消息 (string)
+                /// 聊天消息 (chat)
                 /// </summary>
-                Message,
+                Chat,
                 /// <summary>
                 /// 显示动画 (graphinfo)
                 /// </summary>
                 DispayGraph,
                 /// <summary>
-                /// 摸身体 
+                /// 交互 (Interact)
                 /// </summary>
-                TouchHead,
+                Interact,
                 /// <summary>
-                /// 摸头
-                /// </summary>
-                TouchBody,
-                /// <summary>
-                /// 喂食
+                /// 喂食 (Feed)
                 /// </summary>
                 Feed,
             }
             /// <summary>
-            /// 消息类型
+            /// 消息类型 MOD作者可以随便抽个不是MSGTYPE的数避免冲突,支持负数
             /// </summary>
-            [Line] public MSGType Type { get; set; }
+            [Line] public int Type { get; set; }
 
             /// <summary>
             /// 消息内容
@@ -882,5 +881,6 @@ namespace TestConsole
                 return LPSConvert.DeserializeObject<MPMessage>(lps);
             }
         }
+
     }
 }
