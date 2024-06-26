@@ -4,6 +4,7 @@ using LinePutScript.Dictionary;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
@@ -139,6 +140,7 @@ namespace TestConsole
                     intdict = new Dictionary<int, int>() { { 1, 2 }, { 3, 4 }, { 5, 6 } },
                 }
             };
+            //Console.WriteLine(LPSConvert.SerializeObject(tc).ToString());
             Console.WriteLine("CV测试1:\t" + LPSConvert.SerializeObject(tc).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
             Console.WriteLine("CV测试2:\t" + LPSConvert.SerializeObject(
@@ -163,6 +165,12 @@ namespace TestConsole
             }
             var l = new Line("food:|type#Drink:|name#ab钙奶:|price#6.5:|desc#健康美味，经济实惠:|Exp#5:|Strength#5:|StrengthDrink#4:|StrengthFood#5:|Health#1:|Feeling#1:|");
             Console.WriteLine("CV测试3.4:\t" + (LPSConvert.DeserializeObject<testigcase>(l).StrengthDrink == 4));
+
+            l = new Line("BetterBuyData:|LastDiscont#0:|Discont:|ScheduleBuyItems:|BuyHistory#/null:|");
+            var bbd = LPSConvert.DeserializeObject<BetterBuyData>(l);
+            Console.WriteLine("CV测试3.5:\t" + (bbd.ScheduleBuyItems != null));
+            Console.WriteLine("CV测试3.6:\t" + (bbd.BuyHistory == null));
+
 
             lps["ABC"].info = "a\\nb,c";
             lps["ABC"].Info = lps["ABC"].Info.Replace(@"\n", "\n").Replace(@"\r", "\r"); ;
@@ -223,7 +231,7 @@ namespace TestConsole
             Console.WriteLine("VA测试7:\t" + (g3.Name == "workone").ToString());
             Console.WriteLine("VA测试8:\t" + (g3.Type == GraphInfo.GraphType.Work).ToString());
             Console.WriteLine("VA测试9:\t" + (g3.Animat == GraphInfo.AnimatType.A_Start).ToString());
-         
+
         }
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
@@ -828,7 +836,121 @@ namespace TestConsole
             /// </summary>
             public GraphType Type { get; set; } = GraphType.Common;
         }
+        public class BetterBuyData
+        {
+            /// <summary>
+            /// 上次折扣时间
+            /// </summary>
+            [Line] public DateTime LastDiscont = DateTime.MinValue;
 
+            /// <summary>
+            /// 折扣数据
+            /// </summary>
+            [Line] public Dictionary<string, int> Discont = new Dictionary<string, int>();
+
+            /// <summary>
+            /// 定时购买的商品
+            /// </summary>
+            [Line] public ObservableCollection<ScheduleBuyItem> ScheduleBuyItems = new ObservableCollection<ScheduleBuyItem>();
+
+            /// <summary>
+            /// 购买历史
+            /// </summary>
+            [Line] public ObservableCollection<HistoryBuyItem> BuyHistory = new ObservableCollection<HistoryBuyItem>();
+
+            /// <summary>
+            /// 定时购买
+            /// </summary>
+            public class ScheduleBuyItem
+            {
+                /// <summary>
+                /// 更好买物品
+                /// </summary>
+                [Line] public string SalabilityItemName { get; set; }
+
+                /// <summary>
+                /// 数量
+                /// </summary>
+                [Line] public int Quantity { get; set; }
+
+                /// <summary>
+                /// 频次
+                /// </summary>
+                public enum BuyFrequency
+                {
+                    None = 0,
+                    EveryDay = 1,
+                    EveryWeek = 7,
+                    EveryMonth = 30,
+                }
+                /// <summary>
+                /// 购买频率
+                /// </summary>
+                [Line] public BuyFrequency Frequency { get; set; }
+
+                public int Frequency_id
+                {
+                    get
+                    {
+                        switch (Frequency)
+                        {
+                            default:
+                            case BuyFrequency.None:
+                                return 0;
+                            case BuyFrequency.EveryDay:
+                                return 1;
+                            case BuyFrequency.EveryWeek:
+                                return 2;
+                            case BuyFrequency.EveryMonth:
+                                return 3;
+                        }
+                    }
+                    set
+                    {
+                        switch (value)
+                        {
+                            default:
+                            case 0:
+                                Frequency = BuyFrequency.None;
+                                break;
+                            case 1:
+                                Frequency = BuyFrequency.EveryDay;
+                                break;
+                            case 2:
+                                Frequency = BuyFrequency.EveryWeek;
+                                break;
+                            case 3:
+                                Frequency = BuyFrequency.EveryMonth;
+                                break;
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// 购买历史
+            /// </summary>
+            public class HistoryBuyItem
+            {
+                /// <summary>
+                /// 更好买物品
+                /// </summary>
+                [Line] public string SalabilityItemName { get; set; }
+                /// <summary>
+                /// 数量
+                /// </summary>
+                [Line] public int Quantity { get; set; }
+
+                /// <summary>
+                /// 金额
+                /// </summary>
+                [Line] public double Amount { get; set; }
+
+                /// <summary>
+                /// 购买日期
+                /// </summary>
+                [Line] public DateTime BuyTime { get; set; }
+            }
+        }
         /// <summary>
         /// 多人模式传输的消息
         /// </summary>

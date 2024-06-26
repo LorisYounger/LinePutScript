@@ -378,7 +378,11 @@ namespace LinePutScript.Converter
         public static string GetObjectString(object? value, ConvertType type = ConvertType.Default, LineAttribute? att = null, bool convertNoneLineAttribute = false)
         {
             //如果为null储存空
-            if (value == null || att?.Ignore == true)
+            if (value == null)
+            {
+                return "/null";
+            }
+            else if (att?.Ignore == true)
             {
                 return "";
             }
@@ -459,8 +463,16 @@ namespace LinePutScript.Converter
             TLine t = new TLine();
             t.Name = name;
             //如果为null储存空
-            if (value == null || att?.Ignore == true)
+            if (value == null)
+            {
+                t.info = "/null";
                 return t;
+            }
+            else if (att?.Ignore == true)
+            {
+                return t;
+            }
+
             ConvertType Type = type == ConvertType.Default ? GetObjectConvertType(value.GetType(), att) : type;
             switch (Type)
             {
@@ -541,7 +553,7 @@ namespace LinePutScript.Converter
         /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
         public static object? GetStringObject(string value, Type type, ConvertType convtype = ConvertType.Default, LineAttribute? att = null, bool? convertNoneLineAttribute = null)
         {
-            if(att?.Ignore == true)
+            if (att?.Ignore == true)
                 return null;
             convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
             if (value == "")
@@ -550,6 +562,21 @@ namespace LinePutScript.Converter
                 {
                     return Activator.CreateInstance(type);
                 }
+                else if (type.IsArray)
+                {
+                    return Array.CreateInstance(type.GetElementType(), 0);
+                }
+                else if (type.IsClass)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if (value == "/null")
+            {
                 return null;
             }
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;

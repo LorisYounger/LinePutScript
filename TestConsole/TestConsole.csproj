@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LinePutScript\Standard\LinePutScript.Standard.csproj" />
+    <ProjectReference Include="..\LinePutScript\Core\LinePutScript.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

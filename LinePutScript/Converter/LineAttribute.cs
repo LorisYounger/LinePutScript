@@ -89,6 +89,7 @@ namespace LinePutScript.Converter
             {
                 T t = new T();
                 t.Name = ln;
+                t.info = "/null";
                 return t;
             }
             //自动判断
@@ -125,6 +126,7 @@ namespace LinePutScript.Converter
             {
                 T t = new T();
                 t.Name = name;
+                t.info = "/null";
                 return t;
             }
             //自动判断
