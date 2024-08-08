@@ -562,6 +562,10 @@ namespace LinePutScript.Converter
                 {
                     return Activator.CreateInstance(type);
                 }
+                else if (type == typeof(string))
+                {
+                    return string.Empty;
+                }
                 else if (type.IsArray)
                 {
                     return Array.CreateInstance(type.GetElementType(), 0);
