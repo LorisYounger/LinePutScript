@@ -142,6 +142,9 @@ namespace TestConsole
             };
             //Console.WriteLine(LPSConvert.SerializeObject(tc).ToString());
             Console.WriteLine("CV测试1:\t" + LPSConvert.SerializeObject(tc).ToString().Equals(Properties.Resources.test4.Replace("\r", "")));
+            Console.WriteLine(LPSConvert.SerializeObject(
+                LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
+                ).ToString());
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
             Console.WriteLine("CV测试2:\t" + LPSConvert.SerializeObject(
                 LPSConvert.DeserializeObject<testclass>(new LpsDocument(Properties.Resources.test4))
@@ -171,6 +174,15 @@ namespace TestConsole
             Console.WriteLine("CV测试3.5:\t" + (bbd.ScheduleBuyItems != null));
             Console.WriteLine("CV测试3.6:\t" + (bbd.BuyHistory == null));
 
+            var lnull = LPSConvert.SerializeObject(new List<string>(), convertNoneLineAttribute: true);
+            //Console.WriteLine(lnull.ToString());
+            var returnlnull = LPSConvert.DeserializeObject<List<string>>(lnull, convertNoneLineAttribute: true);
+            Console.WriteLine("CV测试3.7:\t" + (returnlnull.Count == 0));
+
+            lnull = LPSConvert.SerializeObject(new List<string>() { "a", "b", "c" }, convertNoneLineAttribute: true);
+            //Console.WriteLine(lnull.ToString());
+            returnlnull = LPSConvert.DeserializeObject<List<string>>(lnull, convertNoneLineAttribute: true);
+            Console.WriteLine("CV测试3.8:\t" + (returnlnull.Count == 3 && returnlnull[0] == "a"));
 
             lps["ABC"].info = "a\\nb,c";
             lps["ABC"].Info = lps["ABC"].Info.Replace(@"\n", "\n").Replace(@"\r", "\r"); ;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 #nullable enable
 namespace LinePutScript.Converter
 {
@@ -196,35 +197,65 @@ namespace LinePutScript.Converter
         /// <param name="convertNoneLineAttribute">是否转换不带LineAttribute的类</param>
         public static List<TLine> SerializeObjectToList<TLine>(object value, bool? fourceToString = null, bool convertNoneLineAttribute = false) where TLine : ILine, new()
         {
+            //如果为null储存空           
             Type type = value.GetType();
+
+            //自动判断
+            var Type = LPSConvert.GetObjectConvertType(value.GetType());
             List<TLine> list = new List<TLine>();
-            foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(p => p.CanRead))
+            switch (Type)
             {
-                LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
-                if (att != null)
-                {
-                    if (att.Ignore) continue;
-                    list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
-                }
-                else if (convertNoneLineAttribute)
-                {
-                    list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
-                }
+                case ConvertType.Class:
+                    foreach (PropertyInfo mi in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(p => p.CanRead))
+                    {
+                        LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
+                        if (att != null)
+                        {
+                            if (att.Ignore) continue;
+                            list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
+                        }
+                        else if (convertNoneLineAttribute)
+                        {
+                            list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
+                        }
+                    }
+                    foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
+                    {
+                        LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
+                        if (att != null)
+                        {
+                            if (att.Ignore) continue;
+                            list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
+                        }
+                        else if (convertNoneLineAttribute)
+                        {
+                            list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
+                        }
+                    }
+                    return list;
+                case ConvertType.ToList:
+                    foreach (object? obj in (IEnumerable)value)
+                    {
+                        list.Add(GetObjectLine<TLine>(obj, "item", convertNoneLineAttribute: convertNoneLineAttribute));
+                    }
+                    return list;
+                case ConvertType.ToArray:
+                    for (int i = 0; i < ((Array)value).Length; i++)
+                    {
+                        list.Add(GetObjectLine<TLine>(((Array)value).GetValue(i), i.ToString(), convertNoneLineAttribute: convertNoneLineAttribute));
+                    }
+                    return list;
+                case ConvertType.ToDictionary:
+                    foreach (DictionaryEntry? obj in (IDictionary)value)
+                    {
+                        if (obj == null) continue;
+                        list.Add(GetObjectLine<TLine>(obj.Value.Value, GetObjectString(obj.Value.Key, convertNoneLineAttribute: convertNoneLineAttribute), convertNoneLineAttribute: convertNoneLineAttribute));
+                    }
+                    return list;
+                default:
+                    throw new Exception("SerializeObjectToList only support [Class,ToList,ToDictionary]");
             }
-            foreach (FieldInfo mi in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(f => !f.Name.StartsWith("<")))
-            {
-                LineAttribute? att = mi.GetCustomAttributes<LineAttribute>().Combine();
-                if (att != null)
-                {
-                    if (att.Ignore) continue;
-                    list.Add(att.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString));
-                }
-                else if (convertNoneLineAttribute)
-                {
-                    list.Add(LineAttribute.ConvertToLine<TLine>(mi.Name, mi.GetValue(value), fourceToString, convertNoneLineAttribute));
-                }
-            }
-            return list;
+
         }
 
         /// <summary>
@@ -765,6 +796,24 @@ namespace LinePutScript.Converter
                             }
                         }
                         return obj;
+                    case ConvertType.ToArray:
+                        Type subtype = type.GetElementType()!;
+                        Array arr = Array.CreateInstance(subtype, line.Count);
+                        for (int i = 0; i < line.Count; i++)
+                        {
+                            arr.SetValue(GetSubObject(line[i], subtype, convertNoneLineAttribute: convertNoneLineAttribute ?? true), i);
+                        }
+                        return arr;
+
+                    case ConvertType.ToList:
+                        var list = (IList)Activator.CreateInstance(type);
+                        subtype = type.GetGenericArguments().First();
+                        foreach (ISub s in line)
+                        {
+                            list.Add(GetSubObject(s, subtype, convertNoneLineAttribute: convertNoneLineAttribute ?? true));
+                        }
+                        return list;
+
                     default:
                         return GetStringObject(sub.info, type, ct, att);
                 }
