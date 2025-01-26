@@ -98,12 +98,12 @@ namespace LinePutScript.Converter
             {
                 T t = new T();
                 t.Name = ln;
-                t.info = LPSConvert.GetObjectString(value, Type, this);
+                t.info = LPSConvert.GetObjectString(value, Type, this, ConvertNoneLineAttribute);
                 return t;
             }
             else
             {
-                return LPSConvert.GetObjectLine<T>(value, ln, Type, this);
+                return LPSConvert.GetObjectLine<T>(value, ln, Type, this, ConvertNoneLineAttribute);
             }
         }
         /// <summary>

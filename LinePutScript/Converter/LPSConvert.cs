@@ -447,7 +447,7 @@ namespace LinePutScript.Converter
                     StringBuilder sb = new StringBuilder();
                     foreach (object obj in (Array)value)
                     {
-                        sb.Append(Sub.TextReplace(GetObjectString(obj)));
+                        sb.Append(Sub.TextReplace(GetObjectString(obj, convertNoneLineAttribute: convertNoneLineAttribute)));
                         sb.Append(',');
                     }
                     return sb.ToString().TrimEnd(',');
@@ -455,7 +455,7 @@ namespace LinePutScript.Converter
                     sb = new StringBuilder();
                     foreach (object obj in (IEnumerable)value)
                     {
-                        sb.Append(Sub.TextReplace(GetObjectString(obj)));
+                        sb.Append(Sub.TextReplace(GetObjectString(obj, convertNoneLineAttribute: convertNoneLineAttribute)));
                         sb.Append(',');
                     }
                     return sb.ToString().TrimEnd(',');
@@ -466,9 +466,9 @@ namespace LinePutScript.Converter
 #pragma warning disable CS8605 // 取消装箱可能为 null 的值。
                     foreach (DictionaryEntry obj in (IDictionary)value)
                     {
-                        sb.Append(Sub.TextReplace(GetObjectString(obj.Key)));
+                        sb.Append(Sub.TextReplace(GetObjectString(obj.Key, convertNoneLineAttribute: convertNoneLineAttribute)));
                         sb.Append('=');
-                        sb.Append(obj.Value == null ? "" : Sub.TextReplace(GetObjectString(obj.Value)));
+                        sb.Append(obj.Value == null ? "" : Sub.TextReplace(GetObjectString(obj.Value, convertNoneLineAttribute: convertNoneLineAttribute)));
                         sb.Append("/n");
                     }
 #pragma warning restore CS8605 // 取消装箱可能为 null 的值。
@@ -726,7 +726,7 @@ namespace LinePutScript.Converter
                 return null;
             convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
-            if (sub is ILine line)
+            if (sub is ILine line && line.info.Length == 0)
                 switch (ct)
                 {
                     case ConvertType.ToDictionary:
