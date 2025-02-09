@@ -652,7 +652,14 @@ namespace LinePutScript.Converter
                     {
                         return new DateTime(l);
                     }
-                    return Convert.ToDateTime(Sub.TextDeReplace(value));
+                    if (SetObject.ConverterSetObject.TryGetValue(value.GetType(), out Dictionary<Type, Func<object, object>>? conv))
+                    {
+                        if (conv?.TryGetValue(type, out Func<object, object>? fun) == true)
+                        {
+                            return fun(value);
+                        }
+                    }
+                    return DateTime.MinValue;
                 case ConvertType.ToFloat:
                     return FInt64.Parse(value);
                 case ConvertType.Converter:

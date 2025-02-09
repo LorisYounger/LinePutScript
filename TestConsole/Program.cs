@@ -113,7 +113,6 @@ namespace TestConsole
             Console.WriteLine("SS读取测试:\t" + lps["str2"].Texts[(gflt)"flt"].Equals(114514.191980));
             Console.WriteLine("SS输出测试:\t" + lps.ToString().Equals(Properties.Resources.test2.Replace("\r", "")));
 
-
             lps["str2"].Texts["crlf"] = "ab\nabc\nc";
             Console.WriteLine("SS测试7:\t" + lps["str2"].Texts["crlf"].Equals("ab\nabc\nc"));
 
