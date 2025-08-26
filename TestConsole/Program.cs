@@ -219,6 +219,16 @@ namespace TestConsole
             var linec2 = new Line_C<testclass>(new Line(linc.ToString()));
             Console.WriteLine("CC测试7:\t" + (linec2[(gint)"pubint"] == 40));
 
+            //测试 ReadOnly
+            TestReadOnly tro = new TestReadOnly();
+            Console.WriteLine("RO测试1:\t" + LPSConvert.SerializeObject(
+                LPSConvert.DeserializeObject<TestReadOnly>(new LpsDocument(Properties.Resources.test7))
+                , convertNoneLineAttribute: true).ToString().Equals(Properties.Resources.test7.Replace("\r", "")));
+            Console.WriteLine("RO测试2:\t" + LPSConvert.SerializeObject(tro, convertNoneLineAttribute: true).ToString().Equals(Properties.Resources.test7.Replace("\r", "")));
+            List<TestReadOnly> tros = new List<TestReadOnly>() { tro, new TestReadOnly { D = 100 }, new TestReadOnly { C = 200 }, new TestReadOnly { D = 300 } };
+            Console.WriteLine("RO测试3:\t" + LPSConvert.SerializeObject(tros, convertNoneLineAttribute: true).ToString().Equals(Properties.Resources.test8.Replace("\r", "")));
+
+
             lps = new LpsDocument("test#测试注释:|///测试\n///test2#注释失效:|");
             Console.WriteLine("注释测试1:\t" + (lps["test"].Comments == "测试"));
             Console.WriteLine("注释测试2:\t" + (lps[1].Comments == "test2#注释失效:|"));
@@ -325,6 +335,25 @@ namespace TestConsole
             public testlpsconv()
             {
             }
+        }
+
+        public class TestReadOnly
+        {
+            public int A { get; } = 10;
+
+            public int B { get; private set; } = 20;
+
+            public int C
+            {
+                set
+                {
+                    B = value;
+                }
+            }
+
+            public int D { get; set; } = 30;
+
+            public bool E => D > 30;
         }
 
         public class testigcase

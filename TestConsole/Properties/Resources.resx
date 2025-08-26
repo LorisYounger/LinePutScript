@@ -153,4 +153,16 @@ To#76561198267979020:|</value>
   <data name="test6" xml:space="preserve">
     <value>deflinename:|EnableFunction#False:|Item#deflinename:/!|Type/idDrink:/!|name/id蒸馏水:/!|TranslateName/id蒸馏水:/!|Exp/id10:/!|Strength/id0:/!|StrengthFood/id0:/!|StrengthDrink/id140:/!|Feeling/id1:/!|Health/id-0.5:/!|Likability/id0:/!|Price/id16.5:/!|Desc/id最正宗的水，其实不合适长期饮用:/!|Description/id/n最正宗的水，其实不合适长期饮用:/!|DescriptionValues/id经验值=+10.00/!n口渴度=+140.00/!n心情=+1.00/!n健康=-0.50:/!|ImageSource/iddeflinename:/!!/!|:/!|Star/idFalse:/!|RealPrice/id16.122222222222224:/!|Graph/iddrink:/!|transname/id蒸馏水:/!|descs:/!|Image:/!|isoverload/idFalse:/!|:|</value>
   </data>
+  <data name="test7" xml:space="preserve">
+    <value>A#10:|
+B#20:|
+D#30:|
+E#False:|</value>
+  </data>
+  <data name="test8" xml:space="preserve">
+    <value>item:|A#10:|B#20:|D#30:|E#False:|
+item:|A#10:|B#20:|D#100:|E#True:|
+item:|A#10:|B#200:|D#30:|E#False:|
+item:|A#10:|B#20:|D#300:|E#True:|</value>
+  </data>
 </root>

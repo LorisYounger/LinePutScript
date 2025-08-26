@@ -131,5 +131,29 @@ namespace TestConsole.Properties {
                 return ResourceManager.GetString("test6", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 A#10:|
+        ///B#20:|
+        ///D#30:|
+        ///E#False:| 的本地化字符串。
+        /// </summary>
+        internal static string test7 {
+            get {
+                return ResourceManager.GetString("test7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 item:|A#10:|B#20:|D#30:|E#False:|
+        ///item:|A#10:|B#20:|D#100:|E#True:|
+        ///item:|A#10:|B#200:|D#30:|E#False:|
+        ///item:|A#10:|B#20:|D#300:|E#True:| 的本地化字符串。
+        /// </summary>
+        internal static string test8 {
+            get {
+                return ResourceManager.GetString("test8", resourceCulture);
+            }
+        }
     }
 }
