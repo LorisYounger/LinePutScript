@@ -614,6 +614,7 @@ namespace LinePutScript.Converter
             {
                 return null;
             }
+            type = Nullable.GetUnderlyingType(type) ?? type;
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
             switch (ct)
             {
@@ -732,6 +733,13 @@ namespace LinePutScript.Converter
             if (att?.Ignore == true)
                 return null;
             convertNoneLineAttribute = att?.ConvertNoneLineAttribute ?? convertNoneLineAttribute;
+            // 空内容保留 null；有内容的可空值按其底层类型读取。
+            if (Nullable.GetUnderlyingType(type) is Type underlyingType)
+            {
+                if (sub.info == "/null" || (sub.info.Length == 0 && (sub is not ILine valueLine || valueLine.Count == 0)))
+                    return null;
+                type = underlyingType;
+            }
             ConvertType ct = convtype == ConvertType.Default ? GetObjectConvertType(type, att) : convtype;
             if (sub is ILine line && line.info.Length == 0)
                 switch (ct)
